@@ -50,6 +50,13 @@ Temporary Items
 .apdisk
 
 # exclude
+!/src/Work/foc_graphic_win32/Debug/main.exe
+!/src/v0/Master/Win COM/Debug/com.exe
+!/doc/Pictures/20170502_080637.jpg
+!/doc/Pictures/20170328_231156.jpg
+!/doc/Pictures/20170328_230817.jpg
+
+
 /src/v0/Master/Win COM/Debug/*
 /src/v0/Master/Win COM/ipch/*
 /src/v0/main/Debug/obj/*
@@ -58,9 +65,3 @@ Temporary Items
 /src/Work/foc_graphic_win32/ipch/*
 /src/Work/foc_graphic_win32/obj/*
 /doc/*
-
-!/src/Work/foc_graphic_win32/Debug/main.exe
-!/src/v0/Master/Win COM/Debug/com.exe
-!/doc/Pictures/20170502_080637.jpg
-!/doc/Pictures/20170328_231156.jpg
-!/doc/Pictures/20170328_230817.jpg
