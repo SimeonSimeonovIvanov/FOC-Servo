@@ -17,6 +17,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# 
+*.db
+
 # =========================
 # Operating System Files
 # =========================
@@ -45,3 +48,11 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# exclude everything except
+/*
+!/doc/*
+
+/*
+!/src/v0/Master/Win COM/Debug/*
+!/src/v0/Master/Win COM/ipch/*
