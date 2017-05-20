@@ -1,0 +1,1 @@
+LRESULT CALLBACK tcpSetingsWndProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

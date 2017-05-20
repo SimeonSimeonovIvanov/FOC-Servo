@@ -49,10 +49,16 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# exclude everything except
-/*
-!/doc/*
+# exclude
+/doc/*
+/src/v0/Master/Win COM/Debug/*
+/src/v0/Master/Win COM/ipch/*
+/src/v0/main/Debug/obj/*
+/src/v0/logs/*
 
-/*
-!/src/v0/Master/Win COM/Debug/*
-!/src/v0/Master/Win COM/ipch/*
+/src/Work/foc_graphic_win32/Debug/*
+/src/Work/foc_graphic_win32/ipch/*
+/src/Work/foc_graphic_win32/obj/*
+
+!/src/Work/foc_graphic_win32/Debug/main.exe
+!/src/v0/Master/Win COM/Debug/com.exe

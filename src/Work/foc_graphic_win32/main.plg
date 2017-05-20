@@ -1,0 +1,55 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: main - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Simo\LOCALS~1\Temp\RSPFE.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/main.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Simo\LOCALS~1\Temp\RSPFE.tmp" 
+Creating temporary file "C:\DOCUME~1\Simo\LOCALS~1\Temp\RSPFF.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/main.pdb" /debug /machine:I386 /out:"Debug/main.exe" /pdbtype:sept 
+".\Debug\foc.obj"
+".\Debug\main.obj"
+".\Debug\StdAfx.obj"
+".\Debug\main.res"
+]
+Creating command line "link.exe @C:\DOCUME~1\Simo\LOCALS~1\Temp\RSPFF.tmp"
+<h3>Output Window</h3>
+Compiling...
+foc.cpp
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(31) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(32) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(98) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(99) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(103) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(104) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(108) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(109) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(113) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(114) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(118) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(119) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(123) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(124) : warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(68) : warning C4101: 'T' : unreferenced local variable
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(69) : warning C4101: 'PWM1' : unreferenced local variable
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(69) : warning C4101: 'PWM2' : unreferenced local variable
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(69) : warning C4101: 'PWM3' : unreferenced local variable
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(136) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+C:\Documents and Settings\Simo\Desktop\FOC\src\Work\foc_graphic_win32\foc.cpp(137) : warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+Linking...
+
+
+
+<h3>Results</h3>
+main.exe - 0 error(s), 20 warning(s)
+</pre>
+</body>
+</html>
