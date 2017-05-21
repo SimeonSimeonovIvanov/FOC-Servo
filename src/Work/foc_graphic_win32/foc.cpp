@@ -814,31 +814,17 @@ void mcFocSVPWM(LP_MC_FOC lpFoc)
 
 float fSinAngle(int angle)
 {
-	float sina;
-
-	if (angle == +1 * 180 || angle == +2 * 180 || angle == +3 * 180 || angle == +4 * 180 || angle == +5 * 180 ||
-		angle == -1 * 180 || angle == -2 * 180 || angle == -3 * 180 || angle == -4 * 180 || angle == -5 * 180 ||
-		angle == 0
-	) {
-		sina = 0.0f;
-	} else {
-		sina = sinf(foc_deg_to_rad(angle));
-	}
-	
-	return sina;
+	return sinf(foc_deg_to_rad(angle));
 }
 
 float fCosAngle(int angle)
 {
-	return fSinAngle(angle + 90);
+	return cosf(foc_deg_to_rad(angle));
 }
 
 void mcFocSetAngle(LP_MC_FOC lpFoc, int angle)
 {
 	lpFoc->angle = (float)angle;
-	//lpFoc->fSinAngle = sin( foc_deg_to_rad(angle) );
-	//lpFoc->fCosAngle = cos( foc_deg_to_rad(angle ) );
-	//return;
 	lpFoc->fSinAngle = fSinAngle(angle);
 	lpFoc->fCosAngle = fCosAngle(angle);
 }
@@ -855,21 +841,53 @@ void mcFocInitStruct(LP_MC_FOC lpFoc)
 }
 
 void mcClark(LP_MC_FOC lpFoc)
-{
+{	
 	lpFoc->Ialpha = lpFoc->Ia;
-	lpFoc->Ibeta = (lpFoc->Ia + 2 * lpFoc->Ib) * divSQRT3;
+	lpFoc->Ibeta = (lpFoc->Ia + 2 * lpFoc->Ib) * -divSQRT3;
+
+	//float Ic = -lpFoc->Ia - lpFoc->Ib;
+	//lpFoc->Ialpha = 1.5f * lpFoc->Ia;
+	//lpFoc->Ibeta = (SQRT3 * 0.5) * lpFoc->Ib - (SQRT3 * 0.5) * Ic;
+
+
+	/*//Alpha Term
+	ip->ialpha = (float)ip->ia;
+
+	//Beta Term
+	ip->ibeta = ip->ia + (2.0 * ip->ib);
+	ip->ibeta = ip->ibeta / 1.73205;*/
 }
 
 void mcPark(LP_MC_FOC lpFoc)
 {
-	lpFoc->Id = lpFoc->Ialpha * lpFoc->fCosAngle + lpFoc->Ibeta  * lpFoc->fSinAngle;
-	lpFoc->Iq = lpFoc->Ibeta  * lpFoc->fCosAngle - lpFoc->Ialpha * lpFoc->fSinAngle;
+	lpFoc->Id = +lpFoc->Ialpha * lpFoc->fCosAngle + lpFoc->Ibeta  * lpFoc->fSinAngle;
+	lpFoc->Iq = -lpFoc->Ialpha * lpFoc->fSinAngle + lpFoc->Ibeta  * lpFoc->fCosAngle;
+
+	/*float temp1, temp2;
+
+	temp1 = ip->ialpha * ip->cos_t;
+	temp2 = ip->ibeta  * ip->sin_t;
+	ip->idout = temp1 + temp2;
+
+	temp1 = ip->ialpha * ip->sin_t;
+	temp2 = ip->ibeta  * ip->cos_t;
+	ip->iqout = -temp1 + temp2;*/
 }
 
 void mcInvPark(LP_MC_FOC lpFoc)
 {
 	lpFoc->Valpha = lpFoc->Vd * lpFoc->fCosAngle - lpFoc->Vq * lpFoc->fSinAngle;
 	lpFoc->Vbeta  = lpFoc->Vd * lpFoc->fSinAngle + lpFoc->Vq * lpFoc->fCosAngle;
+
+	/*float temp1, temp2;
+
+	temp1 = ip->vsdref * ip->cos_t;
+	temp2 = ip->vsqref * ip->sin_t;
+	ip->valpha = temp1 - temp2;
+
+	temp1 = ip->vsdref * ip->sin_t;
+	temp2 = ip->vsqref * ip->cos_t;
+	ip->vbeta = temp1 + temp2;*/
 }
 
 void mcInvClark(LP_MC_FOC lpFoc)

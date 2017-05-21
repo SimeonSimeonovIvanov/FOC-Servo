@@ -2,6 +2,7 @@
 #define __FOC_H__
 
 #include "stm32f4xx_adc.h"
+#include "stm32f4xx_dac.h"
 
 #include "pid/pid.h"
 #include "encoder.h"

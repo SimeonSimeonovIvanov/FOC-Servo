@@ -73,7 +73,7 @@ void svpwmInitTIM( void )
 	TIM_SelectOutputTrigger(TIM1, TIM_TRGOSource_OC4Ref );
 	TIM_ARRPreloadConfig( TIM1, ENABLE );
 
-	//DBGMCU->APB2FZ |= DBGMCU_APB1_FZ_DBG_TIM1_STOP;
+	DBGMCU->APB2FZ |= DBGMCU_APB1_FZ_DBG_TIM1_STOP;
 
 	TIM_Cmd( TIM1, ENABLE );
 }
@@ -728,8 +728,8 @@ void mcFocSVPWM2(LP_MC_FOC lpFoc)
 	T_2 = T * 0.50f;
 	T_4 = T * 0.25f;
 
-	Ubeta	= T * -lpFoc->Vbeta;
 	Ualpha	= T * +lpFoc->Valpha * SQRT3;
+	Ubeta	= T * -lpFoc->Vbeta;
 
 	X = Ubeta;
 	Y = ( +Ualpha + Ubeta ) * 0.5f;
@@ -797,12 +797,12 @@ void mcFocSVPWM1(LP_MC_FOC lpFoc) // +
 	float wUAlpha, wUBeta;
 	float hTimePhA, hTimePhB, hTimePhC;
 
-	wUAlpha = +(lpFoc->Valpha * T_SQRT3);
-	wUBeta  = -(lpFoc->Vbeta  * T);
+	wUAlpha = +( lpFoc->Valpha * T_SQRT3 );
+	wUBeta  = -( lpFoc->Vbeta  * T );
 
 	wX = wUBeta;
-	wY = (wUBeta + wUAlpha) * 0.5f;
-	wZ = (wUBeta - wUAlpha) * 0.5f;
+	wY = ( wUBeta + wUAlpha ) * 0.5f;
+	wZ = ( wUBeta - wUAlpha ) * 0.5f;
 
 	if(wY<0) {
 		if(wZ<0) {

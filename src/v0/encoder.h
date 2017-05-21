@@ -23,6 +23,6 @@ uint16_t readRawHallInput(void);
 
 float fSinAngle(int angle);
 float fCosAngle(int angle);
-void focCreateSinCosTable(void);
+void createSinCosTable(void);
 
 #endif

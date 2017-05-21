@@ -159,35 +159,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		for( i = 0; i < gr_size_x; i++ ) {
 			angle = ( i / steep );
-			//angle = angle - 180;
 
 			Ia = fSinAngle(angle);
 			Ib = fSinAngle(angle + 120);
 
-			Ia = Ia * 40.0f;
-			Ib = Ib * 40.0f;
+			Ia = Ia * 20.0f;
+			Ib = Ib * 20.0f;
 			Ic = -Ia -Ib;
 
 			mcFocSetAngle(&stFoc, angle);
 			mcFocSetCurrent(&stFoc, Ia, Ib);
 
 			mcClark(&stFoc);
+
+			mcFocSetAngle(&stFoc, angle +0);
 			mcPark(&stFoc);
 
 			stFoc.Vd = 0.0f;
-			stFoc.Vq = 0.8f;
-
+			stFoc.Vq = -0.4f;
 			mcInvPark(&stFoc);
-			//mcInvClark(&stFoc);
-
 			mcFocSVPWM1(&stFoc);
 
-			/*arrGraphic[0][i] = Ia;
+			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;
-			arrGraphic[2][i] = Ic;*/
-			arrGraphic[0][i] = stFoc.Va;
+			arrGraphic[2][i] = Ic;
+			/*arrGraphic[0][i] = stFoc.Va;
 			arrGraphic[1][i] = stFoc.Vb;
-			arrGraphic[2][i] = stFoc.Vc;
+			arrGraphic[2][i] = stFoc.Vc;*/
 			
 			// ----------------------------------------------------------------
 			if( counter++ <= 30 * steep ) {
@@ -200,12 +198,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			// ----------------------------------------------------------------
 
-			arrGraphic[3][i] = stFoc.Valpha;
-			arrGraphic[4][i] = stFoc.Vbeta;
+			arrGraphic[3][i] = stFoc.Ialpha;
+			arrGraphic[4][i] = stFoc.Ibeta;
 
-			arrGraphic[5][i] = stFoc.PWM1;
-			arrGraphic[6][i] = stFoc.PWM2;
-			arrGraphic[7][i] = stFoc.PWM3;
+			arrGraphic[5][i] = stFoc.Id;
+			arrGraphic[6][i] = stFoc.Iq;
+			//arrGraphic[7][i] = stFoc.PWM3;
+
+			arrGraphic[8][i] = sqrtf(stFoc.Id*stFoc.Id + stFoc.Iq*stFoc.Iq);
 
 			arrGraphic[0][i] *= scale;
 			arrGraphic[1][i] *= scale;
@@ -215,6 +215,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			arrGraphic[5][i] *= scale;
 			arrGraphic[6][i] *= scale;
 			arrGraphic[7][i] *= scale;
+			arrGraphic[8][i] *= scale;
 			arrGraphic[10][i] *= scale;
 		}
 	}
@@ -271,6 +272,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[5][i] + 200, RGB(255, 0, 0));
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[6][i] + 200, RGB(0, 255, 0));
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[7][i] + 200, RGB(0, 0, 255));
+
+			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[8][i] + 100, RGB(255, 0, 255));
 
 			SetPixel(hdc, x_pos, ydiv2 - 300, RGB(255, 0, 0));
 			SetPixel(hdc, x_pos, ydiv2 - 200, RGB(0, 255, 0));

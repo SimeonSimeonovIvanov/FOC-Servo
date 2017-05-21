@@ -6,12 +6,13 @@
 void boardInit(void);
 
 extern volatile uint16_t current_a, current_b, dc_voltage, ai0, ai1;
+extern PID pidPos;
 
-static USHORT   usRegHoldingStart = REG_HOLDING_START;
-static USHORT   usRegHoldingBuf[REG_HOLDING_NREGS];
+static USHORT usRegHoldingStart = REG_HOLDING_START;
+static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ];
 
-int current_a_offset = 2047; //sum_a / 100;
-int current_b_offset = 2047; //sum_b / 100;
+int current_a_offset = 2047;
+int current_b_offset = 2047;
 
 int32_t sp_counter = 0;
 int main_state = 0;
@@ -56,19 +57,25 @@ int main(void)
 		hall = readHallMap();
 		encoder = read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
 
+		float dc_current = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		usRegHoldingBuf[0] = (int)stFoc.Id;
+		usRegHoldingBuf[1] = (int)dc_current;//(int)stFoc.Iq;
 		usRegHoldingBuf[0] = -( ( 4095 - current_a ) - current_a_offset );
-		usRegHoldingBuf[1] = 1000.0f * stFoc.pid_q.out;-( ( 4095 - current_b ) - current_b_offset );
+		usRegHoldingBuf[1] = -( ( 4095 - current_b ) - current_b_offset );
+		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[2] = sp_counter - TIM2->CNT;dc_voltage;
 		usRegHoldingBuf[3] = ai0;
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = hall;
 		usRegHoldingBuf[5] = encoder;
 		usRegHoldingBuf[6] = TIM3->CNT;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 1 ( abs.pos )
 		usRegHoldingBuf[7] = TIM2->CNT;
 		usRegHoldingBuf[8] = TIM2->CNT>>16;
-
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		static int clk_old = 0;

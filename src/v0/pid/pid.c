@@ -31,10 +31,9 @@ void pidSetInputRange( LP_PID lpPid, float range )
 
 float pidTask( LP_PID lpPid, float sp, float pv )
 {
-	volatile float error, dInput;
-
-	volatile float sp_in = sp;
-	volatile float pv_in = pv;
+	float error, dInput;
+	float sp_in = sp;
+	float pv_in = pv;
 
 	error = ( sp_in - pv_in );
 	error = error * lpPid->errorScale;
@@ -49,7 +48,7 @@ float pidTask( LP_PID lpPid, float sp, float pv )
 
 	lpPid->error = error;
 
-	lpPid->sumError +=  error;
+	lpPid->sumError += error;
 
 	if( lpPid->sumError > lpPid->maxSumError ) {
 		lpPid->sumError = lpPid->maxSumError;
