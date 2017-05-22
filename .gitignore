@@ -18,6 +18,7 @@ $RECYCLE.BIN/
 *.lnk
 
 *.db
+*.xlsx
 # Eagle temp files
 *.s#*
 *.b#*
@@ -59,7 +60,9 @@ Temporary Items
 /src/Work/foc_graphic_win32/Debug/*
 /src/Work/foc_graphic_win32/ipch/*
 /src/Work/foc_graphic_win32/obj/*
-/doc/*
+/doc/Pictures/*
+/doc/Videos/*
+/doc/SVPWM/*
 
 !/src/Work/foc_graphic_win32/Debug/main.exe
 !/src/v0/Master/Win COM/Debug/com.exe
