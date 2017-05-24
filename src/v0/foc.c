@@ -218,8 +218,8 @@ void ADC_IRQHandler( void )
 
 	mcClark( lpFoc );
 
-	// Вероятно има проблем с подредбата на фазите спрямо Ia = sin(0).
-	// В момента Ib = sin(0+120) а би трябвало да е Iб = sin(0-120) (???):
+	// Вероятно има проблем с подредбата на фазите спрямо Ia = sin( 0 ).
+	// В момента Ib = sin(0 + 120) а би трябвало да е Ib = sin( 0 - 120 ) (???):
 	lpFoc->Ibeta = -lpFoc->Ibeta;
 
 	mcPark( lpFoc );
@@ -245,7 +245,8 @@ void ADC_IRQHandler( void )
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
 	TIM_SetCompare3( TIM1, lpFoc->PWM3 );
 
-	DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id, lpFoc->Iq );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id + 2047, lpFoc->Iq + 2047 );
+	DAC_SetDualChannelData( DAC_Align_12b_R, ( lpFoc->angle * 10 ), lpFoc->Iq + 2047 );
 
 	GPIO_ResetBits( GPIOB, GPIO_Pin_2 );
 }

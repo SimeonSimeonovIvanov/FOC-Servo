@@ -192,7 +192,7 @@ uint16_t readRawUVW(void)
 
 	hall_old = hall;
 
-	return 4000 - encoder;
+	return encoder;
 }
 
 uint16_t read360uvw(void)
@@ -270,9 +270,9 @@ void EXTI15_10_IRQHandler(void)
 
 void createSinCosTable(void)
 {
-	for( int i = 0; i <= 4000; i++) {
-		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * 0.09f ) );
-		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * 0.09f ) );
+	for( int i = 0; i <= 4000; i++ ) {
+		arr_sin[i] = sinf( foc_deg_to_rad( (float)(4000 - i) * 0.09f ) );
+		arr_cos[i] = cosf( foc_deg_to_rad( (float)(4000 - i) * 0.09f ) );
 	}
 	return;
 
