@@ -22,17 +22,17 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Id_des = 0.0f;
 	lpFoc->Iq_des = 0.0f;
 
-	pidInit( &pidPos, 2.0f, 0.01f, 0.00f, 0.001f );
+	pidInit( &pidPos, 2.0f, 0.001f, 0.00f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.99f, -0.99f );
 	pidSetIntegralLimit( &pidPos, 0.99f );
 	pidSetInputRange( &pidPos, 500 );
 
-	pidInit( &lpFoc->pid_d, 0.4f, 0.00510f, 0.0f, 1.00006f );
-	pidSetOutLimit( &lpFoc->pid_d, 0.9f, -0.9f );
-	pidSetIntegralLimit( &lpFoc->pid_d, 0.9f );
+	pidInit( &lpFoc->pid_d, 0.4f, 0.0010f, 0.0f, 1.00006f );
+	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.99f );
+	pidSetIntegralLimit( &lpFoc->pid_d, 0.99f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.4f, 0.00510f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.4f, 0.0010f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.99f, -0.99f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.99f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -74,7 +74,7 @@ void mcFocSetCurrent(LP_MC_FOC lpFoc, float Ia, float Ib)
 void mcClark(LP_MC_FOC lpFoc)
 {
 	lpFoc->Ialpha =  lpFoc->Ia;
-	lpFoc->Ibeta = ( lpFoc->Ia + ( 2 * lpFoc->Ib ) ) * -divSQRT3;
+	lpFoc->Ibeta = ( lpFoc->Ia + ( 2 * lpFoc->Ib ) ) * divSQRT3;
 }
 
 void mcPark(LP_MC_FOC lpFoc)
@@ -98,6 +98,8 @@ void mcInvClark(LP_MC_FOC lpFoc)
 
 void ADC_IRQHandler( void )
 {
+	static int arrIa[10]={0}, arrIb[10]={0};
+
 	static int fFirstRun = 0;
 	static int temp = 0;
 
@@ -121,6 +123,31 @@ void ADC_IRQHandler( void )
 		ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
 	}
 
+	arrIa[9] = arrIa[8];
+	arrIa[8] = arrIa[7];
+	arrIa[7] = arrIa[6];
+	arrIa[6] = arrIa[5];
+	arrIa[5] = arrIa[4];
+	arrIa[4] = arrIa[3];
+	arrIa[3] = arrIa[2];
+	arrIa[2] = arrIa[1];
+	arrIa[1] = arrIa[0];
+	arrIa[0] = current_a;
+
+	arrIb[9] = arrIb[8];
+	arrIb[8] = arrIb[7];
+	arrIb[7] = arrIb[6];
+	arrIb[6] = arrIb[5];
+	arrIb[5] = arrIb[4];
+	arrIb[4] = arrIb[3];
+	arrIb[3] = arrIb[2];
+	arrIb[2] = arrIb[1];
+	arrIb[1] = arrIb[0];
+	arrIb[0] = current_b;
+
+	current_a = ( arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] + arrIa[5] + arrIa[6]  + arrIa[7]  + arrIa[8] + arrIa[9] ) / 10;
+	current_b = ( arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] + arrIb[5] + arrIb[6]  + arrIb[7]  + arrIb[8] + arrIb[9] ) / 10;
+
 	if( !main_state ) {
 		return;
 	}
@@ -141,7 +168,8 @@ void ADC_IRQHandler( void )
 	if( !fFirstRun ) {
 		static int counter = 0;
 		//angle = read360();
-		angle = read360uvw();
+		angle = readRawUVW();
+		//angle = read360uvw();
 
 		if( ++counter == 16 ) {
 			lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_counter, (float)((int32_t)(TIM2->CNT)) );
@@ -149,7 +177,7 @@ void ADC_IRQHandler( void )
 		}
 
 		//lpFoc->Iq_des = ( ( 4095 - ai0 ) - 2047 );
-		//lpFoc->Iq_des = 2000;
+		//lpFoc->Iq_des = 1000;
 	}
 
 	Ia = -1.0f * ( (float)( ( 4095 - current_a ) - current_a_offset ) );
@@ -159,9 +187,12 @@ void ADC_IRQHandler( void )
 	mcFocSetCurrent( lpFoc, Ia, Ib );
 
 	mcClark( lpFoc );
-	mcPark( lpFoc );
 
-	//float dc_current = sqrtf( lpFoc->Id * lpFoc->Id + lpFoc->Iq * lpFoc->Iq );
+	// Вероятно има проблем с подредбата на фазите спрямо Ia = sin(0).
+	// В момента Ib = sin(0+120) а би трябвало да е Iб = sin(0-120) (???):
+	lpFoc->Ibeta = -lpFoc->Ibeta;
+
+	mcPark( lpFoc );
 
 	lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
 	lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );

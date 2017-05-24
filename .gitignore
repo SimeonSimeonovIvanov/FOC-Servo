@@ -17,6 +17,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# =========================
 *.db
 *.xlsx
 # Eagle temp files

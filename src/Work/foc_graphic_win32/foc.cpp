@@ -843,51 +843,19 @@ void mcFocInitStruct(LP_MC_FOC lpFoc)
 void mcClark(LP_MC_FOC lpFoc)
 {	
 	lpFoc->Ialpha = lpFoc->Ia;
-	lpFoc->Ibeta = (lpFoc->Ia + 2 * lpFoc->Ib) * -divSQRT3;
-
-	//float Ic = -lpFoc->Ia - lpFoc->Ib;
-	//lpFoc->Ialpha = 1.5f * lpFoc->Ia;
-	//lpFoc->Ibeta = (SQRT3 * 0.5) * lpFoc->Ib - (SQRT3 * 0.5) * Ic;
-
-
-	/*//Alpha Term
-	ip->ialpha = (float)ip->ia;
-
-	//Beta Term
-	ip->ibeta = ip->ia + (2.0 * ip->ib);
-	ip->ibeta = ip->ibeta / 1.73205;*/
+	lpFoc->Ibeta = (lpFoc->Ia + 2 * lpFoc->Ib) * divSQRT3;
 }
 
 void mcPark(LP_MC_FOC lpFoc)
 {
 	lpFoc->Id = +lpFoc->Ialpha * lpFoc->fCosAngle + lpFoc->Ibeta  * lpFoc->fSinAngle;
 	lpFoc->Iq = -lpFoc->Ialpha * lpFoc->fSinAngle + lpFoc->Ibeta  * lpFoc->fCosAngle;
-
-	/*float temp1, temp2;
-
-	temp1 = ip->ialpha * ip->cos_t;
-	temp2 = ip->ibeta  * ip->sin_t;
-	ip->idout = temp1 + temp2;
-
-	temp1 = ip->ialpha * ip->sin_t;
-	temp2 = ip->ibeta  * ip->cos_t;
-	ip->iqout = -temp1 + temp2;*/
 }
 
 void mcInvPark(LP_MC_FOC lpFoc)
 {
 	lpFoc->Valpha = lpFoc->Vd * lpFoc->fCosAngle - lpFoc->Vq * lpFoc->fSinAngle;
 	lpFoc->Vbeta  = lpFoc->Vd * lpFoc->fSinAngle + lpFoc->Vq * lpFoc->fCosAngle;
-
-	/*float temp1, temp2;
-
-	temp1 = ip->vsdref * ip->cos_t;
-	temp2 = ip->vsqref * ip->sin_t;
-	ip->valpha = temp1 - temp2;
-
-	temp1 = ip->vsdref * ip->sin_t;
-	temp2 = ip->vsqref * ip->cos_t;
-	ip->vbeta = temp1 + temp2;*/
 }
 
 void mcInvClark(LP_MC_FOC lpFoc)

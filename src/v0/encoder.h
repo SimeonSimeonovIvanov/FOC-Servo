@@ -15,6 +15,8 @@ void encoderInitZ(void);
 
 void initHall(void);
 
+uint16_t read360(void);
+uint16_t readRawUVW(void);
 uint16_t read360uvw(void);
 uint16_t read360uvwWithOffset( int16_t offset );
 

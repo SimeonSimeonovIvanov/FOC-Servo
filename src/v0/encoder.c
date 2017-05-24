@@ -1,6 +1,7 @@
 #include "encoder.h"
 
-static float arr_sin[361], arr_cos[361];
+//static float arr_sin[361], arr_cos[361];
+static float arr_sin[4001], arr_cos[4001];
 
 void initEncoder(void)
 {
@@ -155,6 +156,45 @@ uint16_t encoderAddOffset( int16_t angle, int16_t offset )
 	return angle;
 }
 
+uint16_t readRawUVW(void)
+{
+	static uint32_t hall_old = 0;
+	static uint32_t map1[] = { 0, 0, 60*11.11f, 120*11.11f, 180*11.11f, 240*11.11f, 300*11.11f, 0 };
+	static uint32_t map2[] = { 0, 60*11.11f, 120*11.11f, 180*11.11f, 240*11.11f, 300*11.11f, 360*11.11f, 0 };
+	uint32_t hall = 0, encoder = 0, hall_angle = 0;
+
+	hall = readHallMap();
+
+	if( hall != hall_old ) {
+
+		if( hall == 1 && hall_old == 6 ) {
+			hall_angle = map1[hall];
+		} else
+		if( hall == 6 && hall_old == 1 ) {
+			hall_angle = map2[hall];
+		} else {
+			if( hall > hall_old ) {
+				hall_angle = map1[hall];
+			} else {
+				hall_angle = map2[hall];
+			}
+		}
+
+		TIM3->CNT = hall_angle;
+	}
+
+	// 4000 Импулса за половин оборот (180 мех.градуса) на енкодер = 360 ел.градуса ( 4 полюсен мотор ):
+	encoder = TIM3->CNT;
+
+	if( !hall_old ) {
+		encoder = 11.11f * encoderAddOffset( encoder * 0.09f, 30 );
+	}
+
+	hall_old = hall;
+
+	return 4000 - encoder;
+}
+
 uint16_t read360uvw(void)
 {
 	static uint32_t hall_old = 0;
@@ -230,7 +270,13 @@ void EXTI15_10_IRQHandler(void)
 
 void createSinCosTable(void)
 {
-	for( int i = 0; i < 361; i++) {
+	for( int i = 0; i <= 4000; i++) {
+		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * 0.09f ) );
+		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * 0.09f ) );
+	}
+	return;
+
+	for( int i = 0; i <= 360; i++) {
 		arr_sin[i] = sinf( foc_deg_to_rad( (float)i ) );
 		arr_cos[i] = cosf( foc_deg_to_rad( (float)i ) );
 	}

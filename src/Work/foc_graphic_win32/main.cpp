@@ -157,11 +157,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		float Ia, Ib, Ic;
 
+//#define __PHASE_COR__
+
 		for( i = 0; i < gr_size_x; i++ ) {
 			angle = ( i / steep );
 
 			Ia = fSinAngle(angle);
+#ifdef __PHASE_COR__
 			Ib = fSinAngle(angle + 120);
+#else
+			Ib = fSinAngle(angle - 120);
+#endif
 
 			Ia = Ia * 20.0f;
 			Ib = Ib * 20.0f;
@@ -171,8 +177,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			mcFocSetCurrent(&stFoc, Ia, Ib);
 
 			mcClark(&stFoc);
+#ifdef __PHASE_COR__
+			stFoc.Ibeta = -stFoc.Ibeta;
+#endif
 
-			mcFocSetAngle(&stFoc, angle +0);
+			mcFocSetAngle(&stFoc, angle + 0);
 			mcPark(&stFoc);
 
 			stFoc.Vd = 0.0f;
@@ -205,7 +214,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			arrGraphic[6][i] = stFoc.Iq;
 			//arrGraphic[7][i] = stFoc.PWM3;
 
-			arrGraphic[8][i] = sqrtf(stFoc.Id*stFoc.Id + stFoc.Iq*stFoc.Iq);
+			//arrGraphic[8][i] = sqrtf(stFoc.Id*stFoc.Id + stFoc.Iq*stFoc.Iq);
 
 			arrGraphic[0][i] *= scale;
 			arrGraphic[1][i] *= scale;
@@ -269,11 +278,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[10][i] + 0, RGB(127, 127, 127));
 
-			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[5][i] + 200, RGB(255, 0, 0));
+			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[5][i] + 90, RGB(255, 0, 0));
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[6][i] + 200, RGB(0, 255, 0));
-			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[7][i] + 200, RGB(0, 0, 255));
+			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[7][i] + 300, RGB(0, 0, 255));
 
-			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[8][i] + 100, RGB(255, 0, 255));
+			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[8][i] + 400, RGB(255, 0, 255));
 
 			SetPixel(hdc, x_pos, ydiv2 - 300, RGB(255, 0, 0));
 			SetPixel(hdc, x_pos, ydiv2 - 200, RGB(0, 255, 0));
