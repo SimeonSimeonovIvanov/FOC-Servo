@@ -166,13 +166,43 @@ void ADC_IRQHandler( void )
 	}
 
 	if( !fFirstRun ) {
-		static int counter = 0;
+		static int32_t arrPosSP[10], arrPosPV[10], counter = 0;
+		int32_t sp_pos, pv_pos;
+
 		//angle = read360();
 		angle = readRawUVW();
 		//angle = read360uvw();
 
+		sp_pos = sp_counter;
+		pv_pos = (int32_t)TIM2->CNT;
+
+		arrPosPV[9] = arrPosPV[8];
+		arrPosPV[8] = arrPosPV[7];
+		arrPosPV[7] = arrPosPV[6];
+		arrPosPV[6] = arrPosPV[5];
+		arrPosPV[5] = arrPosPV[4];
+		arrPosPV[4] = arrPosPV[3];
+		arrPosPV[3] = arrPosPV[2];
+		arrPosPV[2] = arrPosPV[1];
+		arrPosPV[1] = arrPosPV[0];
+		arrPosPV[0] = pv_pos;
+
+		arrPosSP[9] = arrPosSP[8];
+		arrPosSP[8] = arrPosSP[7];
+		arrPosSP[7] = arrPosSP[6];
+		arrPosSP[6] = arrPosSP[5];
+		arrPosSP[5] = arrPosSP[4];
+		arrPosSP[4] = arrPosSP[3];
+		arrPosSP[3] = arrPosSP[2];
+		arrPosSP[2] = arrPosSP[1];
+		arrPosSP[1] = arrPosSP[0];
+		arrPosSP[0] = sp_pos;
+
+		pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] + arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9] ) / 10;
+		sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
+
 		if( ++counter == 16 ) {
-			lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_counter, (float)((int32_t)(TIM2->CNT)) );
+			lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter = 0;
 		}
 
