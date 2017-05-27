@@ -265,6 +265,13 @@ void DMA1_Stream1_IRQHandler( void )
 
 }
 
+/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
+* File Name          : STM32x_svpwm_ics.c
+* Author             : IMS Systems Lab
+* Date First Issued  : 21/11/07
+* Description        : ICS current reading and PWM generation module
+* SVPWM_IcsCalcDutyCycles
+********************************************************************************/
 void mcFocSVPWM2(LP_MC_FOC lpFoc)
 {
 	int hTimePhA, hTimePhB, hTimePhC;
