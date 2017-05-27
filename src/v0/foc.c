@@ -210,8 +210,8 @@ void ADC_IRQHandler( void )
 		//lpFoc->Iq_des = 1000;
 	}
 
-	Ia = -1.0f * ( (float)( ( 4095 - current_a ) - current_a_offset ) );
-	Ib = -1.0f * ( (float)( ( 4095 - current_b ) - current_b_offset ) );
+	Ia = 1.0f * (float)( current_a - current_a_offset );
+	Ib = 1.0f * (float)( current_b - current_b_offset );
 
 	mcFocSetAngle( lpFoc, angle );
 	mcFocSetCurrent( lpFoc, Ia, Ib );
