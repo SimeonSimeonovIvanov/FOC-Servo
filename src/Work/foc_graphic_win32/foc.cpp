@@ -252,7 +252,7 @@ void mcFocSVPWM5(LP_MC_FOC lpFoc)
 	max_duty = 8000;
 
 	Vd = 0; lpFoc->Vd;
-	Vq = 4; lpFoc->Vq;
+	Vq = 5; lpFoc->Vq;
 	v_bus = 50;
 
 	mod_d = Vd / ((2.0 / 3.0) * v_bus);
@@ -687,7 +687,7 @@ void mcFocSVPWM(LP_MC_FOC lpFoc)
 {	
 	float X, Y, Z;
 	float taon, tbon, tcon;
-	float PWMPRD = 500, t1, t2;
+	float PWMPRD = 20, t1, t2;
 	volatile int PWM1, PWM2, PWM3;
 	volatile int A = 0, B = 0 , C = 0;
 
@@ -701,14 +701,14 @@ void mcFocSVPWM(LP_MC_FOC lpFoc)
 		C = 1;
 	}
 
-	lpFoc->sector = A + (B << 1) + (C << 2);
+	lpFoc->sector = (C << 2) + (B << 1) + A;
 
 	float Vdc = ( 380.0f / 380.0f );
 	float Vdcinvt = PWMPRD / Vdc;
 
 	X = (      SQRT3 * Vdcinvt * lpFoc->Vbeta );
-	Y = ( SQRT3_DIV2 * Vdcinvt * lpFoc->Vbeta ) + ( 1.5f * Vdcinvt * lpFoc->Valpha );
-	Z = ( SQRT3_DIV2 * Vdcinvt * lpFoc->Vbeta ) - ( 1.5f * Vdcinvt * lpFoc->Valpha );
+	Y = ( SQRT3_DIV2 * Vdcinvt * lpFoc->Vbeta ) + ( .5f * Vdcinvt * lpFoc->Valpha );
+	Z = ( SQRT3_DIV2 * Vdcinvt * lpFoc->Vbeta ) - ( .5f * Vdcinvt * lpFoc->Valpha);
 
 	switch( lpFoc->sector ) {
 	case 0:

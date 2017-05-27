@@ -157,7 +157,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		float Ia, Ib, Ic;
 
-//#define __PHASE_COR__
+#define __PHASE_COR__
 
 		for( i = 0; i < gr_size_x; i++ ) {
 			angle = ( i / steep );
@@ -179,22 +179,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			mcClark(&stFoc);
 #ifdef __PHASE_COR__
 			stFoc.Ibeta = -stFoc.Ibeta;
+#else
 #endif
 
-			mcFocSetAngle(&stFoc, angle + 0);
+			mcFocSetAngle(&stFoc, angle);
 			mcPark(&stFoc);
 
 			stFoc.Vd = 0.0f;
-			stFoc.Vq = -0.4f;
+			stFoc.Vq = 0.4f;
 			mcInvPark(&stFoc);
+			mcInvClark(&stFoc);
+
 			mcFocSVPWM1(&stFoc);
 
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;
 			arrGraphic[2][i] = Ic;
-			/*arrGraphic[0][i] = stFoc.Va;
-			arrGraphic[1][i] = stFoc.Vb;
-			arrGraphic[2][i] = stFoc.Vc;*/
+			//arrGraphic[0][i] = stFoc.Va*40;
+			//arrGraphic[1][i] = stFoc.Vb*40;
+			//arrGraphic[2][i] = stFoc.Vc*40;
 			
 			// ----------------------------------------------------------------
 			if( counter++ <= 30 * steep ) {
@@ -210,9 +213,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			arrGraphic[3][i] = stFoc.Ialpha;
 			arrGraphic[4][i] = stFoc.Ibeta;
 
-			arrGraphic[5][i] = stFoc.Id;
-			arrGraphic[6][i] = stFoc.Iq;
-			//arrGraphic[7][i] = stFoc.PWM3;
+			//arrGraphic[5][i] = stFoc.Id;
+			//arrGraphic[6][i] = stFoc.Iq;
+			arrGraphic[5][i] = stFoc.PWM1;
+			arrGraphic[6][i] = stFoc.PWM2;
+			arrGraphic[7][i] = stFoc.PWM3;
 
 			//arrGraphic[8][i] = sqrtf(stFoc.Id*stFoc.Id + stFoc.Iq*stFoc.Iq);
 
