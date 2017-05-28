@@ -29,6 +29,7 @@ float fCosAngle(int angle);
 
 void mcFoc(LP_MC_FOC lpFoc);
 void mcFocSVPWM(LP_MC_FOC lpFoc);
+void mcFocSVPWM0(LP_MC_FOC lpFoc);
 void mcFocSVPWM1(LP_MC_FOC lpFoc);
 void mcFocSVPWM2(LP_MC_FOC lpFoc);
 void mcFocSVPWM3(LP_MC_FOC lpFoc);

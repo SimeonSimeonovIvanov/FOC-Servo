@@ -59,13 +59,13 @@ int main(void)
 
 		//float dc_current = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[0] = (int)stFoc.Id;
+		usRegHoldingBuf[0] = (int)stFoc.Iq_des;(int)stFoc.Id;
 		usRegHoldingBuf[1] = (int)stFoc.Iq;
-		//usRegHoldingBuf[0] = -( ( 4095 - current_a ) - current_a_offset );
-		//usRegHoldingBuf[1] = -( ( 4095 - current_b ) - current_b_offset );
+		//usRegHoldingBuf[0] = current_a - current_a_offset;
+		//usRegHoldingBuf[1] = current_b - current_b_offset;
 		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[2] = sp_counter - TIM2->CNT;dc_voltage;
+		usRegHoldingBuf[2] = current_a - current_a_offset;;sp_counter - TIM2->CNT;dc_voltage;
 		usRegHoldingBuf[3] = ai0;
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = hall;

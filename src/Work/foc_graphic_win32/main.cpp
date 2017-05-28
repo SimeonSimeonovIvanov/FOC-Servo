@@ -190,7 +190,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			mcInvPark(&stFoc);
 			mcInvClark(&stFoc);
 
-			mcFocSVPWM1(&stFoc);
+			mcFocSVPWM0(&stFoc);
 
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;

@@ -528,6 +528,33 @@ void mcFocSVPWM3(LP_MC_FOC lpFoc)
 	}
 }
 
+void mcFocSVPWM0(LP_MC_FOC lpFoc)
+{
+	/*float valpha, vbeta;
+	float vb, va_int, vb_int, vc_int;
+
+	valpha = lpFoc->Valpha;
+	vbeta = lpFoc->Vbeta;
+
+	// Va = Valpha
+	// Vb = -1/2 * Valpha + V3/2 * Vbeta
+	// Vc = -1/2 * Valpha - V3/2 * Vbeta
+	va_int = valpha;
+	vb = SQRT3_DIV2 * vbeta;
+	vb_int = -( va_int * 0.5f ) + vb;
+	vc_int = -( va_int * 0.5f ) - vb;
+
+	lpFoc->PWM1 = va_int*50;
+	lpFoc->PWM2 = vb_int*50;
+	lpFoc->PWM3 = vc_int*50;*/
+
+	mcInvClark(lpFoc);
+
+	lpFoc->PWM1 = lpFoc->Va * 50;
+	lpFoc->PWM2 = lpFoc->Vb * 50;
+	lpFoc->PWM3 = lpFoc->Vc * 50;
+}
+
 void mcFocSVPWM2(LP_MC_FOC lpFoc)
 {
 	int hTimePhA, hTimePhB, hTimePhC;

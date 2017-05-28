@@ -22,17 +22,17 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Id_des = 0.0f;
 	lpFoc->Iq_des = 0.0f;
 
-	pidInit( &pidPos, 2.0f, 0.001f, 0.00f, 0.001f );
+	pidInit( &pidPos, 2.0f, 0.01f, 0.00f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.99f, -0.99f );
 	pidSetIntegralLimit( &pidPos, 0.99f );
 	pidSetInputRange( &pidPos, 500 );
 
-	pidInit( &lpFoc->pid_d, 0.4f, 0.0010f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.4f, 0.005f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.99f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.99f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.4f, 0.0010f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.4f, 0.005f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.99f, -0.99f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.99f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -206,8 +206,7 @@ void ADC_IRQHandler( void )
 			counter = 0;
 		}
 
-		//lpFoc->Iq_des = ( ( 4095 - ai0 ) - 2047 );
-		//lpFoc->Iq_des = 1000;
+		//lpFoc->Iq_des = ai0 - 2047;
 	}
 
 	Ia = 1.0f * (float)( current_a - current_a_offset );
