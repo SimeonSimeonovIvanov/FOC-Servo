@@ -60,8 +60,7 @@ typedef struct {
 
 } MC_FOC, *LP_MC_FOC;
 
-void mcFoc(LP_MC_FOC lpFoc);
-
+void focInit(LP_MC_FOC lpFocExt);
 void mcFocSetAngle(LP_MC_FOC lpFoc, int angle);
 void mcFocSetCurrent(LP_MC_FOC lpFoc, float Ia, float Ib);
 
@@ -70,6 +69,7 @@ void mcPark(LP_MC_FOC lpFoc);
 void mcInvPark(LP_MC_FOC lpFoc);
 void mcInvClark(LP_MC_FOC lpFoc);
 
+void initDAC(void);
 void ADC1_2_IRQHandler( void );
 
 #endif

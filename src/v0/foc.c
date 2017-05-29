@@ -12,8 +12,6 @@ PID pidPos;
 
 void focInit(LP_MC_FOC lpFocExt)
 {
-	DAC_InitTypeDef DAC_InitStruct;
-
 	lpFoc = lpFocExt;
 
 	memset( lpFoc, 0, sizeof( MC_FOC ) );
@@ -22,25 +20,32 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Id_des = 0.0f;
 	lpFoc->Iq_des = 0.0f;
 
-	pidInit( &pidPos, 2.0f, 0.01f, 0.00f, 0.001f );
-	pidSetOutLimit( &pidPos, 0.99f, -0.99f );
-	pidSetIntegralLimit( &pidPos, 0.99f );
+	pidInit( &pidPos, 2.0f, 0.001f, 0.00f, 0.001f );
+	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
+	pidSetIntegralLimit( &pidPos, 0.999f );
 	pidSetInputRange( &pidPos, 500 );
 
-	pidInit( &lpFoc->pid_d, 0.4f, 0.005f, 0.0f, 1.00006f );
-	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.99f );
-	pidSetIntegralLimit( &lpFoc->pid_d, 0.99f );
+	pidInit( &lpFoc->pid_d, 0.4f, 0.0005f, 0.0f, 1.00006f );
+	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
+	pidSetIntegralLimit( &lpFoc->pid_d, 0.999f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.4f, 0.005f, 0.0f, 1.00006f );
-	pidSetOutLimit( &lpFoc->pid_q, 0.99f, -0.99f );
-	pidSetIntegralLimit( &lpFoc->pid_q, 0.99f );
+	pidInit( &lpFoc->pid_q, 0.4f, 0.0005f, 0.0f, 1.00006f );
+	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
+	pidSetIntegralLimit( &lpFoc->pid_q, 0.999f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
 
 	initHall();
 	initEncoder();
 	svpwmInit();
+	initDAC();
+}
 
+void initDAC(void)
+{
+	DAC_InitTypeDef DAC_InitStruct;
+
+	// Init DAC 1 & 2:
 	GPIO_InitTypeDef GPIO_InitStructure;
 	GPIO_StructInit( &GPIO_InitStructure );
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_4;

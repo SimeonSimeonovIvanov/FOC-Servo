@@ -21,7 +21,8 @@ void pidSetOutLimit( LP_PID lpPid, float max, float min )
 
 void pidSetIntegralLimit( LP_PID lpPid, float max )
 {
-	lpPid->maxSumError = max;
+	//lpPid->maxSumError = max;
+	lpPid->maxSumError = max / lpPid->ki;
 }
 
 void pidSetInputRange( LP_PID lpPid, float range )
