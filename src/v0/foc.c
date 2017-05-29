@@ -20,10 +20,10 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Id_des = 0.0f;
 	lpFoc->Iq_des = 0.0f;
 
-	pidInit( &pidPos, 1.0f, 0.01f, 0.00f, 0.001f );
+	pidInit( &pidPos, 0.7f, 0.008f, 0.00f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.10f );
-	pidSetInputRange( &pidPos, 500 );
+	pidSetIntegralLimit( &pidPos, 0.3f );
+	pidSetInputRange( &pidPos, 100 );
 
 	pidInit( &lpFoc->pid_d, 0.5f, 0.005f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
