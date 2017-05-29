@@ -66,7 +66,7 @@ int main(void)
 		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[2] = sp_counter - TIM2->CNT;dc_voltage;
-		usRegHoldingBuf[3] = ai0;
+		usRegHoldingBuf[3] = ai0 - 2047;
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = hall;
 		usRegHoldingBuf[5] = encoder;

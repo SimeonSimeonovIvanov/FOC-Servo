@@ -20,19 +20,19 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Id_des = 0.0f;
 	lpFoc->Iq_des = 0.0f;
 
-	pidInit( &pidPos, 2.0f, 0.001f, 0.00f, 0.001f );
+	pidInit( &pidPos, 1.0f, 0.01f, 0.00f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.999f );
+	pidSetIntegralLimit( &pidPos, 0.10f );
 	pidSetInputRange( &pidPos, 500 );
 
-	pidInit( &lpFoc->pid_d, 0.4f, 0.0005f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.5f, 0.005f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
-	pidSetIntegralLimit( &lpFoc->pid_d, 0.999f );
+	pidSetIntegralLimit( &lpFoc->pid_d, 0.50f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.4f, 0.0005f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.5f, 0.005f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
-	pidSetIntegralLimit( &lpFoc->pid_q, 0.999f );
+	pidSetIntegralLimit( &lpFoc->pid_q, 0.50f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
 
 	initHall();
@@ -203,8 +203,8 @@ void ADC_IRQHandler( void )
 		arrPosSP[1] = arrPosSP[0];
 		arrPosSP[0] = sp_pos;
 
-		pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] + arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9] ) / 10;
-		sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
+		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] + arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9] ) / 10;
+		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
 
 		if( ++counter == 16 ) {
 			lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
@@ -231,18 +231,10 @@ void ADC_IRQHandler( void )
 	lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
 	lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
 
-	/*float vfactor = 1.0f / ((2.0f / 3.0f) * lpFoc->vbus_voltage);
-	float mod_d = vfactor * lpFoc->Vd;
-	float mod_q = vfactor * lpFoc->Vq;
-	lpFoc->Vd = mod_d;
-	lpFoc->Vq = mod_q;*/
-
-	//lpFoc->Vd = 0.0f;
-	//lpFoc->Vq = 0.2f;
 	mcInvPark( lpFoc );
 
-	//lpFoc->Valpha = SQRT3_DIV2 * (float)lpFoc->Valpha;
-	//lpFoc->Vbeta = SQRT3_DIV2 * (float)lpFoc->Vbeta;
+	lpFoc->Valpha = SQRT3_DIV2 * (float)lpFoc->Valpha;
+	lpFoc->Vbeta = SQRT3_DIV2 * (float)lpFoc->Vbeta;
 	mcFocSVPWM2( lpFoc );
 
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
