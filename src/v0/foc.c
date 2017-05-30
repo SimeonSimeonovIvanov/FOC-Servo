@@ -20,9 +20,13 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Id_des = 0.0f;
 	lpFoc->Iq_des = 0.0f;
 
-	pidInit( &pidPos, 0.5f, 0.004f, 0.00f, 0.001f );
+	/* Kp - Работи по стандартен начин.
+	 * Ki - Трябва да се оправи. За момента Kp + Ki = 1.0f.
+	 * Това позволява P'I'D-а да работи 'някак'
+	 */
+	pidInit( &pidPos, 0.8f, 0.00008f, 0.00f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.5f );
+	pidSetIntegralLimit( &pidPos, 0.2f );
 	pidSetInputRange( &pidPos, 100 );
 
 	pidInit( &lpFoc->pid_d, 0.4f, 0.005f, 0.0f, 1.00006f );
@@ -104,11 +108,8 @@ void mcInvClark(LP_MC_FOC lpFoc)
 void ADC_IRQHandler( void )
 {
 	static int arrIa[10]={0}, arrIb[10]={0};
+	static int temp = 0, fFirstRun = 0;
 
-	static int fFirstRun = 0;
-	static int temp = 0;
-
-	static float fAngle = 0;
 	uint16_t angle;
 	float Ia, Ib;
 
@@ -204,13 +205,9 @@ void ADC_IRQHandler( void )
 		arrPosSP[0] = sp_pos;
 
 		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] + arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9] ) / 10;
-		sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
+		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
 
-		if( ++counter == 16 ) {
-			lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-			counter = 0;
-		}
-
+		lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 		//lpFoc->Iq_des = ai0 - 2047;
 	}
 
