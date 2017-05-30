@@ -38,12 +38,12 @@ float pidTask( LP_PID lpPid, float sp, float pv )
 	error = ( sp_in - pv_in );
 	error = error * lpPid->errorScale;
 
-	if( error > 0.99f ) {
-		error = 0.99f;
+	if( error > 0.999f ) {
+		error = 0.999f;
 	}
 
-	if( error < -0.99f ) {
-		error = -0.99f;
+	if( error < -0.999f ) {
+		error = -0.999f;
 	}
 
 	lpPid->error = error;

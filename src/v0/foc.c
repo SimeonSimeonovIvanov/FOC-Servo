@@ -20,17 +20,17 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Id_des = 0.0f;
 	lpFoc->Iq_des = 0.0f;
 
-	pidInit( &pidPos, 0.7f, 0.008f, 0.00f, 0.001f );
+	pidInit( &pidPos, 0.5f, 0.004f, 0.00f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.3f );
+	pidSetIntegralLimit( &pidPos, 0.5f );
 	pidSetInputRange( &pidPos, 100 );
 
-	pidInit( &lpFoc->pid_d, 0.5f, 0.005f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.4f, 0.005f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.50f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.5f, 0.005f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.4f, 0.005f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.50f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -204,7 +204,7 @@ void ADC_IRQHandler( void )
 		arrPosSP[0] = sp_pos;
 
 		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] + arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9] ) / 10;
-		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
+		sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
 
 		if( ++counter == 16 ) {
 			lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );

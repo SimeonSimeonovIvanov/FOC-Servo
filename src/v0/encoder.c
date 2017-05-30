@@ -40,7 +40,7 @@ void initEncoder(void)
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
 
-	TIM_TimeBaseStructure.TIM_Period = 4000;
+	TIM_TimeBaseStructure.TIM_Period = 3999;
 	TIM_TimeBaseInit( TIM3, &TIM_TimeBaseStructure );
 
 	TIM_EncoderInterfaceConfig( TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
