@@ -29,14 +29,14 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetIntegralLimit( &pidPos, 0.2f );
 	pidSetInputRange( &pidPos, 100 );
 
-	pidInit( &lpFoc->pid_d, 0.4f, 0.005f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.4f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
-	pidSetIntegralLimit( &lpFoc->pid_d, 0.50f );
+	pidSetIntegralLimit( &lpFoc->pid_d, 0.60f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.4f, 0.005f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.4f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
-	pidSetIntegralLimit( &lpFoc->pid_q, 0.50f );
+	pidSetIntegralLimit( &lpFoc->pid_q, 0.60f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
 
 	initHall();
@@ -209,6 +209,7 @@ void ADC_IRQHandler( void )
 
 		lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 		//lpFoc->Iq_des = ai0 - 2047;
+		//lpFoc->Iq_des = 500;
 	}
 
 	Ia = 1.0f * (float)( current_a - current_a_offset );
