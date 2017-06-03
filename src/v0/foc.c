@@ -101,8 +101,8 @@ void mcInvPark(LP_MC_FOC lpFoc)
 void mcInvClark(LP_MC_FOC lpFoc)
 {
 	lpFoc->Vb = lpFoc->Vbeta;
-	lpFoc->Va = ( +( SQRT3 * lpFoc->Valpha ) - lpFoc->Vbeta ) * 0.5f;
-	lpFoc->Vc = ( -( SQRT3 * lpFoc->Valpha ) - lpFoc->Vbeta ) * 0.5f;
+	lpFoc->Va = ( -lpFoc->Vbeta + ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
+	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
 }
 
 void ADC_IRQHandler( void )
@@ -207,7 +207,7 @@ void ADC_IRQHandler( void )
 		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] + arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9] ) / 10;
 		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
 
-		lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+		lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)-pv_pos );
 		//lpFoc->Iq_des = ai0 - 2047;
 		//lpFoc->Iq_des = 500;
 	}
