@@ -31,12 +31,12 @@ void focInit(LP_MC_FOC lpFocExt)
 
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
-	pidSetIntegralLimit( &lpFoc->pid_d, 0.30f );
+	pidSetIntegralLimit( &lpFoc->pid_d, 0.3f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
 	pidInit( &lpFoc->pid_q, 0.7f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
-	pidSetIntegralLimit( &lpFoc->pid_q, 0.30f );
+	pidSetIntegralLimit( &lpFoc->pid_q, 0.3f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
 
 	initHall();
