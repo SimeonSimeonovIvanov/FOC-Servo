@@ -115,6 +115,11 @@ void initHall( void )
 	GPIO_Init( GPIOD, &GPIO_InitStructure );
 }
 
+int32_t iEncoderGetAbsPos(void)
+{
+	return -( (int32_t)TIM2->CNT );
+}
+
 uint16_t read360(void)
 {
 	uint16_t encoder;

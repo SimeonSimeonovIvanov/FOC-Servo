@@ -65,7 +65,7 @@ int main(void)
 		//usRegHoldingBuf[1] = current_b - current_b_offset;
 		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[2] = sp_counter - TIM2->CNT;dc_voltage;
+		usRegHoldingBuf[2] = sp_counter - iEncoderGetAbsPos(); dc_voltage;
 		usRegHoldingBuf[3] = ai0 - 2047;
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = hall;
@@ -73,8 +73,8 @@ int main(void)
 		usRegHoldingBuf[6] = TIM3->CNT;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 1 ( abs.pos )
-		usRegHoldingBuf[7] = TIM2->CNT;
-		usRegHoldingBuf[8] = TIM2->CNT>>16;
+		usRegHoldingBuf[7] = iEncoderGetAbsPos();
+		usRegHoldingBuf[8] = iEncoderGetAbsPos()>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

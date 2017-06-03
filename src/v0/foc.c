@@ -21,7 +21,8 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Iq_des = 0.0f;
 
 	/* Kp - Работи по стандартен начин.
-	 * Ki - Трябва да се оправи. За момента Kp + Ki = 1.0f.
+	 * Ki - Трябва да се оправи. За момента Kp + Ki = 1.0f. Функцията pidSetIntegralLimit задава максималната 'тежест' на
+	 * интегралната съставка. Чрез нея и Ki се определя максималната стойност на суматора (цяло число, обикновено >1 ).
 	 * Това позволява P'I'D-а да работи 'някак'
 	 */
 	pidInit( &pidPos, 0.8f, 0.00008f, 0.00f, 0.001f );
@@ -180,7 +181,7 @@ void ADC_IRQHandler( void )
 		//angle = read360uvw();
 
 		sp_pos = sp_counter;
-		pv_pos = (int32_t)TIM2->CNT;
+		pv_pos = iEncoderGetAbsPos();
 
 		arrPosPV[9] = arrPosPV[8];
 		arrPosPV[8] = arrPosPV[7];
@@ -207,7 +208,7 @@ void ADC_IRQHandler( void )
 		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] + arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9] ) / 10;
 		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
 
-		lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)-pv_pos );
+		lpFoc->Iq_des = 2047.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 		//lpFoc->Iq_des = ai0 - 2047;
 		//lpFoc->Iq_des = 500;
 	}
