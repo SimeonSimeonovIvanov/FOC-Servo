@@ -1,7 +1,7 @@
 #include "encoder.h"
 
 //static float arr_sin[361], arr_cos[361];
-static float arr_sin[4001], arr_cos[4001];
+static float arr_sin[4000], arr_cos[4000];
 
 void initEncoder(void)
 {
@@ -40,7 +40,7 @@ void initEncoder(void)
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
 
-	TIM_TimeBaseStructure.TIM_Period = 4000;
+	TIM_TimeBaseStructure.TIM_Period = 3999;
 	TIM_TimeBaseInit( TIM3, &TIM_TimeBaseStructure );
 
 	TIM_EncoderInterfaceConfig( TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
@@ -275,7 +275,7 @@ void EXTI15_10_IRQHandler(void)
 
 void createSinCosTable(void)
 {
-	for( int i = 0; i <= 4000; i++ ) {
+	for( int i = 0; i < 4000; i++ ) {
 		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * 0.09f ) );
 		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * 0.09f ) );
 	}

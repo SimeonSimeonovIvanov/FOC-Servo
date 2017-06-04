@@ -1556,7 +1556,7 @@ LOAD c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/g
 .igot.plt       0x200004ec        0x0 load address 0x08005010
  .igot.plt      0x200004ec        0x0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
 
-.bss            0x200004ec     0x80b0 load address 0x08005010
+.bss            0x200004ec     0x80a8 load address 0x08005010
                 0x200004ec                . = ALIGN (0x4)
                 0x200004ec                __bss_start__ = .
                 0x200004ec                _sbss = __bss_start__
@@ -1570,59 +1570,59 @@ LOAD c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/g
                 0x20000568                main_state
                 0x2000056c                sp_counter
  .bss           0x20000578       0xac ..\obj\foc.o
- .bss           0x20000624     0x7d10 ..\obj\encoder.o
- .bss           0x20008334        0xb ..\obj\mbrtu.o
- *fill*         0x2000833f        0x1 
- .bss           0x20008340        0xd ..\obj\mbascii.o
+ .bss           0x20000624     0x7d08 ..\obj\encoder.o
+ .bss           0x2000832c        0xb ..\obj\mbrtu.o
+ *fill*         0x20008337        0x1 
+ .bss           0x20008338        0xd ..\obj\mbascii.o
  *(COMMON)
- *fill*         0x2000834d        0x3 
- COMMON         0x20008350       0x14 ..\obj\mb.o
-                0x20008350                pxMBFrameCBTransmitterEmpty
-                0x20008354                pxMBPortCBTimerExpired
-                0x20008358                pxMBFrameCBByteReceived
-                0x2000835c                pxMBFrameCBTransmitFSMCur
-                0x20008360                pxMBFrameCBReceiveFSMCur
- COMMON         0x20008364       0xc4 ..\obj\main.o
-                0x20008364                stFoc
- COMMON         0x20008428       0x4e ..\obj\foc.o
-                0x20008428                pidPos
-                0x2000845c                current_a
-                0x2000845e                ADC_values
-                0x2000846e                dc_voltage
-                0x20008470                ai1
-                0x20008472                ai0
-                0x20008474                current_b
- COMMON         0x20008476      0x100 ..\obj\mbrtu.o
-                0x20008476                ucRTUBuf
- *fill*         0x20008576        0x2 
- COMMON         0x20008578       0x21 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
-                0x20008578                __lock___atexit_recursive_mutex
-                0x2000857c                __lock___arc4random_mutex
-                0x20008580                __lock___env_recursive_mutex
-                0x20008584                __lock___sinit_recursive_mutex
-                0x20008588                __lock___malloc_recursive_mutex
-                0x2000858c                __lock___at_quick_exit_mutex
-                0x20008590                __lock___dd_hash_mutex
-                0x20008594                __lock___tz_mutex
-                0x20008598                __lock___sfp_recursive_mutex
-                0x2000859c                . = ALIGN (0x4)
- *fill*         0x20008599        0x3 
-                0x2000859c                __bss_end__ = .
-                0x2000859c                _ebss = __bss_end__
+ *fill*         0x20008345        0x3 
+ COMMON         0x20008348       0x14 ..\obj\mb.o
+                0x20008348                pxMBFrameCBTransmitterEmpty
+                0x2000834c                pxMBPortCBTimerExpired
+                0x20008350                pxMBFrameCBByteReceived
+                0x20008354                pxMBFrameCBTransmitFSMCur
+                0x20008358                pxMBFrameCBReceiveFSMCur
+ COMMON         0x2000835c       0xc4 ..\obj\main.o
+                0x2000835c                stFoc
+ COMMON         0x20008420       0x4e ..\obj\foc.o
+                0x20008420                pidPos
+                0x20008454                current_a
+                0x20008456                ADC_values
+                0x20008466                dc_voltage
+                0x20008468                ai1
+                0x2000846a                ai0
+                0x2000846c                current_b
+ COMMON         0x2000846e      0x100 ..\obj\mbrtu.o
+                0x2000846e                ucRTUBuf
+ *fill*         0x2000856e        0x2 
+ COMMON         0x20008570       0x21 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
+                0x20008570                __lock___atexit_recursive_mutex
+                0x20008574                __lock___arc4random_mutex
+                0x20008578                __lock___env_recursive_mutex
+                0x2000857c                __lock___sinit_recursive_mutex
+                0x20008580                __lock___malloc_recursive_mutex
+                0x20008584                __lock___at_quick_exit_mutex
+                0x20008588                __lock___dd_hash_mutex
+                0x2000858c                __lock___tz_mutex
+                0x20008590                __lock___sfp_recursive_mutex
+                0x20008594                . = ALIGN (0x4)
+ *fill*         0x20008591        0x3 
+                0x20008594                __bss_end__ = .
+                0x20008594                _ebss = __bss_end__
 
-.heap           0x2000859c        0x0
-                0x2000859c                __end__ = .
-                0x2000859c                _end = __end__
-                0x2000859c                end = __end__
+.heap           0x20008594        0x0
+                0x20008594                __end__ = .
+                0x20008594                _end = __end__
+                0x20008594                end = __end__
  *(.heap*)
-                0x2000859c                __HeapLimit = .
+                0x20008594                __HeapLimit = .
 
-.co_stack       0x2000859c      0x804 load address 0x0800d0c0
-                0x200085a0                . = ALIGN (0x8)
- *fill*         0x2000859c        0x4 
+.co_stack       0x20008594      0x804 load address 0x0800d0b8
+                0x20008598                . = ALIGN (0x8)
+ *fill*         0x20008594        0x4 
  *(.co_stack .co_stack.*)
- .co_stack      0x200085a0      0x800 ..\obj\startup_stm32f4xx.o
-                0x200085a0                pulStack
+ .co_stack      0x20008598      0x800 ..\obj\startup_stm32f4xx.o
+                0x20008598                pulStack
                 0x20020000                __StackTop = (ORIGIN (ram) + LENGTH (ram))
                 0x2001f7fc                __StackLimit = (__StackTop - SIZEOF (.co_stack))
                 0x20020000                PROVIDE (__stack, __StackTop)
@@ -2098,7 +2098,7 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_str     0x0000492f      0x77f ..\obj\stm32f4xx_tim.o
                                 0xe4d (size before relaxing)
 
-.debug_frame    0x00000000     0x23a4
+.debug_frame    0x00000000     0x23a0
  .debug_frame   0x00000000       0x84 ..\obj\stm32f4xx_syscfg.o
  .debug_frame   0x00000084       0xb8 ..\obj\mb.o
  .debug_frame   0x0000013c       0x38 ..\obj\mbfuncdisc.o
@@ -2115,33 +2115,33 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_frame   0x00000a5c      0x154 ..\obj\foc.o
  .debug_frame   0x00000bb0      0x2b4 ..\obj\stm32f4xx_adc.o
  .debug_frame   0x00000e64       0x38 ..\obj\mbfuncinput.o
- .debug_frame   0x00000e9c      0x1a0 ..\obj\encoder.o
- .debug_frame   0x0000103c      0x124 ..\obj\stm32f4xx_gpio.o
- .debug_frame   0x00001160       0x7c ..\obj\porttimer.o
- .debug_frame   0x000011dc       0xec ..\obj\mbrtu.o
- .debug_frame   0x000012c8       0x44 ..\obj\system_stm32f4xx.o
- .debug_frame   0x0000130c      0x160 ..\obj\stm32f4xx_dma.o
- .debug_frame   0x0000146c       0xac ..\obj\portserial.o
- .debug_frame   0x00001518       0x78 ..\obj\mbfunccoils.o
- .debug_frame   0x00001590       0x9c ..\obj\stm32f4xx_exti.o
- .debug_frame   0x0000162c       0x68 ..\obj\misc.o
- .debug_frame   0x00001694      0x158 ..\obj\svpwm.o
- .debug_frame   0x000017ec       0xf0 ..\obj\mbascii.o
- .debug_frame   0x000018dc       0x60 ..\obj\pid.o
- .debug_frame   0x0000193c      0x6bc ..\obj\stm32f4xx_tim.o
- .debug_frame   0x00001ff8       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_cos.o)
- .debug_frame   0x0000202c       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_sin.o)
- .debug_frame   0x00002060       0x3c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
- .debug_frame   0x0000209c       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_cos.o)
- .debug_frame   0x000020bc       0x5c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
- .debug_frame   0x00002118       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_sin.o)
- .debug_frame   0x00002138       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_fabs.o)
- .debug_frame   0x00002158       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_floor.o)
- .debug_frame   0x00002178       0x44 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_scalbn.o)
- .debug_frame   0x000021bc       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_copysign.o)
- .debug_frame   0x000021dc       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-memset.o)
- .debug_frame   0x00002210       0x5c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__call_atexit.o)
- .debug_frame   0x0000226c       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-atexit.o)
- .debug_frame   0x0000228c       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-fini.o)
- .debug_frame   0x000022c0       0xb0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
- .debug_frame   0x00002370       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__atexit.o)
+ .debug_frame   0x00000e9c      0x19c ..\obj\encoder.o
+ .debug_frame   0x00001038      0x124 ..\obj\stm32f4xx_gpio.o
+ .debug_frame   0x0000115c       0x7c ..\obj\porttimer.o
+ .debug_frame   0x000011d8       0xec ..\obj\mbrtu.o
+ .debug_frame   0x000012c4       0x44 ..\obj\system_stm32f4xx.o
+ .debug_frame   0x00001308      0x160 ..\obj\stm32f4xx_dma.o
+ .debug_frame   0x00001468       0xac ..\obj\portserial.o
+ .debug_frame   0x00001514       0x78 ..\obj\mbfunccoils.o
+ .debug_frame   0x0000158c       0x9c ..\obj\stm32f4xx_exti.o
+ .debug_frame   0x00001628       0x68 ..\obj\misc.o
+ .debug_frame   0x00001690      0x158 ..\obj\svpwm.o
+ .debug_frame   0x000017e8       0xf0 ..\obj\mbascii.o
+ .debug_frame   0x000018d8       0x60 ..\obj\pid.o
+ .debug_frame   0x00001938      0x6bc ..\obj\stm32f4xx_tim.o
+ .debug_frame   0x00001ff4       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_cos.o)
+ .debug_frame   0x00002028       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_sin.o)
+ .debug_frame   0x0000205c       0x3c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
+ .debug_frame   0x00002098       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_cos.o)
+ .debug_frame   0x000020b8       0x5c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
+ .debug_frame   0x00002114       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_sin.o)
+ .debug_frame   0x00002134       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_fabs.o)
+ .debug_frame   0x00002154       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_floor.o)
+ .debug_frame   0x00002174       0x44 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_scalbn.o)
+ .debug_frame   0x000021b8       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_copysign.o)
+ .debug_frame   0x000021d8       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-memset.o)
+ .debug_frame   0x0000220c       0x5c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__call_atexit.o)
+ .debug_frame   0x00002268       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-atexit.o)
+ .debug_frame   0x00002288       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-fini.o)
+ .debug_frame   0x000022bc       0xb0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
+ .debug_frame   0x0000236c       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__atexit.o)
