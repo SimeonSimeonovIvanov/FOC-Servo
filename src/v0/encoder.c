@@ -10,7 +10,7 @@ void initEncoder(void)
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 
 	GPIO_StructInit( &GPIO_InitStructure );
-	TIM_ICStructInit(&TIM_ICInitStruct);
+	TIM_ICStructInit( &TIM_ICInitStruct );
 	TIM_TimeBaseStructInit( &TIM_TimeBaseStructure );
 
 	RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOA, ENABLE );
@@ -28,11 +28,11 @@ void initEncoder(void)
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_5;
 	GPIO_Init( GPIOE, &GPIO_InitStructure );
 
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource0, GPIO_AF_TIM2);
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_TIM2);
+	GPIO_PinAFConfig( GPIOA, GPIO_PinSource0, GPIO_AF_TIM2 );
+	GPIO_PinAFConfig( GPIOA, GPIO_PinSource1, GPIO_AF_TIM2 );
 
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_TIM3);
-	GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_TIM3);
+	GPIO_PinAFConfig( GPIOB, GPIO_PinSource4, GPIO_AF_TIM3 );
+	GPIO_PinAFConfig( GPIOB, GPIO_PinSource5, GPIO_AF_TIM3 );
 
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x00;
 	TIM_TimeBaseStructure.TIM_Period = 0xffffffff;
