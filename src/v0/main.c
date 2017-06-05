@@ -19,11 +19,17 @@ int main_state = 0;
 
 MC_FOC stFoc;
 
+float FirstOrderLagFilter( float *filtered_value, float raw_sensor_value, float k )
+{
+	*filtered_value = k * raw_sensor_value + ( 1 - k ) * (*filtered_value);
+}
+
 int main(void)
 {
 	int hall;
 	int encoder;
 	eMBErrorCode eStatus;
+	float Iq_filtered_value = 0, Iq_des_filtered_value = 0;
 
 	SystemInit();
 	SystemCoreClockUpdate();
@@ -54,13 +60,16 @@ int main(void)
 	while( 1 ) {
 		GPIO_ToggleBits( GPIOA, GPIO_Pin_15 );
 
+		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
+		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
+
 		hall = readHallMap();
 		encoder = read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
 
 		//float dc_current = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[0] = (int)stFoc.Iq_des;(int)stFoc.Id;
-		usRegHoldingBuf[1] = (int)stFoc.Iq;
+		usRegHoldingBuf[0] = Iq_des_filtered_value;//(int)stFoc.Iq_des;
+		usRegHoldingBuf[1] = Iq_filtered_value;//(int)stFoc.Iq;
 		//usRegHoldingBuf[0] = current_a - current_a_offset;
 		//usRegHoldingBuf[1] = current_b - current_b_offset;
 		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
