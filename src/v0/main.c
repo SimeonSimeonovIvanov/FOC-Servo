@@ -68,8 +68,8 @@ int main(void)
 
 		//float dc_current = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[0] = Iq_des_filtered_value;//(int)stFoc.Iq_des;
-		usRegHoldingBuf[1] = Iq_filtered_value;//(int)stFoc.Iq;
+		usRegHoldingBuf[0] = (int)Iq_des_filtered_value;//(int)stFoc.Iq_des;
+		usRegHoldingBuf[1] = (int)Iq_filtered_value;//(int)stFoc.Iq;
 		//usRegHoldingBuf[0] = current_a - current_a_offset;
 		//usRegHoldingBuf[1] = current_b - current_b_offset;
 		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
