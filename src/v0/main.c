@@ -19,6 +19,23 @@ int main_state = 0;
 
 MC_FOC stFoc;
 
+/*
+ * http://my.execpc.com/~steidl/robotics/first_order_lag_filter
+ *
+ * new_filtered_value = k * raw_sensor_value + (1 - k) * old_filtered_value
+ *
+ * k = 1 - e^ln(1 - Frac) * Ts / Tr
+ *
+ * Input #1: Maximum Response Time (Tr)
+ * This is the (maximum) amount of time (in seconds) between the instant the raw sensor value changes and the instant the filtered sensor value reflects that change.
+ *
+ * Input #2: Sampling Period (Ts)
+ * This is the amount of time (in seconds) between one reading of the raw sensor value and the next.
+ *
+ * Input #3: Desired Fraction of Change (Frac)
+ * This is the (minimum) accuracy with which a change in the raw sensor value (at time t) will be reflected in the filtered sensor value (at or before time t + Tr).
+ *
+ */
 float FirstOrderLagFilter( float *filtered_value, float raw_sensor_value, float k )
 {
 	*filtered_value = k * raw_sensor_value + ( 1 - k ) * (*filtered_value);

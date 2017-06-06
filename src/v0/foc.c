@@ -25,10 +25,10 @@ void focInit(LP_MC_FOC lpFocExt)
 	 * интегралната съставка. Чрез нея и Ki се определя максималната стойност на суматора (цяло число, обикновено >1 ).
 	 * Това позволява P'I'D-а да работи 'някак'
 	 */
-	pidInit( &pidPos, 0.8f, 0.00008f, 0.00f, 0.001f );
+	pidInit( &pidPos, 0.8f, 0.0005f, 0.00f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 100 );
+	pidSetInputRange( &pidPos, 50 );
 
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
