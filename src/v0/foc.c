@@ -25,10 +25,10 @@ void focInit(LP_MC_FOC lpFocExt)
 	 * интегралната съставка. Чрез нея и Ki се определя максималната стойност на суматора (цяло число, обикновено >1 ).
 	 * Това позволява P'I'D-а да работи 'някак'
 	 */
-	pidInit( &pidPos, 0.8f, 0.0005f, 0.00f, 0.001f );
+	pidInit( &pidPos, 0.8f, 0.00001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 100 );
+	pidSetInputRange( &pidPos, 75 );
 
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
@@ -206,9 +206,14 @@ void ADC_IRQHandler( void )
 		arrPosSP[0] = sp_pos;
 
 		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] /*+ arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9]*/ ) / 3;
-		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
+		sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
 
-		lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+		//if( 16 == ++counter )
+		{
+			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			counter = 0;
+		}
+
 		//lpFoc->Iq_des = ai0 - 2047;
 		//lpFoc->Iq_des = 500;
 	}

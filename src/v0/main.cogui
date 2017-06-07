@@ -22,7 +22,7 @@
 </editor>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="929" selectionTopPixel="113"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5696" selectionTopPixel="2571"/>
 </editor>
 </editors>
 <views>
@@ -74,8 +74,9 @@
 <viewState/>
 </view>
 <view id="org.coocox.coassistant.view.CoAssistantView" partName="Peripherals">
-<viewState horizontalPosition="0" verticalPosition="32">
-<expanded>&#x0A;<element name="TIM5"/>
+<viewState horizontalPosition="0" verticalPosition="0">
+<expanded>
+<element name="TIM5"/>
 </expanded>
 <registerValues baseAddress="Base Address: 0x40000C00" description="Description:  General-purpose-timers"/>
 </viewState>
@@ -120,7 +121,7 @@
 <layout>
 <mainWindow>
 <info folder="true" part="org.eclipse.ui.internal.ViewStack@85cb17">
-<folder activePageID="org.coocox.builder.ui.views.ProjectView" appearance="2" expanded="2">
+<folder activePageID="org.coocox.coassistant.view.CoAssistantView" appearance="2" expanded="2">
 <page content="org.coocox.builder.ui.views.ProjectView" label="Project"/>
 <page content="org.coocox.coassistant.view.CoAssistantView" label="Peripherals"/>
 <page content="org.coocox.component.ui.ComponentView" label="LabelNotFound"/>
@@ -149,7 +150,7 @@
 </presentation>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@4f66ef" ratio="0.82215124" ratioLeft="772" ratioRight="167" relationship="4" relative="org.eclipse.ui.editorss">
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@4f66ef" ratio="0.78913736" ratioLeft="741" ratioRight="198" relationship="4" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
 <page content="org.eclipse.search.ui.views.SearchView" label="Search"/>
@@ -284,6 +285,7 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/main.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/main.c"/>
 </editors>
 <item historyLabel="encoder.c" index="0">
 <position info="not_deleted" x="0" y="0"/>
@@ -357,8 +359,14 @@
 <item historyLabel="main.c" index="7">
 <position info="not_deleted" x="2553" y="0"/>
 </item>
-<item active="true" historyLabel="foc.c" index="8">
+<item historyLabel="foc.c" index="8">
 <position info="not_deleted" x="783" y="0"/>
+</item>
+<item historyLabel="main.c" index="9">
+<position info="not_deleted" x="600" y="0"/>
+</item>
+<item active="true" historyLabel="foc.c" index="8">
+<position info="not_deleted" x="792" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
