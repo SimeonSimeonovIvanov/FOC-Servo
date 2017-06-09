@@ -4,11 +4,14 @@ extern int current_a_offset, current_b_offset;
 extern int32_t sp_counter;
 extern int main_state;
 
-uint16_t current_a, current_b, dc_voltage, ai0, ai1;
-uint16_t ADC_values[ARRAYSIZE];
 static LP_MC_FOC lpFoc;
 
-PID pidPos, pidPos_test;
+uint16_t current_a, current_b, dc_voltage, ai0, ai1;
+uint16_t ADC_values[ARRAYSIZE];
+
+int16_t enc_delta;
+
+PID pidPos, pidPos_test, pidSpeed;
 
 void focInit(LP_MC_FOC lpFocExt)
 {
@@ -20,21 +23,29 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Id_des = 0.0f;
 	lpFoc->Iq_des = 0.0f;
 
-	/* Kp - Работи по стандартен начин.
-	 * Ki - Трябва да се оправи. За момента Kp + Ki = 1.0f. Функцията pidSetIntegralLimit задава максималната 'тежест' на
-	 * интегралната съставка. Чрез нея и Ki се определя максималната стойност на суматора (цяло число, обикновено >1 ).
-	 * Това позволява P'I'D-а да работи 'някак'
-	 */
-	pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
+	///////////////////////////////////////////////////////////////////////////
+	pidInit( &pidSpeed, 0.8f, 0.9f, 0.0f, 0.001f );
+	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
+	pidSetIntegralLimit( &pidSpeed, 0.2f );
+	pidSetInputRange( &pidSpeed, 200 );
+
+	pidInit( &pidPos, 0.1f, 0.001f, 0.0f, 0.001f );
+	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
+	pidSetIntegralLimit( &pidPos, 0.0f );
+	pidSetInputRange( &pidPos, 100 );
+
+	///////////////////////////////////////////////////////////////////////////
+	/*pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 100 );
+	pidSetInputRange( &pidPos, 100 );*/
 
 	pidInit_test( &pidPos_test, 0.7f, 0.1f, 0.0f, 0.001f );
 	pidSetOutLimit_test( &pidPos_test, 0.999f, -0.999f );
 	pidSetIntegralLimit_test( &pidPos_test, 0.3f );
 	pidSetInputRange_test( &pidPos_test, 50 );
 
+	///////////////////////////////////////////////////////////////////////////
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.3f );
@@ -44,6 +55,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.3f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
+	///////////////////////////////////////////////////////////////////////////
 
 	initHall();
 	initEncoder();
@@ -117,7 +129,7 @@ void ADC_IRQHandler( void )
 	static int temp = 0, fFirstRun = 0;
 
 	uint16_t angle;
-	float Ia, Ib;
+	float Ia, Ib, sp_speed;
 
 	GPIO_SetBits( GPIOB, GPIO_Pin_2 );
 
@@ -178,7 +190,7 @@ void ADC_IRQHandler( void )
 	}
 
 	if( !fFirstRun ) {
-		static int32_t arrPosSP[10], arrPosPV[10], counter = 0;
+		static int32_t arrPosSP[10], arrPosPV[10], counter = 0, counter1 = 0;
 		int32_t sp_pos, pv_pos;
 
 		//angle = read360();
@@ -215,13 +227,39 @@ void ADC_IRQHandler( void )
 
 		if( 16 == ++counter )
 		{
-			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			//lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			//lpFoc->Iq_des = 1370.0f * pidTask_test( &pidPos_test, (float)sp_pos, (float)pv_pos );
+
+			//sp_speed = 2000 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter = 0;
 		}
 
+		if( 80 == ++counter1 )
+		{
+			static int32_t enc_old = 0;
+			int16_t enc, temp, dir;
+
+			enc = TIM2->CNT;
+			enc_delta = enc - enc_old;
+			enc_old = enc;
+
+			sp_speed = 200;
+
+			uint16_t pinb = GPIO_ReadInputData( GPIOB );
+			dir = ( pinb & GPIO_Pin_13 ) ? 1 : 0;
+
+			if( dir) sp_speed = -sp_speed;
+
+			temp = sp_speed;
+			if( temp < 0 ) temp *= -1;
+			pidSetInputRange( &pidSpeed, temp );
+			lpFoc->Iq_des = 1370.0f * pidTask( &pidSpeed, sp_speed * 1.0f, (float)(enc_delta) * -1.0f );
+
+			counter1 = 0;
+		}
+
 		//lpFoc->Iq_des = ai0 - 2047;
-		//lpFoc->Iq_des = 500;
+		//lpFoc->Iq_des = 1000;
 	}
 
 	Ia = 1.0f * (float)( current_a - current_a_offset );
@@ -252,7 +290,8 @@ void ADC_IRQHandler( void )
 	TIM_SetCompare3( TIM1, lpFoc->PWM3 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id + 2047, lpFoc->Iq + 2047 );
-	DAC_SetDualChannelData( DAC_Align_12b_R, ( lpFoc->angle * 10 ), lpFoc->Iq + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, ( lpFoc->angle * 10 ), lpFoc->Iq + 2047 );
+	DAC_SetDualChannelData( DAC_Align_12b_R, enc_delta*4 + 2047, lpFoc->Iq + 2047 );
 
 	GPIO_ResetBits( GPIOB, GPIO_Pin_2 );
 }
