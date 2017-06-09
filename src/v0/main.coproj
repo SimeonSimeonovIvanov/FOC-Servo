@@ -88,28 +88,28 @@
   </Components>
   <Files>
     <File name="modbus/ascii/mbascii.h" path="modbus/ascii/mbascii.h" type="1"/>
-    <File name="foc/source/pid/pid.c" path="pid/pid.c" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_gpio.c" path="cmsis_lib/source/stm32f4xx_gpio.c" type="1"/>
+    <File name="foc/source/pid/pid.c" path="pid/pid.c" type="1"/>
     <File name="modbus/functions/mbfuncother.c" path="modbus/functions/mbfuncother.c" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_dma.c" path="cmsis_lib/source/stm32f4xx_dma.c" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_usart.c" path="cmsis_lib/source/stm32f4xx_usart.c" type="1"/>
-    <File name="cmsis_lib/source/stm32f4xx_can.c" path="cmsis_lib/source/stm32f4xx_can.c" type="1"/>
     <File name="modbus/port/port.c" path="modbus/port/port.c" type="1"/>
+    <File name="cmsis_lib/source/stm32f4xx_can.c" path="cmsis_lib/source/stm32f4xx_can.c" type="1"/>
     <File name="foc/source/pid" path="" type="2"/>
     <File name="foc/source/svpwm.c" path="svpwm.c" type="1"/>
     <File name="modbus/ascii" path="" type="2"/>
-    <File name="cmsis_lib/include/stm32f4xx_dac.h" path="cmsis_lib/include/stm32f4xx_dac.h" type="1"/>
     <File name="cmsis_boot" path="" type="2"/>
+    <File name="cmsis_lib/include/stm32f4xx_dac.h" path="cmsis_lib/include/stm32f4xx_dac.h" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_syscfg.h" path="cmsis_lib/include/stm32f4xx_syscfg.h" type="1"/>
-    <File name="modbus/functions/mbfuncdisc.c" path="modbus/functions/mbfuncdisc.c" type="1"/>
-    <File name="modbus/functions" path="" type="2"/>
     <File name="modbus/port/porttimer.c" path="modbus/port/porttimer.c" type="1"/>
+    <File name="modbus/functions" path="" type="2"/>
+    <File name="modbus/functions/mbfuncdisc.c" path="modbus/functions/mbfuncdisc.c" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_usart.h" path="cmsis_lib/include/stm32f4xx_usart.h" type="1"/>
     <File name="modbus/port" path="" type="2"/>
     <File name="modbus/rtu/mbrtu.c" path="modbus/rtu/mbrtu.c" type="1"/>
-    <File name="cmsis_boot/stm32f4xx.h" path="cmsis_boot/stm32f4xx.h" type="1"/>
-    <File name="cmsis_boot/startup" path="" type="2"/>
     <File name="cmsis/core_cm4_simd.h" path="cmsis/core_cm4_simd.h" type="1"/>
+    <File name="cmsis_boot/startup" path="" type="2"/>
+    <File name="cmsis_boot/stm32f4xx.h" path="cmsis_boot/stm32f4xx.h" type="1"/>
     <File name="cmsis/core_cmFunc.h" path="cmsis/core_cmFunc.h" type="1"/>
     <File name="cmsis/core_cm4.h" path="cmsis/core_cm4.h" type="1"/>
     <File name="modbus/mb.c" path="modbus/mb.c" type="1"/>
@@ -136,16 +136,16 @@
     <File name="modbus/functions/mbfunccoils.c" path="modbus/functions/mbfunccoils.c" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f4xx.c" path="cmsis_boot/startup/startup_stm32f4xx.c" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_rcc.c" path="cmsis_lib/source/stm32f4xx_rcc.c" type="1"/>
-    <File name="modbus/functions/mbutils.c" path="modbus/functions/mbutils.c" type="1"/>
     <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
+    <File name="modbus/functions/mbutils.c" path="modbus/functions/mbutils.c" type="1"/>
     <File name="foc/source/encoder.c" path="encoder.c" type="1"/>
     <File name="foc/include/svpwm.h" path="svpwm.h" type="1"/>
     <File name="modbus/include/mbframe.h" path="modbus/include/mbframe.h" type="1"/>
     <File name="modbus/rtu/mbcrc.h" path="modbus/rtu/mbcrc.h" type="1"/>
-    <File name="modbus/include/mbconfig.h" path="modbus/include/mbconfig.h" type="1"/>
     <File name="cmsis_lib/include/stm32f4xx_adc.h" path="cmsis_lib/include/stm32f4xx_adc.h" type="1"/>
-    <File name="cmsis_lib/include/stm32f4xx_exti.h" path="cmsis_lib/include/stm32f4xx_exti.h" type="1"/>
+    <File name="modbus/include/mbconfig.h" path="modbus/include/mbconfig.h" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_exti.c" path="cmsis_lib/source/stm32f4xx_exti.c" type="1"/>
+    <File name="cmsis_lib/include/stm32f4xx_exti.h" path="cmsis_lib/include/stm32f4xx_exti.h" type="1"/>
     <File name="modbus/tcp/mbtcp.h" path="modbus/tcp/mbtcp.h" type="1"/>
     <File name="cmsis_boot/system_stm32f4xx.c" path="cmsis_boot/system_stm32f4xx.c" type="1"/>
     <File name="foc" path="" type="2"/>

@@ -8,7 +8,7 @@ uint16_t current_a, current_b, dc_voltage, ai0, ai1;
 uint16_t ADC_values[ARRAYSIZE];
 static LP_MC_FOC lpFoc;
 
-PID pidPos;
+PID pidPos, pidPos_test;
 
 void focInit(LP_MC_FOC lpFocExt)
 {
@@ -25,10 +25,15 @@ void focInit(LP_MC_FOC lpFocExt)
 	 * интегралната съставка. Чрез нея и Ki се определя максималната стойност на суматора (цяло число, обикновено >1 ).
 	 * Това позволява P'I'D-а да работи 'някак'
 	 */
-	pidInit( &pidPos, 0.8f, 0.00001f, 0.0f, 0.001f );
+	pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 75 );
+	pidSetInputRange( &pidPos, 100 );
+
+	pidInit_test( &pidPos_test, 0.7f, 0.1f, 0.0f, 0.001f );
+	pidSetOutLimit_test( &pidPos_test, 0.999f, -0.999f );
+	pidSetIntegralLimit_test( &pidPos_test, 0.3f );
+	pidSetInputRange_test( &pidPos_test, 50 );
 
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
@@ -206,11 +211,12 @@ void ADC_IRQHandler( void )
 		arrPosSP[0] = sp_pos;
 
 		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] /*+ arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9]*/ ) / 3;
-		sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
+		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
 
-		//if( 16 == ++counter )
+		if( 16 == ++counter )
 		{
 			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			//lpFoc->Iq_des = 1370.0f * pidTask_test( &pidPos_test, (float)sp_pos, (float)pv_pos );
 			counter = 0;
 		}
 
