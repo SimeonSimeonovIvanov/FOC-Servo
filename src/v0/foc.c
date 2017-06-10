@@ -24,9 +24,9 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Iq_des = 0.0f;
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &pidSpeed, 0.8f, 0.9f, 0.0f, 0.001f );
+	pidInit( &pidSpeed, 0.8f, 0.2f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidSpeed, 0.2f );
+	pidSetIntegralLimit( &pidSpeed, 0.3f );
 	pidSetInputRange( &pidSpeed, 200 );
 
 	pidInit( &pidPos, 0.1f, 0.001f, 0.0f, 0.001f );
@@ -237,23 +237,47 @@ void ADC_IRQHandler( void )
 		if( 80 == ++counter1 )
 		{
 			static int32_t enc_old = 0;
-			int16_t enc, temp, dir;
+			int32_t enc, dir;
 
-			enc = TIM2->CNT;
+			/*enc = TIM2->CNT;
 			enc_delta = enc - enc_old;
+			enc_old = enc;*/
+
+			enc = (int32_t)TIM3->CNT;
+			if( ( TIM3->CR1 & TIM_CR1_DIR ) ? 0 : 1 ) { // Forward
+				if( enc >= enc_old ) {
+					enc_delta = enc - enc_old;
+				} else {
+					enc_delta = ( 4000 + enc ) - enc_old;
+				}
+			} else { // Backward
+				if( enc <= enc_old ) {
+					enc_delta = enc - enc_old;
+				} else {
+					enc_delta = enc - ( 4000 + enc_old );
+				}
+			}
 			enc_old = enc;
 
-			sp_speed = 200;
+			///////////////////////////////////////////////////////////////////
+			int16_t temp;
 
-			uint16_t pinb = GPIO_ReadInputData( GPIOB );
-			dir = ( pinb & GPIO_Pin_13 ) ? 1 : 0;
+			sp_speed = 100;
 
-			if( dir) sp_speed = -sp_speed;
+			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
+				sp_speed = -sp_speed;
+			}
 
-			temp = sp_speed;
-			if( temp < 0 ) temp *= -1;
+			temp = (int16_t)sp_speed;
+			if( temp < 0 ) {
+				temp *= -1;
+			}
 			pidSetInputRange( &pidSpeed, temp );
+
 			lpFoc->Iq_des = 1370.0f * pidTask( &pidSpeed, sp_speed * 1.0f, (float)(enc_delta) * -1.0f );
+			if( lpFoc->Iq_des > 1370 ) lpFoc->Iq_des = 1370;
+			if( lpFoc->Iq_des < -1370 ) lpFoc->Iq_des = -1370;
+			//lpFoc->Iq_des = 0;
 
 			counter1 = 0;
 		}
