@@ -10,8 +10,8 @@
 void pidInit_test( LP_PID lpPid, float kp, float ki, float kd, float dt )
 {
 	lpPid->kp = kp;
-	lpPid->ki = ki * dt;
-	lpPid->kd = kd / dt;
+	lpPid->ki = ki;
+	lpPid->kd = kd;
 	lpPid->dt = dt;
 
 	lpPid->lastError = 0.0f;
@@ -26,12 +26,11 @@ void pidSetOutLimit_test( LP_PID lpPid, float max, float min )
 
 void pidSetIntegralLimit_test( LP_PID lpPid, float max )
 {
-	lpPid->maxSumError = max / lpPid->ki;
+	lpPid->maxSumError = max;
 }
 
 void pidSetInputRange_test( LP_PID lpPid, float range )
 {
-	lpPid->errorScale = 1.0f / range;
 }
 
 float pidTask_test( LP_PID lpPid, float sp, float pv )
@@ -39,15 +38,14 @@ float pidTask_test( LP_PID lpPid, float sp, float pv )
 	float dInput;
 
 	lpPid->error = ( sp - pv );
-	lpPid->error = lpPid->error * lpPid->errorScale;
 
-	if( lpPid->error > 0.999f ) {
+	/*if( lpPid->error > 0.999f ) {
 		lpPid->error = 0.999f;
 	}
 
 	if( lpPid->error < -0.999f ) {
 		lpPid->error = -0.999f;
-	}
+	}*/
 
 	lpPid->sumError += lpPid->error;
 
