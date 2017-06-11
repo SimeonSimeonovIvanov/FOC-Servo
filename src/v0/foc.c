@@ -11,7 +11,7 @@ uint16_t ADC_values[ARRAYSIZE];
 
 int16_t enc_delta;
 
-PID pidPos, pidPos_test, pidSpeed;
+PID pidPos, pidSpeed;
 
 void focInit(LP_MC_FOC lpFocExt)
 {
@@ -24,9 +24,9 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Iq_des = 0.0f;
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit_test( &pidSpeed, 10, 7, 0, 0 );
+	pidInit_test( &pidSpeed, 10, 5, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1370, -1370 );
-	pidSetIntegralLimit_test( &pidSpeed, 200 );
+	pidSetIntegralLimit_test( &pidSpeed, 274 );
 
 	pidInit( &pidPos, 0.1f, 0.001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
@@ -38,11 +38,6 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
 	pidSetInputRange( &pidPos, 100 );*/
-
-	pidInit_test( &pidPos_test, 0.7f, 0.1f, 0.0f, 0.001f );
-	pidSetOutLimit_test( &pidPos_test, 0.999f, -0.999f );
-	pidSetIntegralLimit_test( &pidPos_test, 0.3f );
-	pidSetInputRange_test( &pidPos_test, 50 );
 
 	///////////////////////////////////////////////////////////////////////////
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
@@ -217,23 +212,24 @@ void ADC_IRQHandler( void )
 		if( 16 == ++counter )
 		{
 			//lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-			//lpFoc->Iq_des = 1370.0f * pidTask_test( &pidPos_test, (float)sp_pos, (float)pv_pos );
-
 			//sp_speed = 2000 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter = 0;
 		}
 
 		if( 80 == ++counter1 )
 		{
-			static int32_t enc_old = 0;
-			int32_t enc, dir;
+			static int32_t enc_old = 0, dir = 0;
+			int32_t enc;
 
-			enc = TIM2->CNT;
+			enc = iEncoderGetAbsPos();
 			enc_delta = enc - enc_old;
 			enc_old = enc;
 
-			/*enc = (int32_t)TIM3->CNT;
-			if( ( TIM3->CR1 & TIM_CR1_DIR ) ? 0 : 1 ) { // Forward
+			/*enc = (int32_t)(TIM3->CNT);
+			dir = ( TIM3->CR1 & TIM_CR1_DIR ) ? 0 : 1;
+
+			if(enc_old != enc)
+			if( dir ) { // Forward
 				if( enc >= enc_old ) {
 					enc_delta = enc - enc_old;
 				} else {
@@ -245,24 +241,19 @@ void ADC_IRQHandler( void )
 				} else {
 					enc_delta = enc - ( 4000 + enc_old );
 				}
-			}
-			enc_old = enc;*/
+			}*/
+
+			enc_old = enc;
 
 			///////////////////////////////////////////////////////////////////
-			int16_t temp;
-
-			sp_speed = 1;
+			//sp_speed = ai0 - 2047;
+			sp_speed = 0;
 
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
 
-			temp = (int16_t)sp_speed;
-			if( temp < 0 ) {
-				temp *= -1;
-			}
-
-			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed * 1.0f, (float)(enc_delta) * -1.0f );
+			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed * 1.0f, (float)(enc_delta) * 1.0f );
 
 			counter1 = 0;
 		}

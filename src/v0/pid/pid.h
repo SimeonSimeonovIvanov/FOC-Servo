@@ -21,7 +21,6 @@ float pidTask( LP_PID lpPid, float sp, float pv );
 void pidInit_test( LP_PID lpPid, float kp, float ki, float kd, float dt );
 void pidSetOutLimit_test( LP_PID lpPid, float max, float min );
 void pidSetIntegralLimit_test( LP_PID lpPid, float max );
-void pidSetInputRange_test( LP_PID lpPid, float range );
 
 float pidTask_test( LP_PID lpPid, float sp, float pv );
 

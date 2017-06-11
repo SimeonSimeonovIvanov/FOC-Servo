@@ -29,10 +29,6 @@ void pidSetIntegralLimit_test( LP_PID lpPid, float max )
 	lpPid->maxSumError = max;
 }
 
-void pidSetInputRange_test( LP_PID lpPid, float range )
-{
-}
-
 float pidTask_test( LP_PID lpPid, float sp, float pv )
 {
 	float dInput;
