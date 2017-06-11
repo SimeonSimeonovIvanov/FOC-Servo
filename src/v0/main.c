@@ -80,7 +80,7 @@ int main(void)
 
 		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
 		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
-		FirstOrderLagFilter( &enc_delta_filtered_value,  enc_delta, 0.00002f );
+		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.00002f );
 
 
 		hall = readHallMap();
@@ -94,7 +94,7 @@ int main(void)
 		//usRegHoldingBuf[1] = current_b - current_b_offset;
 		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[2] = enc_delta_filtered_value; sp_counter - iEncoderGetAbsPos(); dc_voltage;
+		usRegHoldingBuf[2] = (int)enc_delta_filtered_value; sp_counter - iEncoderGetAbsPos(); dc_voltage;
 		usRegHoldingBuf[3] = ai0 - 2047;
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = hall;

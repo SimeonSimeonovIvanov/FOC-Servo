@@ -28,16 +28,16 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetOutLimit_test( &pidSpeed, 1370, -1370 );
 	pidSetIntegralLimit_test( &pidSpeed, 274 );
 
-	pidInit( &pidPos, 0.1f, 0.001f, 0.0f, 0.001f );
+	pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.0f );
+	pidSetIntegralLimit( &pidPos, 0.2f );
 	pidSetInputRange( &pidPos, 100 );
 
 	///////////////////////////////////////////////////////////////////////////
-	/*pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
+	pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 100 );*/
+	pidSetInputRange( &pidPos, 100 );
 
 	///////////////////////////////////////////////////////////////////////////
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
@@ -156,6 +156,8 @@ void ADC_IRQHandler( void )
 	current_a = ( arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] + arrIa[5] + arrIa[6]  + arrIa[7]  + arrIa[8] + arrIa[9] ) / 10;
 	current_b = ( arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] + arrIb[5] + arrIb[6]  + arrIb[7]  + arrIb[8] + arrIb[9] ) / 10;
 
+	///////////////////////////////////////////////////////////////////////////
+
 	if( !main_state ) {
 		return;
 	}
@@ -174,7 +176,7 @@ void ADC_IRQHandler( void )
 	}
 
 	if( !fFirstRun ) {
-		static int32_t arrPosSP[10], arrPosPV[10], counter = 0, counter1 = 0;
+		static int32_t arrPosSP[10], arrPosPV[10], counter = 0, counter1 = 0, counter2 = 0;
 		int32_t sp_pos, pv_pos;
 
 		//angle = read360();
@@ -184,40 +186,37 @@ void ADC_IRQHandler( void )
 		sp_pos = sp_counter;
 		pv_pos = iEncoderGetAbsPos();
 
-		arrPosPV[9] = arrPosPV[8];
-		arrPosPV[8] = arrPosPV[7];
-		arrPosPV[7] = arrPosPV[6];
-		arrPosPV[6] = arrPosPV[5];
-		arrPosPV[5] = arrPosPV[4];
-		arrPosPV[4] = arrPosPV[3];
-		arrPosPV[3] = arrPosPV[2];
-		arrPosPV[2] = arrPosPV[1];
-		arrPosPV[1] = arrPosPV[0];
-		arrPosPV[0] = pv_pos;
+		arrPosPV[9] = arrPosPV[8];	arrPosPV[8] = arrPosPV[7];
+		arrPosPV[7] = arrPosPV[6];	arrPosPV[6] = arrPosPV[5];
+		arrPosPV[5] = arrPosPV[4];	arrPosPV[4] = arrPosPV[3];
+		arrPosPV[3] = arrPosPV[2];	arrPosPV[2] = arrPosPV[1];
+		arrPosPV[1] = arrPosPV[0];	arrPosPV[0] = pv_pos;
 
-		arrPosSP[9] = arrPosSP[8];
-		arrPosSP[8] = arrPosSP[7];
-		arrPosSP[7] = arrPosSP[6];
-		arrPosSP[6] = arrPosSP[5];
-		arrPosSP[5] = arrPosSP[4];
-		arrPosSP[4] = arrPosSP[3];
-		arrPosSP[3] = arrPosSP[2];
-		arrPosSP[2] = arrPosSP[1];
-		arrPosSP[1] = arrPosSP[0];
-		arrPosSP[0] = sp_pos;
+		arrPosSP[9] = arrPosSP[8];	arrPosSP[8] = arrPosSP[7];
+		arrPosSP[7] = arrPosSP[6];	arrPosSP[6] = arrPosSP[5];
+		arrPosSP[5] = arrPosSP[4];	arrPosSP[4] = arrPosSP[3];
+		arrPosSP[3] = arrPosSP[2];	arrPosSP[2] = arrPosSP[1];
+		arrPosSP[1] = arrPosSP[0];	arrPosSP[0] = sp_pos;
 
 		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] /*+ arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9]*/ ) / 3;
 		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
 
-		if( 16 == ++counter )
-		{
-			//lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-			//sp_speed = 2000 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+
+#define __AI1_SET_SPEED__
+
+		if( 16 == ++counter ) {
+			int32_t error = sp_pos - pv_pos;
+
+#ifndef __AI1_SET_SPEED__
+			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			//sp_speed = 100 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			if( error < 50 && error > -50 ) sp_speed = 0;
+#endif
+
 			counter = 0;
 		}
 
-		if( 80 == ++counter1 )
-		{
+		if( 80 == ++counter1 ) {
 			static int32_t enc_old = 0, dir = 0;
 			int32_t enc;
 
@@ -241,21 +240,49 @@ void ADC_IRQHandler( void )
 				} else {
 					enc_delta = enc - ( 4000 + enc_old );
 				}
-			}*/
+			}
 
-			enc_old = enc;
+			enc_old = enc;*/
 
 			///////////////////////////////////////////////////////////////////
-			//sp_speed = ai0 - 2047;
-			sp_speed = 0;
 
+#ifdef __AI1_SET_SPEED__
+			sp_speed = ai0 - 2047;
+
+			sp_speed /= 10;
+
+			if( sp_speed>=0 ) {
+				sp_speed += 80;
+			} else {
+				sp_speed -= 80;
+			}
+
+			if( !sp_speed || ( sp_speed < 100 && sp_speed > -100 ) ) {
+				sp_speed = 0;
+			} else {
+				if( sp_speed>=0 ) {
+					sp_speed -= 100;
+				} else {
+					sp_speed += 100;
+				}
+			}
+#endif
+			///////////////////////////////////////////////////////////////////
+			//sp_speed = 10
+			///////////////////////////////////////////////////////////////////
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
-
-			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed * 1.0f, (float)(enc_delta) * 1.0f );
+			///////////////////////////////////////////////////////////////////
 
 			counter1 = 0;
+		}
+
+		if( 80 == ++counter2 ) {
+#ifdef __AI1_SET_SPEED__
+			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed * 1.0f, (float)(enc_delta) * 1.0f );
+#endif
+			counter2 = 0;
 		}
 
 		//lpFoc->Iq_des = ai0 - 2047;
@@ -263,6 +290,7 @@ void ADC_IRQHandler( void )
 		//lpFoc->Iq_des = 0;
 	}
 
+	///////////////////////////////////////////////////////////////////////////
 	Ia = 1.0f * (float)( current_a - current_a_offset );
 	Ib = 1.0f * (float)( current_b - current_b_offset );
 
@@ -289,7 +317,7 @@ void ADC_IRQHandler( void )
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
 	TIM_SetCompare3( TIM1, lpFoc->PWM3 );
-
+	///////////////////////////////////////////////////////////////////////////
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id + 2047, lpFoc->Iq + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, ( lpFoc->angle * 10 ), lpFoc->Iq + 2047 );
 	DAC_SetDualChannelData( DAC_Align_12b_R, enc_delta*4 + 2047, lpFoc->Iq + 2047 );
