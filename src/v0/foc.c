@@ -24,9 +24,9 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Iq_des = 0.0f;
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit_test( &pidSpeed, 10, 5, 0, 0 );
-	pidSetOutLimit_test( &pidSpeed, 1370, -1370 );
-	pidSetIntegralLimit_test( &pidSpeed, 274 );
+	pidInit_test( &pidSpeed, 35, 7, 2, 0 );
+	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
+	pidSetIntegralLimit_test( &pidSpeed, 170 );
 
 	pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
@@ -208,15 +208,15 @@ void ADC_IRQHandler( void )
 			int32_t error = sp_pos - pv_pos;
 
 #ifndef __AI1_SET_SPEED__
-			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-			//sp_speed = 100 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			//lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			sp_speed = 100 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			if( error < 50 && error > -50 ) sp_speed = 0;
 #endif
 
 			counter = 0;
 		}
 
-		if( 80 == ++counter1 ) {
+		if( 40 == ++counter1 ) {
 			static int32_t enc_old = 0, dir = 0;
 			int32_t enc;
 
@@ -271,17 +271,31 @@ void ADC_IRQHandler( void )
 			//sp_speed = 10
 			///////////////////////////////////////////////////////////////////
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
-				sp_speed = -sp_speed;
+			//	sp_speed = -sp_speed;
 			}
 			///////////////////////////////////////////////////////////////////
 
 			counter1 = 0;
 		}
 
-		if( 80 == ++counter2 ) {
-#ifdef __AI1_SET_SPEED__
-			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed * 1.0f, (float)(enc_delta) * 1.0f );
-#endif
+		if( 40 == ++counter2 ) {
+			static int32_t arrSpeedSP[10];
+			int32_t pv_speed;
+
+			sp_speed = sp_speed;
+			pv_speed = enc_delta;
+
+			arrSpeedSP[9] = arrSpeedSP[8];	arrSpeedSP[8] = arrSpeedSP[7];
+			arrSpeedSP[7] = arrSpeedSP[6];	arrSpeedSP[6] = arrSpeedSP[5];
+			arrSpeedSP[5] = arrSpeedSP[4];	arrSpeedSP[4] = arrSpeedSP[3];
+			arrSpeedSP[3] = arrSpeedSP[2];	arrSpeedSP[2] = arrSpeedSP[1];
+			arrSpeedSP[1] = arrSpeedSP[0];	arrSpeedSP[0] = sp_speed;
+
+			sp_speed = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] + arrSpeedSP[4] + arrSpeedSP[5] + arrSpeedSP[6]  + arrSpeedSP[7]  + arrSpeedSP[8] + arrSpeedSP[9] ) / 10;
+
+//#ifdef __AI1_SET_SPEED__
+			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed * 1.0f, (float)(pv_speed) * 1.0f );
+//#endif
 			counter2 = 0;
 		}
 
@@ -320,7 +334,7 @@ void ADC_IRQHandler( void )
 	///////////////////////////////////////////////////////////////////////////
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id + 2047, lpFoc->Iq + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, ( lpFoc->angle * 10 ), lpFoc->Iq + 2047 );
-	DAC_SetDualChannelData( DAC_Align_12b_R, enc_delta*4 + 2047, lpFoc->Iq + 2047 );
+	DAC_SetDualChannelData( DAC_Align_12b_R, enc_delta*10 + 2047, lpFoc->Iq + 2047 );
 
 	GPIO_ResetBits( GPIOB, GPIO_Pin_2 );
 }

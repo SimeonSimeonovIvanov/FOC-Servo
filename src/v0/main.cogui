@@ -17,7 +17,7 @@
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="6786" selectionTopPixel="3375"/>
+<editorState selectionHorizontalPixel="84" selectionLength="0" selectionOffset="8504" selectionTopPixel="4091"/>
 </editor>
 </editors>
 <views>
@@ -74,11 +74,9 @@
 </view>
 <view id="org.coocox.coassistant.view.CoAssistantView" partName="Peripherals">
 <viewState horizontalPosition="0" verticalPosition="33">
-<expanded>
-<element name="TIM3"/>
+<expanded>&#x0A;<element name="TIM3"/>
 </expanded>
-<selection>
-<element name="TIM3;EGR"/>
+<selection>&#x0A;<element name="TIM3;EGR"/>
 </selection>
 <registerValues baseAddress="Base Address: 0x40000C00" description="Description:  General-purpose-timers"/>
 </viewState>
@@ -279,7 +277,6 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/cmsis_lib/source/stm32f4xx_tim.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/cmsis_lib/include/stm32f4xx_tim.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/pid/pid.c"/>
@@ -287,43 +284,37 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/pid/pid.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/include/pid/pid.h"/>
 </editors>
-<item historyLabel="stm32f4xx_tim.c" index="1">
-<position info="not_deleted" x="16076" y="11"/>
-</item>
-<item historyLabel="stm32f4xx_tim.c" index="1">
-<position info="not_deleted" x="13059" y="0"/>
-</item>
-<item historyLabel="stm32f4xx_tim.h" index="2">
+<item historyLabel="stm32f4xx_tim.h" index="1">
 <position info="not_deleted" x="0" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="6857" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="4180" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="4700" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="4180" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="5466" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="7669" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="5466" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="6465" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="7249" y="152"/>
 </item>
 <item historyLabel="foc.c" index="0">
@@ -335,49 +326,49 @@
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="6949" y="0"/>
 </item>
-<item historyLabel="pid.c" index="4">
+<item historyLabel="pid.c" index="3">
 <position info="not_deleted" x="1547" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="595" y="0"/>
 </item>
-<item historyLabel="pid.c" index="4">
+<item historyLabel="pid.c" index="3">
 <position info="not_deleted" x="1620" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="4711" y="0"/>
 </item>
-<item historyLabel="pid.c" index="4">
+<item historyLabel="pid.c" index="3">
 <position info="not_deleted" x="1620" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="949" y="0"/>
 </item>
-<item historyLabel="pid.c" index="4">
+<item historyLabel="pid.c" index="3">
 <position info="not_deleted" x="778" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="949" y="0"/>
 </item>
-<item historyLabel="pid.c" index="4">
+<item historyLabel="pid.c" index="3">
 <position info="not_deleted" x="778" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="650" y="24"/>
 </item>
-<item historyLabel="pid.c" index="4">
+<item historyLabel="pid.c" index="3">
 <position info="not_deleted" x="1506" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="6495" y="0"/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="4">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="6404" y="0"/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="4">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
@@ -386,46 +377,46 @@
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="7139" y="0"/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="4">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="677" y="0"/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="4">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="7139" y="0"/>
 </item>
-<item historyLabel="pid.c" index="6">
+<item historyLabel="pid.c" index="5">
 <position info="not_deleted" x="784" y="0"/>
 </item>
-<item historyLabel="pid.h" index="7">
+<item historyLabel="pid.h" index="6">
 <position info="not_deleted" x="683" y="0"/>
 </item>
-<item historyLabel="pid.c" index="6">
+<item historyLabel="pid.c" index="5">
 <position info="not_deleted" x="784" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="7139" y="0"/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="4">
 <position/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="4">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="6716" y="0"/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="4">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="7747" y="0"/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="4">
 <position info="not_deleted" x="3035" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
@@ -434,8 +425,14 @@
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="7354" y="0"/>
 </item>
-<item active="true" historyLabel="foc.c" index="0">
+<item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="7469" y="63"/>
+</item>
+<item historyLabel="foc.c" index="0">
+<position info="not_deleted" x="6467" y="0"/>
+</item>
+<item active="true" historyLabel="foc.c" index="0">
+<position info="not_deleted" x="8121" y="51"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
