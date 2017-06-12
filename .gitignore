@@ -63,7 +63,6 @@ Temporary Items
 /src/Work/foc_graphic_win32/obj/*
 /doc/Pictures/*
 /doc/Videos/*
-/doc/SVPWM/*
 
 !/src/Work/foc_graphic_win32/Debug/main.exe
 !/src/v0/Master/Win COM/Debug/com.exe
