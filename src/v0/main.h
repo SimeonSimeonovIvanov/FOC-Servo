@@ -11,4 +11,9 @@
 #include "svpwm.h"
 #include "encoder.h"
 
+void boardInit(void);
+void Configure_PC6(void);
+
+void FirstOrderLagFilter( float *filtered_value, float raw_sensor_value, float k );
+
 #endif
