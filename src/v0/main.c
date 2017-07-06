@@ -89,26 +89,33 @@ int main(void)
 	}
 }
 
+void sp_pos(void)
+{
+	if( !main_state ) {
+		return;
+	}
+
+	uint16_t pinb = GPIO_ReadInputData( GPIOB );
+	uint8_t dir = ( pinb & GPIO_Pin_13 ) ? 1 : 0;
+
+	if( dir ) {
+		//--counter;
+	} else {
+		//++counter;
+	}
+
+	++counter;
+
+	sp_counter = counter * 10;
+}
+
 void EXTI9_5_IRQHandler(void) {
 	/* Make sure that interrupt flag is set */
 	if( SET == EXTI_GetITStatus( EXTI_Line6 ) ) {
 		/* Clear interrupt flag */
 		EXTI_ClearITPendingBit( EXTI_Line6 );
 
-		if( !main_state ) {
-			return;
-		}
-
-		uint16_t pinb = GPIO_ReadInputData( GPIOB );
-		uint8_t dir = ( pinb & GPIO_Pin_13 ) ? 1 : 0;
-
-		if( dir ) {
-			--counter;
-		} else {
-			++counter;
-		}
-
-		sp_counter = counter * 10;
+		sp_pos();
     }
 }
 
@@ -293,7 +300,7 @@ void Configure_PC6(void)
     /* Interrupt mode */
     EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
     /* Triggers on rising and falling edge */
-    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Falling;
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising;
     /* Add to EXTI */
     EXTI_Init( &EXTI_InitStruct );
 
