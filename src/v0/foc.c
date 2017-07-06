@@ -28,16 +28,16 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 170 );
 
-	pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
+	/*pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 100 );
+	pidSetInputRange( &pidPos, 100 );*/
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
+	pidInit( &pidPos, 0.9f, 0.001f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 100 );
+	pidSetIntegralLimit( &pidPos, 0.1f );
+	pidSetInputRange( &pidPos, 200 );
 
 	///////////////////////////////////////////////////////////////////////////
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
@@ -200,19 +200,15 @@ void ADC_IRQHandler( void )
 
 		//pv_pos = ( arrPosPV[0] + arrPosPV[1] + arrPosPV[2] /*+ arrPosPV[3] + arrPosPV[4] + arrPosPV[5] + arrPosPV[6]  + arrPosPV[7]  + arrPosPV[8] + arrPosPV[9]*/ ) / 3;
 		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] + arrPosSP[4] + arrPosSP[5] + arrPosSP[6]  + arrPosSP[7]  + arrPosSP[8] + arrPosSP[9] ) / 10;
-
+		//sp_pos = ( arrPosSP[0] + arrPosSP[1] + arrPosSP[2] + arrPosSP[3] ) / 4;
 
 //#define __AI1_SET_SPEED__
 
-		if( 16 == ++counter ) {
-			int32_t error = sp_pos - pv_pos;
-
+		if( 8 == ++counter ) {
 #ifndef __AI1_SET_SPEED__
 			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			//sp_speed = 100 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-			//if( error < 50 && error > -50 ) sp_speed = 0;
 #endif
-
 			counter = 0;
 		}
 
@@ -300,7 +296,7 @@ void ADC_IRQHandler( void )
 		}
 
 		//lpFoc->Iq_des = ai0 - 2047;
-		//lpFoc->Iq_des = 1000;
+		//lpFoc->Iq_des = 500;
 		//lpFoc->Iq_des = 0;
 	}
 
