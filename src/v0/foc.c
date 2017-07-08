@@ -1,5 +1,13 @@
 #include "foc.h"
 
+//#define __POS_CONTROL__
+#ifndef __POS_CONTROL__
+	#define __AI1_SET_SPEED__
+	#ifndef __AI1_SET_SPEED__
+		#define __POS_AND_SPEED_CONTROL__
+	#endif
+#endif
+
 extern int current_a_offset, current_b_offset;
 extern int32_t sp_counter;
 extern int main_state;
@@ -24,16 +32,29 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->Iq_des = 0.0f;
 
 	///////////////////////////////////////////////////////////////////////////
+#ifdef __AI1_SET_SPEED__
 	pidInit_test( &pidSpeed, 35, 7, 2, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 170 );
+#endif
 
-	///////////////////////////////////////////////////////////////////////////
-	pidInit( &pidPos, 0.8f, 0.001f, 0.0f, 0.001f );
+#ifdef __POS_CONTROL__
+	pidInit( &pidPos, 0.8f, 0.005f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
 	pidSetInputRange( &pidPos, 200 );
+#endif
 
+#ifdef __POS_AND_SPEED_CONTROL__
+	pidInit_test( &pidSpeed, 10, 1, 0, 0 );
+	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
+	pidSetIntegralLimit_test( &pidSpeed, 50 );
+
+	pidInit( &pidPos, 0.7f, 0.00f, 0.0f, 0.001f );
+	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
+	pidSetIntegralLimit( &pidPos, 0.0f );
+	pidSetInputRange( &pidPos, 400 );
+#endif
 	///////////////////////////////////////////////////////////////////////////
 	pidInit( &lpFoc->pid_d, 0.7f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
@@ -157,43 +178,45 @@ void ADC_IRQHandler( void )
 		return;
 	}
 
-	if( fFirstRun ) {
-	}
-
 	if( !fFirstRun ) {
 		static int32_t arrSpPos[10], counter = 0, counter1 = 0, counter2 = 0;
-
 		static int32_t sp_pos, sp_update_counter = 0;
-		int32_t pv_pos = 0;
+		static int32_t pv_pos = 0;
+
+		static int32_t sp_counter_old = 0;
+		static int32_t sp_counter_temp = 0;
 
 		angle = readRawUVW();
+
+#ifdef __POS_CONTROL__
+		pv_pos = iEncoderGetAbsPos();
+
+		if( sp_counter != pv_pos ) {
+
+			if( sp_counter - sp_counter_old > 0 ) {
+				sp_counter_temp += 10;
+			}
+
+			if( sp_counter - sp_counter_old < 0 ) {
+				sp_counter_temp -= 10;
+			}
+		}
+
+		sp_counter_old = sp_counter;
 
 		if( ++sp_update_counter == 75 ) {
 			sp_update_counter = 0;
 			sp_pos = sp_counter;
+			//sp_pos = sp_counter_temp;
 		}
 
-		arrSpPos[9] = arrSpPos[8];	arrSpPos[8] = arrSpPos[7];
-		arrSpPos[7] = arrSpPos[6];	arrSpPos[6] = arrSpPos[5];
-		arrSpPos[5] = arrSpPos[4];	arrSpPos[4] = arrSpPos[3];
-		arrSpPos[3] = arrSpPos[2];	arrSpPos[2] = arrSpPos[1];
-		arrSpPos[1] = arrSpPos[0];	arrSpPos[0] = sp_pos;
-		sp_pos = ( arrSpPos[0] + arrSpPos[1] + arrSpPos[2] + arrSpPos[3] + arrSpPos[4] + arrSpPos[5] + arrSpPos[6]  + arrSpPos[7]  + arrSpPos[8] + arrSpPos[9] ) / 10;
-
-		pv_pos = iEncoderGetAbsPos();
-
-//#define __POS_CONTROL__
-#define __AI1_SET_SPEED__
-//#define __POS_AND_SPEED_CONTROL__
-
-#ifdef __POS_CONTROL__
 		if( 16 == ++counter ) {
 			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter = 0;
 		}
+
 #endif
 
-#ifdef __AI1_SET_SPEED__
 		if( 40 == ++counter1 ) {
 			static int32_t enc_old = 0, dir = 0;
 			int32_t enc;
@@ -223,6 +246,12 @@ void ADC_IRQHandler( void )
 			enc_delta = -enc_delta;
 			enc_old = enc;*/
 
+#ifndef __AI1_SET_SPEED__
+			counter1 = 0;
+		}
+#endif
+
+#ifdef __AI1_SET_SPEED__
 			///////////////////////////////////////////////////////////////////
 			sp_speed = ai0 - 2047;
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
@@ -267,9 +296,9 @@ void ADC_IRQHandler( void )
 #endif
 
 #ifdef __POS_AND_SPEED_CONTROL__
-		if( 40 == ++counter ) {
-			sp_speed = 200 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-			counter = 0;
+		if( 8 == ++counter ) {
+				sp_speed = 250 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+				counter = 0;
 		}
 
 		if( 40 == ++counter1 ) {
@@ -283,7 +312,7 @@ void ADC_IRQHandler( void )
 			counter1 = 0;
 		}
 
-		if( 40 == ++counter2 ) {
+		if( 4 == ++counter2 ) {
 			static int32_t arrSpeedSP[10];
 			int32_t pv_speed;
 
@@ -297,7 +326,7 @@ void ADC_IRQHandler( void )
 
 			//sp_speed = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] + arrSpeedSP[4] + arrSpeedSP[5] + arrSpeedSP[6]  + arrSpeedSP[7]  + arrSpeedSP[8] + arrSpeedSP[9] ) / 10;
 
-			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, pv_speed );
+			lpFoc->Iq_des = pidTask_test( &pidSpeed, (int)sp_speed, pv_speed );
 
 			counter2 = 0;
 		}
