@@ -65,6 +65,8 @@ void initEncoder(void)
 	TIM3->CNT = 0; // angle
 
 	createSinCosTable();
+
+	initTim10();
 }
 
 void encoderInitZ(void)
@@ -295,4 +297,113 @@ float fSinAngle(int angle)
 float fCosAngle(int angle)
 {
 	return arr_cos[angle];
+}
+
+
+void initTim10(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+	TIM_ICInitTypeDef  TIM_ICInitStructure;
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+
+	/* TIM10 clock enable */
+	RCC_APB2PeriphClockCmd( RCC_APB2Periph_TIM10, ENABLE );
+
+	/* GPIOB clock enable */
+	RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOB, ENABLE );
+
+	/* TIM10 channel 1 pin (PB.8) configuration */
+	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_Init( GPIOB, &GPIO_InitStructure );
+
+	/* Connect TIM pins to AF3 */
+	GPIO_PinAFConfig( GPIOB, GPIO_PinSource8, GPIO_AF_TIM10 );
+
+	/* Enable the TIM10 global Interrupt */
+	NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_TIM10_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init( &NVIC_InitStructure );
+
+	///////////////////////////////////////////////////////////////////////////
+	//TIM_TimeBaseStructInit( &TIM_TimeBaseInitStructure );
+	TIM_TimeBaseInitStructure.TIM_ClockDivision = TIM_CKD_DIV1;
+	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
+	// Timer counter clock = sysclock / ( TIM_Prescaler + 1 )
+	TIM_TimeBaseInitStructure.TIM_Prescaler = 10;
+	// Period = ( TIM counter clock / TIM output clock ) - 1
+	TIM_TimeBaseInitStructure.TIM_Period = 0xffff;
+	TIM_TimeBaseInit( TIM10, &TIM_TimeBaseInitStructure );
+
+	//TIM_ICStructInit( &TIM_ICInitStructure );
+	/* TIM10 configuration: Input Capture mode ---------------------
+	   The external signal is connected to TIM10 CH1 pin (PB.8)
+	   The Both edge is used as active edge,
+	   The TIM10 CCR1 is used to compute the frequency value
+	------------------------------------------------------------ */
+	TIM_ICInitStructure.TIM_Channel = TIM_Channel_1;
+	TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_BothEdge;
+	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
+	TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
+	TIM_ICInitStructure.TIM_ICFilter = 0x0;
+	TIM_ICInit( TIM10, &TIM_ICInitStructure );
+
+	/* TIM enable counter */
+	TIM_Cmd( TIM10, ENABLE );
+
+	/* Enable the CC1 Interrupt Request */
+	TIM_ITConfig( TIM10, TIM_IT_CC1, ENABLE );
+}
+
+uint16_t uhIC1ReadValue1 = 0;
+uint16_t uhIC1ReadValue2 = 0;
+uint16_t uhCaptureNumber = 0;
+uint32_t uwCapture = 0;
+uint32_t uwTIM1Freq = 0;
+int update_tim10_mes;
+
+void TIM1_UP_TIM10_IRQHandler(void)
+{
+	if( SET == TIM_GetITStatus( TIM10, TIM_IT_CC1 ) ) {
+		TIM10->CNT = 0;
+		TIM_ClearITPendingBit(TIM10, TIM_IT_CC1);
+
+		uwTIM1Freq = TIM_GetCapture1( TIM10 );
+
+
+		update_tim10_mes = 1;
+
+		return;
+		if( 0 == uhCaptureNumber ) {
+			/* Get the Input Capture value */
+			uhIC1ReadValue1 = TIM_GetCapture1( TIM10 );
+			uhCaptureNumber = 1;
+		} else {
+			/* Get the Input Capture value */
+			uhIC1ReadValue2 = TIM_GetCapture1( TIM10 );
+
+			/* Capture computation */
+			if( uhIC1ReadValue2 > uhIC1ReadValue1 ) {
+				uwCapture = ( uhIC1ReadValue2 - uhIC1ReadValue1 );
+			} else {
+				if( uhIC1ReadValue2 < uhIC1ReadValue1 ) {
+					uwCapture = ( ( 0xffff - uhIC1ReadValue1 ) + uhIC1ReadValue2 );
+				} else {
+					uwCapture = 0;
+				}
+			}
+
+			/* Frequency computation */
+			uwTIM1Freq = (uint32_t)SystemCoreClock / uwCapture;
+
+			uhCaptureNumber = 0;
+		}
+	}
 }

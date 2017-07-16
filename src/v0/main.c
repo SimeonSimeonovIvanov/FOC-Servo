@@ -22,6 +22,9 @@ int main_state = 0;
 
 MC_FOC stFoc;
 
+extern uint32_t uwTIM1Freq;
+extern int update_tim10_mes;
+
 int main(void)
 {
 	int hall;
@@ -55,12 +58,17 @@ int main(void)
 
 	main_state = 1;
 
+	float tim10_cr1;
+
 	while( 1 ) {
 		GPIO_ToggleBits( GPIOA, GPIO_Pin_15 );
 
 		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
 		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
 		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.00002f );
+
+		//if( !update_tim10_mes ) uwTIM1Freq = 0;
+		FirstOrderLagFilter( &tim10_cr1,  (float)(uwTIM1Freq>>1),  0.000015f );
 
 		hall = readHallMap();
 		encoder = read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
@@ -74,7 +82,8 @@ int main(void)
 		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[2] = (int)enc_delta_filtered_value; sp_counter - iEncoderGetAbsPos(); dc_voltage;
-		usRegHoldingBuf[3] = ai0 - 2047;
+		usRegHoldingBuf[3] = (int)tim10_cr1; ai0 - 2047;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = hall;
 		usRegHoldingBuf[5] = encoder;
@@ -89,33 +98,26 @@ int main(void)
 	}
 }
 
-void sp_pos(void)
-{
-	if( !main_state ) {
-		return;
-	}
-
-	uint16_t pinb = GPIO_ReadInputData( GPIOB );
-	uint8_t dir = ( pinb & GPIO_Pin_13 ) ? 1 : 0;
-
-	if( dir ) {
-		//--counter;
-	} else {
-		//++counter;
-	}
-
-	++counter;
-
-	sp_counter = counter * 10;
-}
-
 void EXTI9_5_IRQHandler(void) {
 	/* Make sure that interrupt flag is set */
 	if( SET == EXTI_GetITStatus( EXTI_Line6 ) ) {
 		/* Clear interrupt flag */
 		EXTI_ClearITPendingBit( EXTI_Line6 );
 
-		sp_pos();
+		if( !main_state ) {
+			return;
+		}
+
+		uint16_t pinb = GPIO_ReadInputData( GPIOB );
+		uint8_t dir = ( pinb & GPIO_Pin_13 ) ? 1 : 0;
+
+		if( dir ) {
+			--counter;
+		} else {
+			++counter;
+		}
+
+		sp_counter = counter * 10;
     }
 }
 

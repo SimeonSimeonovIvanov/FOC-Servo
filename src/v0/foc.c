@@ -133,6 +133,8 @@ void mcInvClark(LP_MC_FOC lpFoc)
 	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
 }
 
+extern int update_tim10_mes;
+
 void ADC_IRQHandler( void )
 {
 	static int arrIa[10]={0}, arrIb[10]={0};
@@ -179,7 +181,7 @@ void ADC_IRQHandler( void )
 	}
 
 	if( !fFirstRun ) {
-		static int32_t arrSpPos[10], counter = 0, counter1 = 0, counter2 = 0;
+		static int32_t arrSpPos[10], counter = 0, counter1 = 0, counter2 = 0, counter4 = 0;
 		static int32_t sp_pos, sp_update_counter = 0;
 		static int32_t pv_pos = 0;
 
@@ -187,6 +189,11 @@ void ADC_IRQHandler( void )
 		static int32_t sp_counter_temp = 0;
 
 		angle = readRawUVW();
+
+		if( 160 == ++counter4 ) {
+			if( !enc_delta ) update_tim10_mes = 0;
+			counter4 = 0;
+		}
 
 #ifdef __POS_CONTROL__
 		pv_pos = iEncoderGetAbsPos();

@@ -2,7 +2,7 @@
 <breakpoints>
 <breakpoint enabled="false" persistant="true" registered="true">
 <resource path="/main/foc/source/foc.c" type="1"/>
-<marker lineNumber="338" type="org.eclipse.cdt.debug.core.cLineBreakpointMarker">
+<marker lineNumber="345" type="org.eclipse.cdt.debug.core.cLineBreakpointMarker">
 <attrib name="enabled" value="false"/>
 <attrib name="org.eclipse.cdt.debug.core.condition" value=""/>
 <attrib name="org.eclipse.debug.core.id" value="org.eclipse.cdt.debug.core"/>
@@ -16,13 +16,13 @@
 <attrib name="registered" value="true"/>
 <attrib name="path" value="/main/foc/source/foc.c"/>
 <attrib name="org.eclipse.cdt.debug.core.sourceHandle" value="D:\Developments\Elektronika\Motor Control\Projects\FOC Servo\src\v0\foc.c"/>
-<attrib name="org.eclipse.cdt.debug.core.ignoreCount" value="0"/>
 <attrib name="org.eclipse.debug.core.enabled" value="false"/>
+<attrib name="org.eclipse.cdt.debug.core.ignoreCount" value="0"/>
 </marker>
 </breakpoint>
 <breakpoint enabled="true" persistant="true" registered="true">
 <resource path="/main/main.c" type="1"/>
-<marker lineNumber="118" type="org.eclipse.cdt.debug.core.cLineBreakpointMarker">
+<marker lineNumber="107" type="org.eclipse.cdt.debug.core.cLineBreakpointMarker">
 <attrib name="enabled" value="true"/>
 <attrib name="org.eclipse.cdt.debug.core.condition" value=""/>
 <attrib name="org.eclipse.debug.core.id" value="org.eclipse.cdt.debug.core"/>
@@ -36,8 +36,8 @@
 <attrib name="registered" value="true"/>
 <attrib name="path" value="/main/main.c"/>
 <attrib name="org.eclipse.cdt.debug.core.sourceHandle" value="D:\Developments\Elektronika\Motor Control\Projects\FOC Servo\src\v0\main.c"/>
-<attrib name="org.eclipse.debug.core.enabled" value="true"/>
 <attrib name="org.eclipse.cdt.debug.core.ignoreCount" value="0"/>
+<attrib name="org.eclipse.debug.core.enabled" value="true"/>
 </marker>
 </breakpoint>
 </breakpoints>
