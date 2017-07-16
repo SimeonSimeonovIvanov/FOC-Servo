@@ -1,7 +1,7 @@
 #include "main.h"
 
 #define REG_HOLDING_START   40001
-#define REG_HOLDING_NREGS   11
+#define REG_HOLDING_NREGS   20
 
 void boardInit(void);
 
@@ -68,7 +68,7 @@ int main(void)
 		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.00002f );
 
 		//if( !update_tim10_mes ) uwTIM1Freq = 0;
-		FirstOrderLagFilter( &tim10_cr1,  (float)(uwTIM1Freq>>1),  0.000015f );
+		FirstOrderLagFilter( &tim10_cr1,  (float)(uwTIM1Freq),  0.000015f );
 
 		hall = readHallMap();
 		encoder = read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
@@ -81,8 +81,8 @@ int main(void)
 		//usRegHoldingBuf[1] = current_b - current_b_offset;
 		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[2] = (int)enc_delta_filtered_value; sp_counter - iEncoderGetAbsPos(); dc_voltage;
-		usRegHoldingBuf[3] = (int)tim10_cr1; ai0 - 2047;
+		usRegHoldingBuf[2] = dc_voltage; sp_counter - iEncoderGetAbsPos();
+		usRegHoldingBuf[3] = ai0 - 2047;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = hall;
@@ -92,6 +92,9 @@ int main(void)
 		// Encoder 1 ( abs.pos )
 		usRegHoldingBuf[7] = iEncoderGetAbsPos();
 		usRegHoldingBuf[8] = iEncoderGetAbsPos()>>16;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		usRegHoldingBuf[11] = (int)enc_delta_filtered_value;
+		usRegHoldingBuf[12] = (int)tim10_cr1;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

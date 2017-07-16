@@ -404,9 +404,10 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 	while (1) {
 		unsigned int hreg[9];
 
-		iResult = mbReadHoldingRegisters(&lpMainData->mbMaster, lpMainData->SlaveID, 40000, 9, hreg);
+		iResult = mbReadHoldingRegisters(&lpMainData->mbMaster, lpMainData->SlaveID, 40000, 15, hreg);
 		if (!iResult) {
 			int current_a, current_b, dc_voltage, ai0, uvw, encoder0_raw, encoder0_angle, encoder1_pos, offset;
+			int rpm_t, rpm_m, rpm_tm;
 
 			current_a = mbU16toSI(hreg[0]);
 			current_b = mbU16toSI(hreg[1]);
@@ -418,6 +419,9 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			encoder0_raw = mbU16toSI(hreg[6]);
 
 			encoder1_pos = mbU32toSI(hreg[8] << 16 | hreg[7]);
+
+			rpm_t = mbU16toSI(hreg[11]);
+			rpm_m = hreg[12];
 
 			sprintf(szBuffer, "CA: %d", current_a);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC0), szBuffer);
@@ -442,6 +446,19 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 
 			sprintf(szBuffer, "%d", encoder1_pos);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_ENC1_ABS_POS), szBuffer);
+
+			sprintf(szBuffer, "%d", rpm_t);
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_T), szBuffer);
+
+			sprintf(szBuffer, "%d", rpm_m);
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_M), szBuffer);
+
+			if (rpm_m) {
+				sprintf(szBuffer, "%4.2f", (float)(rpm_t * 8000) / (float)( rpm_m * 79) );
+				Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_MT), szBuffer);
+			} else {
+				Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_MT), "---");
+			}
 		}
 
 		switch (lpMainData->flagButtonOnClick) {
