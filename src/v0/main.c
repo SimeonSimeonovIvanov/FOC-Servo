@@ -22,15 +22,14 @@ int main_state = 0;
 
 MC_FOC stFoc;
 
-extern uint32_t uwTIM1Freq;
-extern int update_tim10_mes;
+extern uint16_t uwTIM10PulseLength;
 
 int main(void)
 {
 	int hall;
 	int encoder;
 	eMBErrorCode eStatus;
-	float Iq_filtered_value = 0, Iq_des_filtered_value = 0, enc_delta_filtered_value;
+	float Iq_filtered_value = 0, Iq_des_filtered_value = 0, enc_delta_filtered_value = 0, TIM10PulseLength_filtered_value = 0;
 
 	SystemInit();
 	SystemCoreClockUpdate();
@@ -65,10 +64,9 @@ int main(void)
 
 		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
 		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
-		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.00002f );
 
-		//if( !update_tim10_mes ) uwTIM1Freq = 0;
-		FirstOrderLagFilter( &tim10_cr1,  (float)(uwTIM1Freq),  0.000015f );
+		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.00002f );
+		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)(uwTIM10PulseLength),  0.000015f );
 
 		hall = readHallMap();
 		encoder = read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
@@ -93,8 +91,11 @@ int main(void)
 		usRegHoldingBuf[7] = iEncoderGetAbsPos();
 		usRegHoldingBuf[8] = iEncoderGetAbsPos()>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[11] = (int)enc_delta_filtered_value;
-		usRegHoldingBuf[12] = (int)tim10_cr1;
+		//usRegHoldingBuf[11] = (int)enc_delta_filtered_value;
+		//usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
+
+		usRegHoldingBuf[11] = (int)enc_delta;
+		usRegHoldingBuf[12] = (uint16_t)uwTIM10PulseLength;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

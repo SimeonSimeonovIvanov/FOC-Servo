@@ -3,6 +3,8 @@
 //static float arr_sin[361], arr_cos[361];
 static float arr_sin[4000], arr_cos[4000];
 
+uint16_t uwTIM10PulseLength = 0;
+
 void initEncoder(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -362,48 +364,12 @@ void initTim10(void)
 	TIM_ITConfig( TIM10, TIM_IT_CC1, ENABLE );
 }
 
-uint16_t uhIC1ReadValue1 = 0;
-uint16_t uhIC1ReadValue2 = 0;
-uint16_t uhCaptureNumber = 0;
-uint32_t uwCapture = 0;
-uint32_t uwTIM1Freq = 0;
-int update_tim10_mes;
-
 void TIM1_UP_TIM10_IRQHandler(void)
 {
 	if( SET == TIM_GetITStatus( TIM10, TIM_IT_CC1 ) ) {
-		TIM10->CNT = 0;
 		TIM_ClearITPendingBit(TIM10, TIM_IT_CC1);
 
-		uwTIM1Freq = TIM_GetCapture1( TIM10 );
-
-
-		update_tim10_mes = 1;
-
-		return;
-		if( 0 == uhCaptureNumber ) {
-			/* Get the Input Capture value */
-			uhIC1ReadValue1 = TIM_GetCapture1( TIM10 );
-			uhCaptureNumber = 1;
-		} else {
-			/* Get the Input Capture value */
-			uhIC1ReadValue2 = TIM_GetCapture1( TIM10 );
-
-			/* Capture computation */
-			if( uhIC1ReadValue2 > uhIC1ReadValue1 ) {
-				uwCapture = ( uhIC1ReadValue2 - uhIC1ReadValue1 );
-			} else {
-				if( uhIC1ReadValue2 < uhIC1ReadValue1 ) {
-					uwCapture = ( ( 0xffff - uhIC1ReadValue1 ) + uhIC1ReadValue2 );
-				} else {
-					uwCapture = 0;
-				}
-			}
-
-			/* Frequency computation */
-			uwTIM1Freq = (uint32_t)SystemCoreClock / uwCapture;
-
-			uhCaptureNumber = 0;
-		}
+		TIM10->CNT = 0;
+		uwTIM10PulseLength = TIM_GetCapture1( TIM10 );
 	}
 }

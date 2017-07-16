@@ -453,8 +453,8 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			sprintf(szBuffer, "%d", rpm_m);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_M), szBuffer);
 
-			if (rpm_m) {
-				sprintf(szBuffer, "%4.2f", (float)(rpm_t * 8000) / (float)( rpm_m * 79) );
+			if (rpm_m) { // ????
+				sprintf(szBuffer, "%4.2f", ( (float)(rpm_t * 8000) / (float)( rpm_m * 80) ) );
 				Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_MT), szBuffer);
 			} else {
 				Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_MT), "---");

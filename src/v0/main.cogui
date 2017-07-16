@@ -11,18 +11,13 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
-<part id="1"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/main.c" title="main.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/main.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2327" selectionTopPixel="930"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" partName="encoder.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/encoder.c" title="encoder.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/encoder.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/encoder.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="9083" selectionTopPixel="4936"/>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7393" selectionTopPixel="3122"/>
 </editor>
 </editors>
 <views>
@@ -32,22 +27,15 @@
 </viewState>
 </view>
 <view id="org.coocox.builder.ui.views.ProjectView" partName="Project">
-<viewState CommonNavigator.LINKING_ENABLED="1" horizontalPosition="0" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0" verticalPosition="1">
+<viewState CommonNavigator.LINKING_ENABLED="1" horizontalPosition="0" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0" verticalPosition="0">
 <expanded>
 <element path="/main"/>
-<element path="/main/cmsis_boot"/>
-<element path="/main/cmsis_boot/startup"/>
-<element path="/main/cmsis_lib"/>
-<element path="/main/cmsis_lib/include"/>
-<element path="/main/cmsis_lib/source"/>
 <element path="/main/foc"/>
 <element path="/main/foc/include"/>
-<element path="/main/foc/include/pid"/>
 <element path="/main/foc/source"/>
-<element path="/main/foc/source/pid"/>
 </expanded>
 <selection>
-<element path="/main/main.c"/>
+<element path="/main/foc/source/foc.c"/>
 </selection>
 </viewState>
 </view>
@@ -285,73 +273,9 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/main.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
 </editors>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="9363" y="0"/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="9293" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="943" y="0"/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="7933" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1185" y="0"/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="7962" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1115" y="0"/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="10060" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="2010" y="0"/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="9972" y="0"/>
-</item>
-<item historyLabel="foc.c" index="2">
-<position/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="9972" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1629" y="0"/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="9972" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="10373" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="10373" y="0"/>
-</item>
-<item historyLabel="foc.c" index="2">
-<position/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="10373" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1498" y="0"/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="10373" y="0"/>
-</item>
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="1537" y="0"/>
 </item>
@@ -433,8 +357,74 @@
 <item historyLabel="encoder.c" index="6">
 <position info="not_deleted" x="9083" y="0"/>
 </item>
-<item active="true" historyLabel="main.c" index="5">
-<position info="not_deleted" x="1655" y="0"/>
+<item historyLabel="main.c" index="5">
+<position/>
+</item>
+<item historyLabel="encoder.c" index="7">
+<position info="not_deleted" x="10249" y="65"/>
+</item>
+<item historyLabel="foc.c" index="8">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="foc.c" index="8">
+<position/>
+</item>
+<item historyLabel="encoder.c" index="7">
+<position info="not_deleted" x="10249" y="65"/>
+</item>
+<item historyLabel="main.c" index="5">
+<position/>
+</item>
+<item historyLabel="encoder.c" index="7">
+<position info="not_deleted" x="10245" y="0"/>
+</item>
+<item historyLabel="foc.c" index="8">
+<position/>
+</item>
+<item historyLabel="encoder.c" index="7">
+<position info="not_deleted" x="10245" y="0"/>
+</item>
+<item historyLabel="main.c" index="5">
+<position/>
+</item>
+<item historyLabel="encoder.c" index="7">
+<position info="not_deleted" x="10245" y="0"/>
+</item>
+<item historyLabel="foc.c" index="8">
+<position/>
+</item>
+<item historyLabel="encoder.c" index="7">
+<position/>
+</item>
+<item historyLabel="main.c" index="5">
+<position/>
+</item>
+<item historyLabel="encoder.c" index="7">
+<position info="not_deleted" x="10286" y="0"/>
+</item>
+<item historyLabel="foc.c" index="8">
+<position/>
+</item>
+<item historyLabel="main.c" index="5">
+<position/>
+</item>
+<item historyLabel="foc.c" index="8">
+<position info="not_deleted" x="5317" y="0"/>
+</item>
+<item historyLabel="main.c" index="5">
+<position/>
+</item>
+<item historyLabel="encoder.c" index="7">
+<position info="not_deleted" x="24" y="0"/>
+</item>
+<item historyLabel="foc.c" index="8">
+<position info="not_deleted" x="7283" y="0"/>
+</item>
+<item historyLabel="main.c" index="5">
+<position info="not_deleted" x="3401" y="0"/>
+</item>
+<item active="true" historyLabel="foc.c" index="8">
+<position info="not_deleted" x="7283" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -443,14 +433,14 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" tooltip="main/foc/source/encoder.c">
-<persistable path="/main/foc/source/encoder.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="main/main.c">
+<persistable path="/main/main.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" tooltip="main/foc/source/foc.c">
 <persistable path="/main/foc/source/foc.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="main/main.c">
-<persistable path="/main/main.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" tooltip="main/foc/source/encoder.c">
+<persistable path="/main/foc/source/encoder.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_tim.c" tooltip="main/cmsis_lib/source/stm32f4xx_tim.c">
 <persistable path="/main/cmsis_lib/source/stm32f4xx_tim.c"/>
