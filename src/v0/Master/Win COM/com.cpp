@@ -469,7 +469,7 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 				f_rpm_mt = 0.0f;
 			}
 
-			if (0) {
+			if (1) {
 				if (f_rpm_m + f_rpm_t) {
 					f_rpm_mt = 2 * (f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t);
 				}
