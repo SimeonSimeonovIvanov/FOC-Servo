@@ -550,9 +550,9 @@ void mcFocSVPWM0(LP_MC_FOC lpFoc)
 
 	mcInvClark(lpFoc);
 
-	lpFoc->PWM1 = lpFoc->Va * 50;
-	lpFoc->PWM2 = lpFoc->Vb * 50;
-	lpFoc->PWM3 = lpFoc->Vc * 50;
+	lpFoc->PWM1 = (0.5 + lpFoc->Va) * 50;
+	lpFoc->PWM2 = (0.5 + lpFoc->Vb) * 50;
+	lpFoc->PWM3 = (0.5 + lpFoc->Vc) * 50;
 }
 
 void mcFocSVPWM2(LP_MC_FOC lpFoc)
