@@ -157,16 +157,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		float Ia, Ib, Ic;
 
-//#define __PHASE_COR__
+#define __PHASE_COR__
 
 		for( i = 0; i < gr_size_x; i++ ) {
 			angle = ( i / steep );
 
 			Ia = fSinAngle(angle);
-#ifdef __PHASE_COR__
-			Ib = fSinAngle(angle + 120);
-#else
 			Ib = fSinAngle(angle - 120);
+
+#ifdef __PHASE_COR__
+			//Ib = fSinAngle(angle + 120);
+#else
+			//Ib = fSinAngle(angle - 120);
 #endif
 
 			Ia = Ia * 20.0f;
@@ -179,10 +181,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			mcClark(&stFoc);
 
 #ifdef __PHASE_COR__
-			stFoc.Ibeta = -stFoc.Ibeta;
+			//stFoc.Ibeta = -stFoc.Ibeta;
 #else
 #endif
-
 			//stFoc.Ibeta = -stFoc.Ibeta;
 
 			mcPark(&stFoc);

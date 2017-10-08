@@ -39,7 +39,7 @@ void focInit(LP_MC_FOC lpFocExt)
 #endif
 
 #ifdef __POS_CONTROL__
-	pidInit( &pidPos, 0.8f, 0.005f, 0.0f, 0.001f );
+	pidInit( &pidPos, 0.8f, 0.0005f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
 	pidSetInputRange( &pidPos, 200 );
@@ -131,12 +131,16 @@ void mcInvClark(LP_MC_FOC lpFoc)
 	lpFoc->Vb = lpFoc->Vbeta;
 	lpFoc->Va = ( -lpFoc->Vbeta + ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
 	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
+
+	/*lpFoc->Va = lpFoc->Valpha;
+	lpFoc->Vb = ( -lpFoc->Valpha + ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
+	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;*/
 }
 
 void ADC_IRQHandler( void )
 {
 	static int arrIa[10]={0}, arrIb[10]={0};
-	static int temp = 0, fFirstRun = 0;
+	static int temp = 0;
 
 	uint16_t angle;
 	float Ia, Ib, sp_speed;
@@ -172,13 +176,11 @@ void ADC_IRQHandler( void )
 	current_a = ( arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] + arrIa[5] + arrIa[6]  + arrIa[7]  + arrIa[8] + arrIa[9] ) / 10;
 	current_b = ( arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] + arrIb[5] + arrIb[6]  + arrIb[7]  + arrIb[8] + arrIb[9] ) / 10;
 
-	///////////////////////////////////////////////////////////////////////////
-
 	if( !main_state ) {
 		return;
 	}
 
-	if( !fFirstRun ) {
+	{
 		static int32_t arrSpPos[10], counter = 0, counter1 = 0, counter2 = 0;
 		static int32_t sp_pos, sp_update_counter = 0;
 		static int32_t pv_pos = 0;
@@ -186,10 +188,9 @@ void ADC_IRQHandler( void )
 		static int32_t sp_counter_old = 0;
 		static int32_t sp_counter_temp = 0;
 
-		angle = readRawUVW();
-
 #ifdef __POS_CONTROL__
 		pv_pos = iEncoderGetAbsPos();
+		sp_pos = sp_counter;
 
 		if( sp_counter != pv_pos ) {
 
@@ -206,15 +207,14 @@ void ADC_IRQHandler( void )
 
 		if( ++sp_update_counter == 75 ) {
 			sp_update_counter = 0;
-			sp_pos = sp_counter;
+			//sp_pos = sp_counter;
 			//sp_pos = sp_counter_temp;
 		}
 
-		if( 16 == ++counter ) {
+		if( 1 == ++counter ) {
 			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter = 0;
 		}
-
 #endif
 
 		if( 40 == ++counter1 ) {
@@ -296,8 +296,8 @@ void ADC_IRQHandler( void )
 #endif
 
 #ifdef __POS_AND_SPEED_CONTROL__
-		if( 8 == ++counter ) {
-				sp_speed = 250 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+		if( 1 == ++counter ) {
+				sp_speed = 200 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 				counter = 0;
 		}
 
@@ -312,7 +312,7 @@ void ADC_IRQHandler( void )
 			counter1 = 0;
 		}
 
-		if( 4 == ++counter2 ) {
+		if( 40 == ++counter2 ) {
 			static int32_t arrSpeedSP[10];
 			int32_t pv_speed;
 
@@ -341,6 +341,7 @@ void ADC_IRQHandler( void )
 	Ia = 1.0f * (float)( current_a - current_a_offset );
 	Ib = 1.0f * (float)( current_b - current_b_offset );
 
+	angle = readRawUVW();
 	mcFocSetAngle( lpFoc, angle );
 	mcFocSetCurrent( lpFoc, Ia, Ib );
 
@@ -360,6 +361,7 @@ void ADC_IRQHandler( void )
 	lpFoc->Valpha = SQRT3_DIV2 * (float)lpFoc->Valpha;
 	lpFoc->Vbeta = SQRT3_DIV2 * (float)lpFoc->Vbeta;
 	mcFocSVPWM2( lpFoc );
+	//mcFocSVPWM0( lpFoc );
 
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
@@ -370,4 +372,13 @@ void ADC_IRQHandler( void )
 	DAC_SetDualChannelData( DAC_Align_12b_R, enc_delta*10 + 2047, lpFoc->Iq + 2047 );
 
 	GPIO_ResetBits( GPIOB, GPIO_Pin_2 );
+}
+#include "svpwm.h"
+void mcFocSVPWM0(LP_MC_FOC lpFoc)
+{
+	mcInvClark(lpFoc);
+
+	lpFoc->PWM1 = PWM_PERIOD/2+(lpFoc->Va)*PWM_PERIOD;
+	lpFoc->PWM2 = PWM_PERIOD/2+(lpFoc->Vb)*PWM_PERIOD;
+	lpFoc->PWM3 = PWM_PERIOD/2+(lpFoc->Vc)*PWM_PERIOD;
 }

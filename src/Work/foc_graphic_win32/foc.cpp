@@ -548,11 +548,12 @@ void mcFocSVPWM0(LP_MC_FOC lpFoc)
 	lpFoc->PWM2 = vb_int*50;
 	lpFoc->PWM3 = vc_int*50;*/
 
+	//return;
 	mcInvClark(lpFoc);
 
 	lpFoc->PWM1 = (0.5 + lpFoc->Va) * 50;
-	lpFoc->PWM2 = (0.5 + lpFoc->Vb) * 50;
-	lpFoc->PWM3 = (0.5 + lpFoc->Vc) * 50;
+	lpFoc->PWM3 = (0.5 + lpFoc->Vb) * 50;
+	lpFoc->PWM2 = (0.5 + lpFoc->Vc) * 50;
 }
 
 void mcFocSVPWM2(LP_MC_FOC lpFoc)
@@ -888,6 +889,103 @@ void mcInvPark(LP_MC_FOC lpFoc)
 void mcInvClark(LP_MC_FOC lpFoc)
 {
 	lpFoc->Vb = lpFoc->Vbeta;
-	lpFoc->Va = ( +(SQRT3 * lpFoc->Valpha) - lpFoc->Vbeta ) * 0.5f;
-	lpFoc->Vc = ( -(SQRT3 * lpFoc->Valpha) - lpFoc->Vbeta ) * 0.5f;
+	lpFoc->Va = (-lpFoc->Vbeta + (SQRT3 * lpFoc->Valpha)) * 0.5f;
+	lpFoc->Vc = (-lpFoc->Vbeta - (SQRT3 * lpFoc->Valpha)) * 0.5f;
+
+	/*lpFoc->Va = lpFoc->Valpha;
+	lpFoc->Vb = ( -lpFoc->Valpha + ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
+	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;*/
+}
+
+void mcFocSVPWM_TI(LP_MC_FOC lpFoc)
+{
+	int sector, A = 0, B = 0, C = 0;
+	float X, Y, Z;
+	float t1, t2;
+	float taon, tbon, tcon;
+	float dcinvt = 50;
+
+	if (lpFoc->Va >= 0.0f) A = 1;
+	if (lpFoc->Vb >= 0.0f) B = 1;
+	if (lpFoc->Vc >= 0.0f) C = 1;
+
+	sector = A + 2 * B + 4 * C;
+
+	X = (SQRT3 * lpFoc->Vbeta)*dcinvt;
+	Y = (SQRT3_DIV2 * lpFoc->Vbeta*dcinvt) + ((3 / 2)*lpFoc->Valpha*dcinvt);
+	Z = (SQRT3_DIV2 * lpFoc->Vbeta*dcinvt) - ((3 / 2)*lpFoc->Valpha*dcinvt);
+
+	switch (sector) {
+	case 1:
+		t1 = Z; t2 = Y;
+		break;
+
+	case 2:
+		t1 = Y; t2 = -X;
+		break;
+
+	case 3:
+		t1 = -Z; t2 = X;
+		break;
+
+	case 4:
+		t1 = -X; t2 = Z;
+		break;
+
+	case 5:
+		t1 = X; t2 = -Y;
+		break;
+
+	case 6:
+		t1 = -Y; t2 = -Z;
+		break;
+	}
+
+	taon = (50 - t1 - t2) / 2;
+	tbon = taon + t1;
+	tcon = tbon + t2;
+
+	switch (sector) {
+	case 1:
+		lpFoc->PWM1 = tbon;
+		lpFoc->PWM2 = taon;
+		lpFoc->PWM3 = tcon;
+	break;
+
+	case 2:
+		lpFoc->PWM1 = taon;
+		lpFoc->PWM2 = tcon;
+		lpFoc->PWM3 = tbon;
+	break;
+
+	case 3:
+		lpFoc->PWM1 = taon;
+		lpFoc->PWM2 = tbon;
+		lpFoc->PWM3 = tcon;
+	break;
+
+	case 4:
+		lpFoc->PWM1 = tcon;
+		lpFoc->PWM2 = tbon;
+		lpFoc->PWM3 = taon;
+	break;
+
+	case 5:
+		lpFoc->PWM1 = tcon;
+		lpFoc->PWM2 = taon;
+		lpFoc->PWM3 = tbon;
+	break;
+
+	case 6:
+		lpFoc->PWM1 = tbon;
+		lpFoc->PWM2 = tcon;
+		lpFoc->PWM3 = taon;
+	break;
+	}
+
+	static int index = 0, sector_old = 0;
+	if (sector_old != lpFoc->sector) {
+		lpFoc->arrSector[index++] = lpFoc->sector;
+		sector_old = lpFoc->sector;
+	}
 }

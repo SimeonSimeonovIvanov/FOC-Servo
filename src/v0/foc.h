@@ -38,8 +38,6 @@ typedef struct {
 	float angle;
 	float fSinAngle, fCosAngle;
 
-	int sector;
-
 	float Ia, Ib;
 	float Ialpha, Ibeta;
 
@@ -56,6 +54,7 @@ typedef struct {
 
 	float vbus_voltage;
 
+	int sector;
 	int PWM1, PWM2, PWM3;
 
 } MC_FOC, *LP_MC_FOC;
@@ -70,6 +69,6 @@ void mcInvPark(LP_MC_FOC lpFoc);
 void mcInvClark(LP_MC_FOC lpFoc);
 
 void initDAC(void);
-void ADC1_2_IRQHandler( void );
+void ADC1_2_IRQHandler(void);
 
 #endif
