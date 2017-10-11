@@ -241,7 +241,7 @@ uint16_t read360uvw(void)
 
 	hall_old = hall;
 
-	return 360 - encoder;
+	return encoder;
 }
 
 uint16_t readHallMap( void )

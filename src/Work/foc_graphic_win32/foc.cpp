@@ -888,13 +888,13 @@ void mcInvPark(LP_MC_FOC lpFoc)
 
 void mcInvClark(LP_MC_FOC lpFoc)
 {
-	lpFoc->Vb = lpFoc->Vbeta;
+	/*lpFoc->Vb = lpFoc->Vbeta;
 	lpFoc->Va = (-lpFoc->Vbeta + (SQRT3 * lpFoc->Valpha)) * 0.5f;
-	lpFoc->Vc = (-lpFoc->Vbeta - (SQRT3 * lpFoc->Valpha)) * 0.5f;
+	lpFoc->Vc = (-lpFoc->Vbeta - (SQRT3 * lpFoc->Valpha)) * 0.5f;*/
 
-	/*lpFoc->Va = lpFoc->Valpha;
+	lpFoc->Va = lpFoc->Valpha;
 	lpFoc->Vb = ( -lpFoc->Valpha + ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
-	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;*/
+	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
 }
 
 void mcFocSVPWM_TI(LP_MC_FOC lpFoc)
@@ -910,7 +910,7 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc)
 	if (lpFoc->Vc >= 0.0f) C = 1;
 
 	sector = A + 2 * B + 4 * C;
-
+	lpFoc->sector = sector;
 	X = (SQRT3 * lpFoc->Vbeta)*dcinvt;
 	Y = (SQRT3_DIV2 * lpFoc->Vbeta*dcinvt) + ((3 / 2)*lpFoc->Valpha*dcinvt);
 	Z = (SQRT3_DIV2 * lpFoc->Vbeta*dcinvt) - ((3 / 2)*lpFoc->Valpha*dcinvt);
@@ -982,6 +982,111 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc)
 		lpFoc->PWM3 = taon;
 	break;
 	}
+
+	static int index = 0, sector_old = 0;
+	if (sector_old != lpFoc->sector) {
+		lpFoc->arrSector[index++] = lpFoc->sector;
+		sector_old = lpFoc->sector;
+	}
+}
+
+
+void mcFocSVPWM00(LP_MC_FOC lpFoc)
+{
+	float T1, T2;
+	int sector = 0;
+	float ta, tb, tc;
+	float PWM_A, PWM_B, PWM_C;
+
+	mcInvClark(lpFoc);
+
+	if (lpFoc->Va > 0.0f) sector |= 1;
+	if (lpFoc->Vb > 0.0f) sector |= 2;
+	if (lpFoc->Vc > 0.0f) sector |= 4;
+
+	lpFoc->sector = sector;
+
+	switch (sector) {
+	case 1:
+		T1 = -lpFoc->Vb;
+		T2 = -lpFoc->Vc;
+		break;
+
+	case 2:
+		T1 = -lpFoc->Vc;
+		T2 = -lpFoc->Va;
+		break;
+
+	case 3:
+		T1 = lpFoc->Vb;
+		T2 = lpFoc->Va;
+		break;
+
+	case 4:
+		T1 = -lpFoc->Va;
+		T2 = -lpFoc->Vb;
+		break;
+
+	case 5:
+		T1 = lpFoc->Va;
+		T2 = lpFoc->Vc;
+		break;
+
+	case 6:
+		T1 = lpFoc->Vc;
+		T2 = lpFoc->Vb;
+		break;
+	}
+
+	T1 = PWM_PERIOD * T1;
+	T2 = PWM_PERIOD * T2;
+
+	tc = (PWM_PERIOD - (2 * (T1 + T2))) * 0.5;
+	tb = tc + 2 * T1;
+	ta = tb + 2 * T1;
+
+	switch (sector) {
+	case 1:
+		PWM_A = tb;
+		PWM_B = ta;
+		PWM_C = tc;
+		break;
+
+	case 2:
+		PWM_A = ta;
+		PWM_B = tc;
+		PWM_C = tb;
+		break;
+
+	case 3:
+		PWM_A = ta;
+		PWM_B = tb;
+		PWM_C = tc;
+		break;
+
+	case 4:
+		PWM_A = tc;
+		PWM_B = tb;
+		PWM_C = ta;
+		break;
+
+	case 5:
+		PWM_A = tc;
+		PWM_B = ta;
+		PWM_C = tb;
+		break;
+
+	case 6:
+		PWM_A = tb;
+		PWM_B = tc;
+		PWM_C = ta;
+		break;
+	}
+
+	lpFoc->PWM1 = PWM_A * 2;
+	lpFoc->PWM2 = PWM_B * 2;
+	lpFoc->PWM3 = PWM_C * 2;
+
 
 	static int index = 0, sector_old = 0;
 	if (sector_old != lpFoc->sector) {

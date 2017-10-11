@@ -116,8 +116,8 @@ void mcClark(LP_MC_FOC lpFoc)
 
 void mcPark(LP_MC_FOC lpFoc)
 {
-	lpFoc->Id = +lpFoc->Ialpha * lpFoc->fCosAngle + lpFoc->Ibeta  * lpFoc->fSinAngle;
-	lpFoc->Iq = -lpFoc->Ialpha * lpFoc->fSinAngle + lpFoc->Ibeta  * lpFoc->fCosAngle;
+	lpFoc->Id = +lpFoc->Ialpha * lpFoc->fCosAngle + lpFoc->Ibeta * lpFoc->fSinAngle;
+	lpFoc->Iq = -lpFoc->Ialpha * lpFoc->fSinAngle + lpFoc->Ibeta * lpFoc->fCosAngle;
 }
 
 void mcInvPark(LP_MC_FOC lpFoc)
@@ -128,13 +128,13 @@ void mcInvPark(LP_MC_FOC lpFoc)
 
 void mcInvClark(LP_MC_FOC lpFoc)
 {
-	lpFoc->Vb = lpFoc->Vbeta;
+	/*lpFoc->Vb = lpFoc->Vbeta;
 	lpFoc->Va = ( -lpFoc->Vbeta + ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
-	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
+	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;*/
 
-	/*lpFoc->Va = lpFoc->Valpha;
+	lpFoc->Va = lpFoc->Valpha;
 	lpFoc->Vb = ( -lpFoc->Valpha + ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
-	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;*/
+	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
 }
 
 void ADC_IRQHandler( void )
@@ -346,9 +346,6 @@ void ADC_IRQHandler( void )
 	mcFocSetCurrent( lpFoc, Ia, Ib );
 
 	mcClark( lpFoc );
-
-	// Вероятно има проблем с подредбата на фазите спрямо Ia = sin( 0 ).
-	// В момента Ib = sin(0 + 120) а би трябвало да е Ib = sin( 0 - 120 ) (???):
 	lpFoc->Ibeta = -lpFoc->Ibeta;
 
 	mcPark( lpFoc );
@@ -361,7 +358,7 @@ void ADC_IRQHandler( void )
 	lpFoc->Valpha = SQRT3_DIV2 * (float)lpFoc->Valpha;
 	lpFoc->Vbeta = SQRT3_DIV2 * (float)lpFoc->Vbeta;
 	mcFocSVPWM2( lpFoc );
-	//mcFocSVPWM0( lpFoc );
+	//mcFocSVPWM00( lpFoc );
 
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
@@ -381,4 +378,100 @@ void mcFocSVPWM0(LP_MC_FOC lpFoc)
 	lpFoc->PWM1 = PWM_PERIOD/2+(lpFoc->Va)*PWM_PERIOD;
 	lpFoc->PWM2 = PWM_PERIOD/2+(lpFoc->Vb)*PWM_PERIOD;
 	lpFoc->PWM3 = PWM_PERIOD/2+(lpFoc->Vc)*PWM_PERIOD;
+}
+
+
+void mcFocSVPWM00(LP_MC_FOC lpFoc)
+{
+	float T1, T2;
+	int sector = 0;
+	float ta, tb, tc;
+	float PWM_A, PWM_B, PWM_C;
+
+	mcInvClark(lpFoc);
+
+	if( lpFoc->Va > 0.0f ) sector |= 1;
+	if( lpFoc->Vb > 0.0f ) sector |= 2;
+	if( lpFoc->Vc > 0.0f ) sector |= 4;
+
+	switch(sector) {
+	case 1:
+		T1 = -lpFoc->Vb;
+		T2 = -lpFoc->Vc;
+	 break;
+
+	case 2:
+		T1 = -lpFoc->Vc;
+		T2 = -lpFoc->Va;
+	 break;
+
+	case 3:
+		T1 = lpFoc->Vb;
+		T2 = lpFoc->Va;
+	 break;
+
+	case 4:
+		T1 = -lpFoc->Va;
+		T2 = -lpFoc->Vb;
+	 break;
+
+	case 5:
+		T1 = lpFoc->Va;
+		T2 = lpFoc->Vc;
+	 break;
+
+	case 6:
+		T1 = lpFoc->Vc;
+		T2 = lpFoc->Vb;
+	 break;
+	}
+
+	T1 = PWM_PERIOD * T1;
+	T2 = PWM_PERIOD * T2;
+
+	tc = ( PWM_PERIOD - ( 2 * ( T1 + T2 ) ) ) * 0.5;
+	tb = tc + 2 * T1;
+	ta = tb + 2 * T1;
+
+	switch(sector) {
+	case 1:
+		PWM_A = tb;
+		PWM_B = ta;
+		PWM_C = tc;
+	 break;
+
+	case 2:
+		PWM_A = ta;
+		PWM_B = tc;
+		PWM_C = tb;
+	 break;
+
+	case 3:
+		PWM_A = ta;
+		PWM_B = tb;
+		PWM_C = tc;
+	 break;
+
+	case 4:
+		PWM_A = tc;
+		PWM_B = tb;
+		PWM_C = ta;
+	 break;
+
+	case 5:
+		PWM_A = tc;
+		PWM_B = ta;
+		PWM_C = tb;
+	 break;
+
+	case 6:
+		PWM_A = tb;
+		PWM_B = tc;
+		PWM_C = ta;
+	 break;
+	}
+
+	lpFoc->PWM1 = PWM_A*1000;
+	lpFoc->PWM2 = PWM_B*1000;
+	lpFoc->PWM3 = PWM_C*1000;
 }

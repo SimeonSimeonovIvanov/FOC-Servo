@@ -191,7 +191,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			stFoc.Vd = 0.0f;
 			stFoc.Vq = 0.4f;
 			mcInvPark(&stFoc);
-			mcInvClark(&stFoc);
+			//mcInvClark(&stFoc);
 
 			mcFocSVPWM2(&stFoc);
 
