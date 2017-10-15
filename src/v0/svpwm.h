@@ -16,7 +16,7 @@
 
 #define PWM_PRSC		( (u8)0 )
 /* Resolution: 1Hz */
-#define PWM_PERIOD		( (u16) (CKTIM / (u32)(2 * PWM_FREQ *(PWM_PRSC+1))) ) // ~2600
+#define PWM_PERIOD		( (u16) (CKTIM / (u32)(2 * PWM_FREQ *(PWM_PRSC+1))) ) // 2625
 
 #define REP_RATE		10
 #define DEADTIME		5

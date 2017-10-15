@@ -872,6 +872,8 @@ void mcClark(LP_MC_FOC lpFoc)
 {	
 	lpFoc->Ialpha = lpFoc->Ia;
 	lpFoc->Ibeta = (lpFoc->Ia + 2 * lpFoc->Ib) * divSQRT3;
+
+	lpFoc->Ibeta = -lpFoc->Ibeta; // ???
 }
 
 void mcPark(LP_MC_FOC lpFoc)
@@ -883,18 +885,18 @@ void mcPark(LP_MC_FOC lpFoc)
 void mcInvPark(LP_MC_FOC lpFoc)
 {
 	lpFoc->Valpha = lpFoc->Vd * lpFoc->fCosAngle - lpFoc->Vq * lpFoc->fSinAngle;
-	lpFoc->Vbeta  = lpFoc->Vd * lpFoc->fSinAngle + lpFoc->Vq * lpFoc->fCosAngle;
+	lpFoc->Vbeta = lpFoc->Vd * lpFoc->fSinAngle + lpFoc->Vq * lpFoc->fCosAngle;
 }
 
 void mcInvClark(LP_MC_FOC lpFoc)
 {
-	/*lpFoc->Vb = lpFoc->Vbeta;
-	lpFoc->Va = (-lpFoc->Vbeta + (SQRT3 * lpFoc->Valpha)) * 0.5f;
-	lpFoc->Vc = (-lpFoc->Vbeta - (SQRT3 * lpFoc->Valpha)) * 0.5f;*/
+	lpFoc->Vb = lpFoc->Vbeta;
+	lpFoc->Va = (-lpFoc->Vbeta + (SQRT3 * lpFoc->Valpha)) *0.5f;
+	lpFoc->Vc = (-lpFoc->Vbeta - (SQRT3 * lpFoc->Valpha)) *0.5f;
 
-	lpFoc->Va = lpFoc->Valpha;
+	/*lpFoc->Va = lpFoc->Valpha;
 	lpFoc->Vb = ( -lpFoc->Valpha + ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
-	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
+	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;*/
 }
 
 void mcFocSVPWM_TI(LP_MC_FOC lpFoc)
@@ -994,58 +996,86 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc)
 void mcFocSVPWM00(LP_MC_FOC lpFoc)
 {
 	float T1, T2;
-	int sector = 0;
+	int N = 0;
 	float ta, tb, tc;
 	float PWM_A, PWM_B, PWM_C;
+	float Uref1, Uref2, Uref3;
 
 	mcInvClark(lpFoc);
 
-	if (lpFoc->Va > 0.0f) sector |= 1;
-	if (lpFoc->Vb > 0.0f) sector |= 2;
-	if (lpFoc->Vc > 0.0f) sector |= 4;
+	lpFoc->Valpha = lpFoc->Ialpha/100;
+	lpFoc->Vbeta = lpFoc->Ibeta/100;
 
-	lpFoc->sector = sector;
+	Uref1 = lpFoc->Vbeta;
+	Uref2 = +SQRT3 * lpFoc->Valpha - lpFoc->Vbeta;
+	Uref3 = -SQRT3 * lpFoc->Valpha - lpFoc->Vbeta;
 
-	switch (sector) {
+	if (Uref1 > 0) N |= 1;
+	if (Uref2 > 0) N |= 2;
+	if (Uref3 > 0) N |= 4;
+
+	char map[8] = {
+		0,
+		2,
+		6,
+		1,
+		4,
+		3,
+		5,
+		0
+	};
+	
+	lpFoc->sector = map[N];
+	
+	float X, Y, Z, Udc = 10, Tpwm = 100;
+
+	X = (SQRT3 * Tpwm * lpFoc->Vbeta) / Udc;
+	Y = ((SQRT3 * Tpwm) / Udc) * (((+SQRT3 / 2) * lpFoc->Valpha) + lpFoc->Vbeta);
+	Z = ((SQRT3 * Tpwm) / Udc) * (((-SQRT3 / 2) * lpFoc->Valpha) + lpFoc->Vbeta);
+
+	switch (lpFoc->sector) {
 	case 1:
-		T1 = -lpFoc->Vb;
-		T2 = -lpFoc->Vc;
+		T1 = Z;
+		T2 = Y;
 		break;
 
 	case 2:
-		T1 = -lpFoc->Vc;
-		T2 = -lpFoc->Va;
+		T1 = Y;
+		T2 = -X;
 		break;
 
 	case 3:
-		T1 = lpFoc->Vb;
-		T2 = lpFoc->Va;
+		T1 = -Z;
+		T2 = X;
 		break;
 
 	case 4:
-		T1 = -lpFoc->Va;
-		T2 = -lpFoc->Vb;
+		T1 = -X;
+		T2 = Z;
 		break;
 
 	case 5:
-		T1 = lpFoc->Va;
-		T2 = lpFoc->Vc;
+		T1 = X;
+		T2 = -Y;
 		break;
 
 	case 6:
-		T1 = lpFoc->Vc;
-		T2 = lpFoc->Vb;
+		T1 = -Y;
+		T2 = -Z;
 		break;
 	}
 
-	T1 = PWM_PERIOD * T1;
-	T2 = PWM_PERIOD * T2;
+	float T0 = Tpwm - T1 - T2;
+
+	ta = (Tpwm - T1 - T1) / 4;
+	tb = ta + (T1 / 2);
+	tc = tb + (T2 / 2);
 
 	tc = (PWM_PERIOD - (2 * (T1 + T2))) * 0.5;
 	tb = tc + 2 * T1;
 	ta = tb + 2 * T1;
 
-	switch (sector) {
+	switch (lpFoc->sector) {
 	case 1:
 		PWM_A = tb;
 		PWM_B = ta;
@@ -1083,9 +1113,9 @@ void mcFocSVPWM00(LP_MC_FOC lpFoc)
 		break;
 	}
 
-	lpFoc->PWM1 = PWM_A * 2;
-	lpFoc->PWM2 = PWM_B * 2;
-	lpFoc->PWM3 = PWM_C * 2;
+	lpFoc->PWM1 = PWM_A;
+	lpFoc->PWM2 = PWM_B;
+	lpFoc->PWM3 = PWM_C;
 
 
 	static int index = 0, sector_old = 0;
