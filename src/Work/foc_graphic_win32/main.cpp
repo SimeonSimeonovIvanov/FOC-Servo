@@ -189,7 +189,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			mcPark(&stFoc);
 
 			stFoc.Vd = 0.0f;
-			stFoc.Vq = 0.4f;
+			stFoc.Vq = 0.5f;
 			mcInvPark(&stFoc);
 			//mcInvClark(&stFoc);
 
@@ -198,9 +198,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;
 			arrGraphic[2][i] = Ic;
-			//arrGraphic[0][i] = stFoc.Va*40;
-			//arrGraphic[1][i] = stFoc.Vb*40;
-			//arrGraphic[2][i] = stFoc.Vc*40;
+			//arrGraphic[0][i] = stFoc.Va * 20;
+			//arrGraphic[1][i] = stFoc.Vb *20;
+			//arrGraphic[2][i] = stFoc.Vc *20;
 			
 			// ----------------------------------------------------------------
 			if( counter++ <= 30 * steep ) {
@@ -213,8 +213,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			// ----------------------------------------------------------------
 
-			arrGraphic[3][i] = stFoc.Ialpha;
-			arrGraphic[4][i] = stFoc.Ibeta;
+			arrGraphic[3][i] = stFoc.Valpha*50;
+			arrGraphic[4][i] = stFoc.Vbeta*50;
 
 			//arrGraphic[5][i] = stFoc.Id;
 			//arrGraphic[6][i] = stFoc.Iq;
@@ -286,9 +286,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[10][i] + 0, RGB(127, 127, 127));
 
-			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[5][i] + 100, RGB(255, 0, 0));
+			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[5][i] + 200, RGB(0, 0, 255));
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[6][i] + 200, RGB(0, 255, 0));
-			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[7][i] + 300, RGB(0, 0, 255));
+			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[7][i] + 200, RGB(255, 0, 0));
 
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[8][i] + 300, RGB(255, 0, 255));
 
