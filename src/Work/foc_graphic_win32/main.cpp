@@ -175,29 +175,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Ib = Ib * 20.0f;
 			Ic = -Ia -Ib;
 
+			///////////////////////////////////////////////////////////////////
 			mcFocSetAngle(&stFoc, angle);
 			mcFocSetCurrent(&stFoc, Ia, Ib);
-
+			///////////////////////////////////////////////////////////////////
 			mcClark(&stFoc);
 
 #ifdef __PHASE_COR__
 			//stFoc.Ibeta = -stFoc.Ibeta;
 #else
 #endif
-			//stFoc.Ibeta = -stFoc.Ibeta;
+			//stFoc.Ibeta = -stFoc.Ibeta; // ???
 
 			mcPark(&stFoc);
-
+			///////////////////////////////////////////////////////////////////
+			/*
+			stFoc.Vd = pid( Zero_Sp, stFoc.Id );
+			stFoc.Vq = pid(   Iq_Sp, stFoc.Iq );
+			*/
 			stFoc.Vd = 0.0f;
-			stFoc.Vq = 0.5f;
+			stFoc.Vq = 0.8f;
+			///////////////////////////////////////////////////////////////////
 			mcInvPark(&stFoc);
-			//mcInvClark(&stFoc);
-
+			mcInvClark(&stFoc);
+			///////////////////////////////////////////////////////////////////
+			//mcFocSVPWM2(&stFoc);
+			//mcFocSVPWM1(&stFoc);
 			mcFocSVPWM00(&stFoc);
-
+			///////////////////////////////////////////////////////////////////
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;
 			arrGraphic[2][i] = Ic;
+			arrGraphic[0][i] = stFoc.X;
+			arrGraphic[1][i] = stFoc.Y;
+			arrGraphic[2][i] = stFoc.Z;
 			//arrGraphic[0][i] = stFoc.Va * 20;
 			//arrGraphic[1][i] = stFoc.Vb *20;
 			//arrGraphic[2][i] = stFoc.Vc *20;
@@ -277,9 +288,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			SetPixel(hdc, x_pos, ydiv2, RGB(127, 127, 127));
 
-			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[0][i] - 300, RGB(255, 0, 0));
+			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[0][i] - 300, RGB(0, 0, 255));
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[1][i] - 300, RGB(0, 255, 0));
-			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[2][i] - 300, RGB(0, 0, 255));
+			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[2][i] - 300, RGB(255, 0, 0));
 
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[3][i] - 200, RGB(0, 0, 255));
 			SetPixel(hdc, x_pos, ydiv2 - arrGraphic[4][i] - 100, RGB(0, 0, 255));

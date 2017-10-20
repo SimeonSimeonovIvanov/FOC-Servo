@@ -21,20 +21,21 @@ typedef struct {
 	float Valpha, Vbeta;
 	float Va, Vb, Vc;
 
+	int X, Y, Z;
+
 	int PWM1, PWM2, PWM3;
 } MC_FOC, *LP_MC_FOC;
 
 float fSinAngle(int angle);
 float fCosAngle(int angle);
 
-void mcFocSVPWM_TI(LP_MC_FOC lpFoc);
+void mcFocSVPWM2(LP_MC_FOC lpFoc);
 void mcFocSVPWM00(LP_MC_FOC lpFoc);
 
 void mcFoc(LP_MC_FOC lpFoc);
 void mcFocSVPWM(LP_MC_FOC lpFoc);
 void mcFocSVPWM0(LP_MC_FOC lpFoc);
 void mcFocSVPWM1(LP_MC_FOC lpFoc);
-void mcFocSVPWM2(LP_MC_FOC lpFoc);
 void mcFocSVPWM3(LP_MC_FOC lpFoc);
 void mcFocSVPWM4(LP_MC_FOC lpFoc);
 void mcFocSVPWM5(LP_MC_FOC lpFoc);

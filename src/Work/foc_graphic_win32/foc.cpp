@@ -558,6 +558,13 @@ void mcFocSVPWM0(LP_MC_FOC lpFoc)
 
 void mcFocSVPWM2(LP_MC_FOC lpFoc)
 {
+	/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
+	* File Name          : STM32x_svpwm_ics.c
+	* Author             : IMS Systems Lab
+	* Date First Issued  : 21/11/07
+	* Description        : ICS current reading and PWM generation module
+	* SVPWM_IcsCalcDutyCycles
+	********************************************************************************/
 	int hTimePhA, hTimePhB, hTimePhC;
 	int Ualpha, Ubeta;
 	int T, T_2, T_4;
@@ -639,6 +646,13 @@ void mcFocSVPWM2(LP_MC_FOC lpFoc)
 
 void mcFocSVPWM1(LP_MC_FOC lpFoc) // +
 {
+	/******************** (C) COPYRIGHT 2008 STMicroelectronics ********************
+	* File Name          : STM32x_svpwm_ics.c
+	* Author             : IMS Systems Lab
+	* Date First Issued  : 21/11/07
+	* Description        : ICS current reading and PWM generation module
+	* SVPWM_IcsCalcDutyCycles
+	********************************************************************************/
 	int bSector;
 	float wX, wY, wZ;
 	float wUAlpha, wUBeta;
@@ -872,8 +886,6 @@ void mcClark(LP_MC_FOC lpFoc)
 {	
 	lpFoc->Ialpha = lpFoc->Ia;
 	lpFoc->Ibeta = (lpFoc->Ia + 2 * lpFoc->Ib) * divSQRT3;
-
-	//lpFoc->Ibeta = -lpFoc->Ibeta; // ???
 }
 
 void mcPark(LP_MC_FOC lpFoc)
@@ -904,7 +916,7 @@ void mcFocSVPWM00(LP_MC_FOC lpFoc)
 	float PWM1, PWM2, PWM3;
 	float Tpwm = 1.0;
 
-	mcInvClark(lpFoc);
+	//mcInvClark(lpFoc);
 
 	Uref1 = lpFoc->Vb;
 	Uref2 = lpFoc->Va;
@@ -1010,7 +1022,7 @@ void mcFocSVPWM00(LP_MC_FOC lpFoc)
 	 break;
 	}
 
-	float scale = 50;
+	float scale = 100;
 
 	lpFoc->PWM1 = PWM1 * scale;
 	lpFoc->PWM2 = PWM2 * scale;
@@ -1020,9 +1032,9 @@ void mcFocSVPWM00(LP_MC_FOC lpFoc)
 	//lpFoc->PWM2 = Uref2 * scale;
 	//lpFoc->PWM3 = Uref3 * scale;
 
-	//lpFoc->PWM1 = X * scale;
-	//lpFoc->PWM2 = Y * scale;
-	//lpFoc->PWM3 = Z * scale;
+	lpFoc->X = X * 25;
+	lpFoc->Y = Y * 25;
+	lpFoc->Z = Z * 25;
 
 	static int index = 0, sector_old = 0;
 	if (sector_old != lpFoc->sector) {
