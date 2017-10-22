@@ -70,5 +70,6 @@ void mcInvClark(LP_MC_FOC lpFoc);
 
 void initDAC(void);
 void ADC1_2_IRQHandler(void);
+void adc_current_filter( uint16_t *current_a, uint16_t *current_b );
 
 #endif

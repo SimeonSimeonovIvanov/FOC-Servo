@@ -272,7 +272,7 @@ void DMA1_Stream1_IRQHandler( void )
 * Description        : ICS current reading and PWM generation module
 * SVPWM_IcsCalcDutyCycles
 ********************************************************************************/
-void mcFocSVPWM2(LP_MC_FOC lpFoc)
+void mcFocSVPWM2(LP_MC_FOC lpFoc) // +++
 {
 	int hTimePhA, hTimePhB, hTimePhC;
 	int Ualpha, Ubeta;
@@ -339,4 +339,152 @@ void mcFocSVPWM2(LP_MC_FOC lpFoc)
 	lpFoc->PWM1 = hTimePhA;
 	lpFoc->PWM2 = hTimePhB;
 	lpFoc->PWM3 = hTimePhC;
+}
+
+void mcFocSVPWM00(LP_MC_FOC lpFoc) // ???
+{
+	float Uref1, Uref2, Uref3;
+	float X, Y, Z;
+	float t_1, t_2;
+	float t1, t2, t3;
+	float PWM1, PWM2, PWM3;
+	float Tpwm = 1.0;
+
+	mcInvClark(lpFoc);
+
+	Uref1 = lpFoc->Vb;
+	Uref2 = lpFoc->Va;
+	Uref3 = lpFoc->Vc;
+
+	if (Uref3 <= 0) {
+		if (Uref2 <= 0) {
+			lpFoc->sector = 2;
+		} else {
+			if (Uref1 <= 0) {
+				lpFoc->sector = 6;
+			} else {
+				lpFoc->sector = 1;
+			}
+		}
+	} else {
+		if (Uref2 <= 0) {
+			if (Uref1 <= 0) {
+				lpFoc->sector = 4;
+			} else {
+				lpFoc->sector = 3;
+			}
+		} else {
+			lpFoc->sector = 5;
+		}
+	}
+
+	X = lpFoc->Vbeta;
+	Y = 0.5f * (lpFoc->Vbeta + SQRT3 * lpFoc->Valpha);
+	Z = 0.5f * (lpFoc->Vbeta - SQRT3 * lpFoc->Valpha);
+
+	switch (lpFoc->sector) {
+	case 1:
+		t_1 = X;
+		t_2 = -Z;
+	 break;
+
+	case 2:
+		t_1 = Z;
+		t_2 = Y;
+	 break;
+
+	case 3:
+		t_1 = -Y;
+		t_2 = X;
+	 break;
+
+	case 4:
+		t_1 = -X;
+		t_2 = Z;
+	 break;
+
+	case 5:
+		t_1 = -Z;
+		t_2 = -Y;
+	 break;
+
+	case 6:
+		t_1 = Y;
+		t_2 = -X;
+	 break;
+	}
+
+	t1 = (Tpwm - t_1 - t_2) * 0.5;
+	t2 = t1 + t_1;
+	t3 = t2 + t_2;
+
+	switch (lpFoc->sector) {
+	case 1:
+		PWM1 = t3;
+		PWM2 = t2;
+		PWM3 = t1;
+	 break;
+
+	case 2:
+		PWM1 = -t2 + (t3 + t1); // ???
+		PWM2 = t3;
+		PWM3 = t1;
+	 break;
+
+	case 3:
+		PWM1 = t1;
+		PWM2 = t3;
+		PWM3 = t2;
+	 break;
+
+	case 4:
+		PWM1 = t1;
+		PWM2 = -t2 + (t3 + t1); // ???;
+		PWM3 = t3;
+	 break;
+
+	case 5:
+		PWM1 = t2;
+		PWM2 = t1;
+		PWM3 = t3;
+	 break;
+
+	case 6:
+		PWM1 = t3;
+		PWM2 = t1;
+		PWM3 = -t2 + (t3 + t1); // ???;
+	 break;
+	}
+
+	lpFoc->PWM1 = PWM1 * (float)PWM_PERIOD;
+	lpFoc->PWM2 = PWM2 * (float)PWM_PERIOD;
+	lpFoc->PWM3 = PWM3 * (float)PWM_PERIOD;
+}
+
+void mcFocSVPWM(LP_MC_FOC lpFoc) // ???
+{
+  //#define PHASE_CHANGE
+
+	int T, T_2, T_4;
+
+	T = PWM_PERIOD;
+	T_2 = T * 0.50f;
+	T_4 = T * 0.25f;
+
+	mcInvClark(lpFoc);
+
+  #ifndef PHASE_CHANGE
+	lpFoc->Vb = -lpFoc->Vb;
+  #endif
+
+	lpFoc->PWM1 = T_2 + ( lpFoc->Va * T_2 );
+
+  #ifndef PHASE_CHANGE
+	lpFoc->PWM2 = T_2 + ( lpFoc->Vb * T_2 );
+	lpFoc->PWM3 = T_2 + ( lpFoc->Vc * T_2 );
+  #else
+	lpFoc->PWM3 = T_2 + ( lpFoc->Vb * T_4 );
+	lpFoc->PWM2 = T_2 + ( lpFoc->Vc * T_4 );
+  #endif
+
 }

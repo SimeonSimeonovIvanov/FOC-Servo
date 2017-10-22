@@ -12,9 +12,11 @@ extern int current_a_offset, current_b_offset;
 extern int32_t sp_counter;
 extern int main_state;
 
+uint16_t current_a = 0, current_b = 0;
+
 static LP_MC_FOC lpFoc;
 
-uint16_t current_a, current_b, dc_voltage, ai0, ai1;
+uint16_t dc_voltage, ai0, ai1;
 uint16_t ADC_values[ARRAYSIZE];
 
 int16_t enc_delta;
@@ -128,18 +130,17 @@ void mcInvPark(LP_MC_FOC lpFoc)
 
 void mcInvClark(LP_MC_FOC lpFoc)
 {
-	/*lpFoc->Vb = lpFoc->Vbeta;
+	lpFoc->Vb = lpFoc->Vbeta;
 	lpFoc->Va = ( -lpFoc->Vbeta + ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
-	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;*/
+	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
 
-	lpFoc->Va = lpFoc->Valpha;
+	/*lpFoc->Va = lpFoc->Valpha;
 	lpFoc->Vb = ( -lpFoc->Valpha + ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
-	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
+	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;*/
 }
 
 void ADC_IRQHandler( void )
 {
-	static int arrIa[10]={0}, arrIb[10]={0};
 	static int temp = 0;
 
 	uint16_t angle;
@@ -161,20 +162,7 @@ void ADC_IRQHandler( void )
 		ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
 	}
 
-	arrIa[9] = arrIa[8];	arrIa[8] = arrIa[7];
-	arrIa[7] = arrIa[6];	arrIa[6] = arrIa[5];
-	arrIa[5] = arrIa[4];	arrIa[4] = arrIa[3];
-	arrIa[3] = arrIa[2];	arrIa[2] = arrIa[1];
-	arrIa[1] = arrIa[0];	arrIa[0] = current_a;
-
-	arrIb[9] = arrIb[8];	arrIb[8] = arrIb[7];
-	arrIb[7] = arrIb[6];	arrIb[6] = arrIb[5];
-	arrIb[5] = arrIb[4];	arrIb[4] = arrIb[3];
-	arrIb[3] = arrIb[2];	arrIb[2] = arrIb[1];
-	arrIb[1] = arrIb[0];	arrIb[0] = current_b;
-
-	current_a = ( arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] + arrIa[5] + arrIa[6]  + arrIa[7]  + arrIa[8] + arrIa[9] ) / 10;
-	current_b = ( arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] + arrIb[5] + arrIb[6]  + arrIb[7]  + arrIb[8] + arrIb[9] ) / 10;
+	adc_current_filter( &current_a, &current_b );
 
 	if( !main_state ) {
 		return;
@@ -340,26 +328,31 @@ void ADC_IRQHandler( void )
 	///////////////////////////////////////////////////////////////////////////
 	Ia = 1.0f * (float)( current_a - current_a_offset );
 	Ib = 1.0f * (float)( current_b - current_b_offset );
-
+	///////////////////////////////////////////////////////////////////////////
 	angle = readRawUVW();
 	mcFocSetAngle( lpFoc, angle );
 	mcFocSetCurrent( lpFoc, Ia, Ib );
-
+	///////////////////////////////////////////////////////////////////////////
 	mcClark( lpFoc );
 	lpFoc->Ibeta = -lpFoc->Ibeta;
 
 	mcPark( lpFoc );
-
+	///////////////////////////////////////////////////////////////////////////
 	lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
 	lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
-
+	///////////////////////////////////////////////////////////////////////////
 	mcInvPark( lpFoc );
-
+	/* mcInvClark( lpFoc ); */
+	///////////////////////////////////////////////////////////////////////////
 	lpFoc->Valpha = SQRT3_DIV2 * (float)lpFoc->Valpha;
 	lpFoc->Vbeta = SQRT3_DIV2 * (float)lpFoc->Vbeta;
 	mcFocSVPWM2( lpFoc );
 	//mcFocSVPWM00( lpFoc );
 
+	/*lpFoc->Valpha = 0.6 * (float)lpFoc->Valpha;
+	lpFoc->Vbeta = 0.6 * (float)lpFoc->Vbeta;
+	mcFocSVPWM( lpFoc );*/
+	///////////////////////////////////////////////////////////////////////////
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
 	TIM_SetCompare3( TIM1, lpFoc->PWM3 );
@@ -370,108 +363,23 @@ void ADC_IRQHandler( void )
 
 	GPIO_ResetBits( GPIOB, GPIO_Pin_2 );
 }
-#include "svpwm.h"
-void mcFocSVPWM0(LP_MC_FOC lpFoc)
+
+void adc_current_filter( uint16_t *current_a, uint16_t *current_b )
 {
-	mcInvClark(lpFoc);
+	static int arrIa[10]={0}, arrIb[10]={0};
 
-	lpFoc->PWM1 = PWM_PERIOD/2+(lpFoc->Va)*PWM_PERIOD;
-	lpFoc->PWM2 = PWM_PERIOD/2+(lpFoc->Vb)*PWM_PERIOD;
-	lpFoc->PWM3 = PWM_PERIOD/2+(lpFoc->Vc)*PWM_PERIOD;
-}
+	arrIa[9] = arrIa[8];	arrIa[8] = arrIa[7];
+	arrIa[7] = arrIa[6];	arrIa[6] = arrIa[5];
+	arrIa[5] = arrIa[4];	arrIa[4] = arrIa[3];
+	arrIa[3] = arrIa[2];	arrIa[2] = arrIa[1];
+	arrIa[1] = arrIa[0];	arrIa[0] = *current_a;
 
+	arrIb[9] = arrIb[8];	arrIb[8] = arrIb[7];
+	arrIb[7] = arrIb[6];	arrIb[6] = arrIb[5];
+	arrIb[5] = arrIb[4];	arrIb[4] = arrIb[3];
+	arrIb[3] = arrIb[2];	arrIb[2] = arrIb[1];
+	arrIb[1] = arrIb[0];	arrIb[0] = *current_b;
 
-void mcFocSVPWM00(LP_MC_FOC lpFoc)
-{
-	float T1, T2;
-	int sector = 0;
-	float ta, tb, tc;
-	float PWM_A, PWM_B, PWM_C;
-
-	mcInvClark(lpFoc);
-
-	if( lpFoc->Va > 0.0f ) sector |= 1;
-	if( lpFoc->Vb > 0.0f ) sector |= 2;
-	if( lpFoc->Vc > 0.0f ) sector |= 4;
-
-	switch(sector) {
-	case 1:
-		T1 = -lpFoc->Vb;
-		T2 = -lpFoc->Vc;
-	 break;
-
-	case 2:
-		T1 = -lpFoc->Vc;
-		T2 = -lpFoc->Va;
-	 break;
-
-	case 3:
-		T1 = lpFoc->Vb;
-		T2 = lpFoc->Va;
-	 break;
-
-	case 4:
-		T1 = -lpFoc->Va;
-		T2 = -lpFoc->Vb;
-	 break;
-
-	case 5:
-		T1 = lpFoc->Va;
-		T2 = lpFoc->Vc;
-	 break;
-
-	case 6:
-		T1 = lpFoc->Vc;
-		T2 = lpFoc->Vb;
-	 break;
-	}
-
-	T1 = PWM_PERIOD * T1;
-	T2 = PWM_PERIOD * T2;
-
-	tc = ( PWM_PERIOD - ( 2 * ( T1 + T2 ) ) ) * 0.5;
-	tb = tc + 2 * T1;
-	ta = tb + 2 * T1;
-
-	switch(sector) {
-	case 1:
-		PWM_A = tb;
-		PWM_B = ta;
-		PWM_C = tc;
-	 break;
-
-	case 2:
-		PWM_A = ta;
-		PWM_B = tc;
-		PWM_C = tb;
-	 break;
-
-	case 3:
-		PWM_A = ta;
-		PWM_B = tb;
-		PWM_C = tc;
-	 break;
-
-	case 4:
-		PWM_A = tc;
-		PWM_B = tb;
-		PWM_C = ta;
-	 break;
-
-	case 5:
-		PWM_A = tc;
-		PWM_B = ta;
-		PWM_C = tb;
-	 break;
-
-	case 6:
-		PWM_A = tb;
-		PWM_B = tc;
-		PWM_C = ta;
-	 break;
-	}
-
-	lpFoc->PWM1 = PWM_A*1000;
-	lpFoc->PWM2 = PWM_B*1000;
-	lpFoc->PWM3 = PWM_C*1000;
+	*current_a = ( arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] + arrIa[5] + arrIa[6]  + arrIa[7]  + arrIa[8] + arrIa[9] ) / 10;
+	*current_b = ( arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] + arrIb[5] + arrIb[6]  + arrIb[7]  + arrIb[8] + arrIb[9] ) / 10;
 }
