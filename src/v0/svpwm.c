@@ -272,7 +272,7 @@ void DMA1_Stream1_IRQHandler( void )
 * Description        : ICS current reading and PWM generation module
 * SVPWM_IcsCalcDutyCycles
 ********************************************************************************/
-void mcFocSVPWM2(LP_MC_FOC lpFoc) // +++
+void mcFocSVPWM_ST2(LP_MC_FOC lpFoc) // +++
 {
 	int hTimePhA, hTimePhB, hTimePhC;
 	int Ualpha, Ubeta;
@@ -341,7 +341,7 @@ void mcFocSVPWM2(LP_MC_FOC lpFoc) // +++
 	lpFoc->PWM3 = hTimePhC;
 }
 
-void mcFocSVPWM00(LP_MC_FOC lpFoc) // ???
+void mcFocSVPWM0(LP_MC_FOC lpFoc) // +++ ?
 {
 	float Uref1, Uref2, Uref3;
 	float X, Y, Z;
@@ -457,12 +457,30 @@ void mcFocSVPWM00(LP_MC_FOC lpFoc) // ???
 	}
 
 	lpFoc->PWM1 = PWM1 * (float)PWM_PERIOD;
-	lpFoc->PWM2 = PWM2 * (float)PWM_PERIOD;
-	lpFoc->PWM3 = PWM3 * (float)PWM_PERIOD;
+	lpFoc->PWM2 = PWM3 * (float)PWM_PERIOD;
+	lpFoc->PWM3 = PWM2 * (float)PWM_PERIOD;
 }
 
-void mcFocSVPWM(LP_MC_FOC lpFoc) // ???
+void mcFocSPWM(LP_MC_FOC lpFoc) // ---
 {
+	/*float valpha, vbeta;
+	float vb, va_int, vb_int, vc_int;
+
+	valpha = lpFoc->Valpha;
+	vbeta = lpFoc->Vbeta;
+
+	// Va = Valpha
+	// Vb = -1/2 * Valpha + V3/2 * Vbeta
+	// Vc = -1/2 * Valpha - V3/2 * Vbeta
+	va_int = valpha;
+	vb = SQRT3_DIV2 * vbeta;
+	vb_int = -( va_int * 0.5f ) + vb;
+	vc_int = -( va_int * 0.5f ) - vb;
+
+	lpFoc->PWM1 = va_int*50;
+	lpFoc->PWM2 = vb_int*50;
+	lpFoc->PWM3 = vc_int*50;*/
+
   //#define PHASE_CHANGE
 
 	int T, T_2, T_4;
@@ -486,5 +504,4 @@ void mcFocSVPWM(LP_MC_FOC lpFoc) // ???
 	lpFoc->PWM3 = T_2 + ( lpFoc->Vb * T_4 );
 	lpFoc->PWM2 = T_2 + ( lpFoc->Vc * T_4 );
   #endif
-
 }

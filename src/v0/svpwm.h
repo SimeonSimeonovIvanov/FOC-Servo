@@ -22,9 +22,9 @@
 #define DEADTIME		5
 
 void svpwmInit(void);
-void mcFocSVPWM2(LP_MC_FOC lpFoc);
-void mcFocSVPWM00(LP_MC_FOC lpFoc);
-void mcFocSVPWM(LP_MC_FOC lpFoc);
+void mcFocSVPWM_ST2(LP_MC_FOC lpFoc);
+void mcFocSVPWM0(LP_MC_FOC lpFoc);
+void mcFocSPWM(LP_MC_FOC lpFoc);
 
 void DMAInit(void);
 void svpwmInitADC( void );

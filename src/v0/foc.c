@@ -346,8 +346,9 @@ void ADC_IRQHandler( void )
 	///////////////////////////////////////////////////////////////////////////
 	lpFoc->Valpha = SQRT3_DIV2 * (float)lpFoc->Valpha;
 	lpFoc->Vbeta = SQRT3_DIV2 * (float)lpFoc->Vbeta;
-	mcFocSVPWM2( lpFoc );
-	//mcFocSVPWM00( lpFoc );
+	//mcFocSVPWM_ST2( lpFoc );
+	mcFocSVPWM0( lpFoc );
+	//mcFocSPWM( lpFoc );
 
 	/*lpFoc->Valpha = 0.6 * (float)lpFoc->Valpha;
 	lpFoc->Vbeta = 0.6 * (float)lpFoc->Vbeta;
