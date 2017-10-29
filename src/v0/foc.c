@@ -344,11 +344,12 @@ void ADC_IRQHandler( void )
 	mcInvPark( lpFoc );
 	/* mcInvClark( lpFoc ); */
 	///////////////////////////////////////////////////////////////////////////
-	lpFoc->Valpha = SQRT3_DIV2 * (float)lpFoc->Valpha;
-	lpFoc->Vbeta = SQRT3_DIV2 * (float)lpFoc->Vbeta;
+	lpFoc->Valpha = SQRT3_DIV2 * lpFoc->Valpha;
+	lpFoc->Vbeta = SQRT3_DIV2 * lpFoc->Vbeta;
 	//mcFocSVPWM_ST2( lpFoc );
-	mcFocSVPWM0( lpFoc );
+	//mcFocSVPWM0( lpFoc );
 	//mcFocSPWM( lpFoc );
+	mcFocSVPWM_TI(lpFoc);
 
 	/*lpFoc->Valpha = 0.6 * (float)lpFoc->Valpha;
 	lpFoc->Vbeta = 0.6 * (float)lpFoc->Vbeta;

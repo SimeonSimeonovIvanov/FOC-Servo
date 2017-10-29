@@ -185,7 +185,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//stFoc.Ibeta = -stFoc.Ibeta;
 #else
 #endif
-			//stFoc.Ibeta = -stFoc.Ibeta; // ???
+			stFoc.Ibeta = -stFoc.Ibeta; // ???
 
 			mcPark(&stFoc);
 			///////////////////////////////////////////////////////////////////
@@ -194,16 +194,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			stFoc.Vq = pid(   Iq_Sp, stFoc.Iq );
 			*/
 			stFoc.Vd = 0.0f;
-			stFoc.Vq = 0.5f;
+			stFoc.Vq = 0.9f;
 			///////////////////////////////////////////////////////////////////
 			mcInvPark(&stFoc);
 			mcInvClark(&stFoc);
 			///////////////////////////////////////////////////////////////////
-			//mcFocSVPWM_ST2(&stFoc);
+			mcFocSVPWM_ST2(&stFoc);
 			//mcFocSVPWM_ST1(&stFoc);
 			//mcFocSVPWM0(&stFoc);
 			//mcFocSPWM(&stFoc);
-			mcFocSVPWM_TI(&stFoc);
+			//mcFocSVPWM_TI(&stFoc);
 			///////////////////////////////////////////////////////////////////
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;

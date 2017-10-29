@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<history>
+   <processor signature="6.3.1 -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wall -g -Map=main.map -Os --gc-sections -lm -lgcc -lc -LC:\CooCox\CoIDE\configuration\ProgramData\main -TC:\CooCox\CoIDE\configuration\ProgramData\main/link.ld -g">
+      <target file="main.elf" lastModified="15f678ca2c2">
+         <source file="..\obj\stm32f4xx_syscfg.o" lastModified="15f678409a0"/>
+         <source file="..\obj\mb.o" lastModified="15f67840a00"/>
+         <source file="..\obj\mbfuncdisc.o" lastModified="15f67840a45"/>
+         <source file="..\obj\portevent.o" lastModified="15f67840a7e"/>
+         <source file="..\obj\mbfuncother.o" lastModified="15f67840ac0"/>
+         <source file="..\obj\stm32f4xx_usart.o" lastModified="15f67840b2f"/>
+         <source file="..\obj\stm32f4xx_can.o" lastModified="15f67840bbb"/>
+         <source file="..\obj\mbutils.o" lastModified="15f67840c00"/>
+         <source file="..\obj\stm32f4xx_dac.o" lastModified="15f67840c4f"/>
+         <source file="..\obj\startup_stm32f4xx.o" lastModified="15f67840c7c"/>
+         <source file="..\obj\mbfuncholding.o" lastModified="15f67840cd2"/>
+         <source file="..\obj\main.o" lastModified="15f67840d9b"/>
+         <source file="..\obj\mbcrc.o" lastModified="15f67840dd8"/>
+         <source file="..\obj\stm32f4xx_rcc.o" lastModified="15f67840e55"/>
+         <source file="..\obj\foc.o" lastModified="15f67895680"/>
+         <source file="..\obj\stm32f4xx_adc.o" lastModified="15f678410bc"/>
+         <source file="..\obj\mbfuncinput.o" lastModified="15f67841103"/>
+         <source file="..\obj\encoder.o" lastModified="15f67841236"/>
+         <source file="..\obj\mbfuncdiag.o" lastModified="15f67841256"/>
+         <source file="..\obj\stm32f4xx_gpio.o" lastModified="15f678412ad"/>
+         <source file="..\obj\porttimer.o" lastModified="15f678412f3"/>
+         <source file="..\obj\mbrtu.o" lastModified="15f67841353"/>
+         <source file="..\obj\system_stm32f4xx.o" lastModified="15f6784139c"/>
+         <source file="..\obj\syscalls.o" lastModified="15f678413dd"/>
+         <source file="..\obj\stm32f4xx_dma.o" lastModified="15f67841440"/>
+         <source file="..\obj\port.o" lastModified="15f67841460"/>
+         <source file="..\obj\portserial.o" lastModified="15f678414ad"/>
+         <source file="..\obj\mbfunccoils.o" lastModified="15f6784150d"/>
+         <source file="..\obj\stm32f4xx_exti.o" lastModified="15f6784154f"/>
+         <source file="..\obj\misc.o" lastModified="15f67841594"/>
+         <source file="..\obj\svpwm.o" lastModified="15f678ca0f5"/>
+         <source file="..\obj\mbtcp.o" lastModified="15f67841700"/>
+         <source file="..\obj\mbascii.o" lastModified="15f6784178f"/>
+         <source file="..\obj\pid.o" lastModified="15f678417cf"/>
+         <source file="..\obj\stm32f4xx_tim.o" lastModified="15f678418c5"/>
+      </target>
+   </processor>
+</history>
