@@ -476,3 +476,48 @@ void mcFocSPWM(LP_MC_FOC lpFoc) // ???
 	lpFoc->PWM2 = T_2 + (lpFoc->Vc * T_4);
 #endif
 }
+
+// http://www.cnblogs.com/nixianmin/p/4791428.html
+void mcFocSVPWM_TI(LP_MC_FOC lpFoc)
+{
+	float vmin, vmax, vcom, X, Y, Z;
+	float offset = 0.5f;
+	float Tpwm = 100.0f;
+
+	mcInvClark(lpFoc);
+
+	lpFoc->Va += offset;
+	lpFoc->Vb += offset;
+	lpFoc->Vc += offset;
+
+	if (lpFoc->Va > lpFoc->Vb) {
+		vmax = lpFoc->Va;
+		vmin = lpFoc->Vb;
+	} else {
+		vmax = lpFoc->Vb;
+		vmin = lpFoc->Va;
+	}
+
+	if (lpFoc->Vc > vmax) {
+		vmax = lpFoc->Vc;
+	} else {
+		if (lpFoc->Vc < vmin) {
+			vmin = lpFoc->Vc;
+		}
+	}
+
+	vcom = (vmax + vmin) * 0.5f;
+	X = vcom - lpFoc->Va;
+	Y = vcom - lpFoc->Vb;
+	Z = vcom - lpFoc->Vc;
+
+	lpFoc->PWM3 = X * Tpwm;
+	lpFoc->PWM2 = Y * Tpwm;
+	lpFoc->PWM1 = Z * Tpwm;
+
+	static int index = 0, sector_old = 0;
+	if (sector_old != lpFoc->sector) {
+		lpFoc->arrSector[index++] = lpFoc->sector;
+		sector_old = lpFoc->sector;
+	}
+}
