@@ -1,19 +1,21 @@
 % http://www.cnblogs.com/nixianmin/p/4791428.html
 theta = 0:1:360;
 vd = 0.0;
-vq = 0.8;1.15;
+vq = 1.0;
 vmax = 0;
 vmin = 0;
 
 Valpha =  zeros(size(theta)); 
 Vbeta =  zeros(size(theta));
-Vx = zeros(size(theta));
-Vy = zeros(size(theta));
-Vz = zeros(size(theta));
 
 va = zeros(size(theta));
 vb = zeros(size(theta));
 vc = zeros(size(theta));
+
+Vx = zeros(size(theta));
+Vy = zeros(size(theta));
+Vz = zeros(size(theta));
+
 com = zeros(size(theta));
 
 N = length(theta);
@@ -41,7 +43,7 @@ for i=1:N
     end
 
     vcom = (vmax+vmin)/2;
-    Vx(i) = vcom - va(i)+1;
+    Vx(i) = vcom - va(i);
     Vy(i) = vcom - vb(i);
     Vz(i) = vcom - vc(i);
     com(i) = vcom;
@@ -49,15 +51,8 @@ for i=1:N
 end
 
 %plot(theta, Valpha);
-%hold on
+hold on
 %plot(theta, Vbeta);
-%hold on
-
-plot(theta, Vx,'Color','red');
-hold on
-plot(theta, Vy,'Color','yellow');
-hold on
-plot(theta, Vz,'Color','green');
 hold on
 
 plot(theta, va,'Color','red');
@@ -66,5 +61,12 @@ plot(theta, vb,'Color','yellow');
 hold on
 plot(theta, vc,'Color','green');
 hold on
+
+plot(theta, Vx,'Color','red');
+hold on
+%plot(theta, Vy,'Color','yellow');
+%hold on
+%plot(theta, Vz,'Color','green');
+%hold on
 
 plot(theta, com,'Color','blue');
