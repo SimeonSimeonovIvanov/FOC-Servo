@@ -1,9 +1,7 @@
 % http://www.cnblogs.com/nixianmin/p/4791428.html
-clear all;
-
 theta = 0:1:360;
 vd = 0.0;
-vq = 1.0;1.15;
+vq = 0.8;1.15;
 vmax = 0;
 vmin = 0;
 
@@ -43,7 +41,7 @@ for i=1:N
     end
 
     vcom = (vmax+vmin)/2;
-    Vx(i) = vcom - va(i);
+    Vx(i) = vcom - va(i)+1;
     Vy(i) = vcom - vb(i);
     Vz(i) = vcom - vc(i);
     com(i) = vcom;
