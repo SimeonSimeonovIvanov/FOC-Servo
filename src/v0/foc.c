@@ -209,30 +209,8 @@ void ADC_IRQHandler( void )
 			static int32_t enc_old = 0, dir = 0;
 			int32_t enc;
 
-			enc = iEncoderGetAbsPos();
-			enc_delta = enc - enc_old;
-			enc_old = enc;
-
-			/*enc = (int32_t)(TIM3->CNT);
-			dir = ( TIM3->CR1 & TIM_CR1_DIR ) ? 0 : 1;
-
-			//if( enc_old != enc )
-			if( dir ) { // Forward
-				if( enc >= enc_old ) {
-					enc_delta = enc - enc_old;
-				} else {
-					enc_delta = ( 4000 + enc ) - enc_old;
-				}
-			} else { // Backward
-				if( enc <= enc_old ) {
-					enc_delta = enc - enc_old;
-				} else {
-					enc_delta = enc - ( 4000 + enc_old );
-				}
-			}
-
-			enc_delta = -enc_delta;
-			enc_old = enc;*/
+			enc_delta = -TIM4->CNT;
+			TIM4->CNT = 0;
 
 #ifndef __AI1_SET_SPEED__
 			counter1 = 0;
