@@ -12,11 +12,11 @@ va = zeros(size(theta));
 vb = zeros(size(theta));
 vc = zeros(size(theta));
 
+vcom = zeros(size(theta));
+
 Vx = zeros(size(theta));
 Vy = zeros(size(theta));
 Vz = zeros(size(theta));
-
-com = zeros(size(theta));
 
 N = length(theta);
 
@@ -42,11 +42,10 @@ for i=1:N
         vmin = vc(i);
     end
 
-    vcom = (vmax+vmin)/2;
-    Vx(i) = vcom - va(i);
-    Vy(i) = vcom - vb(i);
-    Vz(i) = vcom - vc(i);
-    com(i) = vcom;
+    vcom(i) = ( vmax + vmin ) / 2;
+    Vx(i) = vcom(i) - va(i);
+    Vy(i) = vcom(i) - vb(i);
+    Vz(i) = vcom(i) - vc(i);
         
 end
 
