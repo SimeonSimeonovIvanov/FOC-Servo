@@ -151,14 +151,22 @@ void svpwmInitADC( void )
 	ADC_InjectedSequencerLengthConfig( ADC1, 2 );
 	ADC_InjectedSequencerLengthConfig( ADC2, 2 );
 
-	ADC_InjectedChannelConfig( ADC1, PHASE_A_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
+	/*ADC_InjectedChannelConfig( ADC1, PHASE_A_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
 	ADC_InjectedChannelConfig( ADC1, VOLT_FDBK_CHANNEL, 2, SAMPLING_TIME_CK );
 
 	ADC_InjectedChannelConfig( ADC2, PHASE_B_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
+	ADC_InjectedChannelConfig( ADC2, AIN0_ADC_CHANNEL, 2, SAMPLING_TIME_CK );*/
+
+	ADC_InjectedChannelConfig( ADC1, PHASE_A_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
+	ADC_InjectedChannelConfig( ADC1, PHASE_B_ADC_CHANNEL, 2, SAMPLING_TIME_CK );
+
+	ADC_InjectedChannelConfig( ADC2, VOLT_FDBK_CHANNEL, 1, SAMPLING_TIME_CK );
 	ADC_InjectedChannelConfig( ADC2, AIN0_ADC_CHANNEL, 2, SAMPLING_TIME_CK );
 	
 	ADC_ExternalTrigInjectedConvConfig( ADC1, ADC_ExternalTrigInjecConv_T1_CC4 );
+	ADC_ExternalTrigInjectedConvConfig( ADC2, ADC_ExternalTrigInjecConv_T1_CC4 );
 	ADC_ExternalTrigInjectedConvEdgeConfig( ADC1, ADC_ExternalTrigInjecConvEdge_Rising );
+	ADC_ExternalTrigInjectedConvEdgeConfig( ADC2, ADC_ExternalTrigInjecConvEdge_Rising );
 	
 	ADC_AutoInjectedConvCmd( ADC1, DISABLE );
 	ADC_AutoInjectedConvCmd( ADC2, DISABLE );
@@ -173,15 +181,15 @@ void svpwmInitADC( void )
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init( &NVIC_InitStructure );
-	NVIC_EnableIRQ(ADC_IRQn);
+	NVIC_EnableIRQ( ADC_IRQn );
 
-	ADC_DMACmd(ADC1, ENABLE);
+	ADC_DMACmd( ADC1, ENABLE );
 	ADC_Cmd( ADC1, ENABLE );
 	ADC_Cmd( ADC2, ENABLE );
 
 	ADC_ITConfig( ADC1, ADC_IT_JEOC | ADC_IT_EOC, ENABLE );
 
-	ADC_SoftwareStartConv(ADC1);
+	//ADC_SoftwareStartConv( ADC1 );
 }
 
 void RCC_Configuration_Adc1( void )

@@ -148,7 +148,7 @@ void ADC_IRQHandler( void )
 
 	GPIO_SetBits( GPIOB, GPIO_Pin_2 );
 
-	if( ADC_FLAG_JEOC & ADC1->SR ) {
+	/*if( ADC_FLAG_JEOC & ADC1->SR ) {
 		current_a = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_1 );
 		dc_voltage = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_2 );
 
@@ -159,6 +159,18 @@ void ADC_IRQHandler( void )
 		current_b = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_1 );
 		ai0 = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_2 );
 
+		ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
+	}*/
+
+	if( ADC_FLAG_JEOC & ADC1->SR ) {
+		current_a = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_1 );
+		current_b = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_2 );
+		ADC_ClearITPendingBit( ADC1, ADC_IT_JEOC );
+	}
+
+	if( ADC_FLAG_JEOC & ADC2->SR ) {
+		dc_voltage = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_1 );
+		ai0 = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_2 );
 		ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
 	}
 
