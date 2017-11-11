@@ -123,7 +123,15 @@ void svpwmInitADC( void )
 
 	// ========================================================================================================================
 	ADC_CommonStructInit( &ADC_CommonInitStruct );
-	ADC_CommonInitStruct.ADC_Mode =  ADC_DualMode_RegSimult_InjecSimult;
+
+#ifdef FOC_ADC_Mode_Independent
+	ADC_CommonInitStruct.ADC_Mode = ADC_Mode_Independent;
+#endif
+
+#ifdef FOC_ADC_DualMode_RegSimult_InjecSimult
+	ADC_CommonInitStruct.ADC_Mode = ADC_DualMode_RegSimult_InjecSimult;
+#endif
+
 	ADC_CommonInitStruct.ADC_Prescaler = ADC_Prescaler_Div2;
 	ADC_CommonInitStruct.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled;
 	ADC_CommonInitStruct.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
@@ -134,7 +142,7 @@ void svpwmInitADC( void )
 	ADC_InitStructure.ADC_ScanConvMode = ENABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
 	ADC_InitStructure.ADC_ExternalTrigConvEdge = 0;
-	ADC_InitStructure.ADC_ExternalTrigConv = 0;
+	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
 	ADC_InitStructure.ADC_NbrOfConversion = 2;
 	ADC_Init( ADC1, &ADC_InitStructure );
@@ -142,6 +150,10 @@ void svpwmInitADC( void )
 	ADC_InitStructure.ADC_ScanConvMode = ENABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
 	ADC_InitStructure.ADC_NbrOfConversion = 0;
+
+#ifdef FOC_ADC_Mode_Independent
+	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T8_CC1; // For Resolver interface ????
+#endif
 	ADC_Init( ADC2, &ADC_InitStructure );
 	// ------------------------------------------------------------------------------------------------------------------------
 	ADC_RegularChannelConfig( ADC1, AIN1_ADC_CHANNEL, 1, ADC_SampleTime_84Cycles );
@@ -149,25 +161,45 @@ void svpwmInitADC( void )
 	ADC_DMARequestAfterLastTransferCmd(ADC1, ENABLE);
 	//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	ADC_InjectedSequencerLengthConfig( ADC1, 2 );
-	ADC_InjectedSequencerLengthConfig( ADC2, 2 );
 
-	/*ADC_InjectedChannelConfig( ADC1, PHASE_A_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
-	ADC_InjectedChannelConfig( ADC1, VOLT_FDBK_CHANNEL, 2, SAMPLING_TIME_CK );
+	ADC_ExternalTrigInjectedConvConfig( ADC1, ADC_ExternalTrigInjecConv_T1_CC4 );
+	ADC_ExternalTrigInjectedConvEdgeConfig( ADC1, ADC_ExternalTrigInjecConvEdge_Rising );
+	ADC_ExternalTrigInjectedConvEdgeConfig( ADC2, ADC_ExternalTrigInjecConvEdge_Rising );
 
-	ADC_InjectedChannelConfig( ADC2, PHASE_B_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
-	ADC_InjectedChannelConfig( ADC2, AIN0_ADC_CHANNEL, 2, SAMPLING_TIME_CK );*/
+#ifdef FOC_ADC_Mode_Independent
+	/*
+	 * TIM1(CC4) -> ADC1
+	 * TIM8(CC1) -> ADC2
+	 */
+
+	ADC_InjectedSequencerLengthConfig( ADC2, 2 ); // 4 ???
 
 	ADC_InjectedChannelConfig( ADC1, PHASE_A_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
 	ADC_InjectedChannelConfig( ADC1, PHASE_B_ADC_CHANNEL, 2, SAMPLING_TIME_CK );
 
 	ADC_InjectedChannelConfig( ADC2, VOLT_FDBK_CHANNEL, 1, SAMPLING_TIME_CK );
 	ADC_InjectedChannelConfig( ADC2, AIN0_ADC_CHANNEL, 2, SAMPLING_TIME_CK );
-	
-	ADC_ExternalTrigInjectedConvConfig( ADC1, ADC_ExternalTrigInjecConv_T1_CC4 );
-	ADC_ExternalTrigInjectedConvConfig( ADC2, ADC_ExternalTrigInjecConv_T1_CC4 );
-	ADC_ExternalTrigInjectedConvEdgeConfig( ADC1, ADC_ExternalTrigInjecConvEdge_Rising );
-	ADC_ExternalTrigInjectedConvEdgeConfig( ADC2, ADC_ExternalTrigInjecConvEdge_Rising );
-	
+
+	//ADC_InjectedChannelConfig( ADC2, RESOLVER_SIN_CHANNEL, 3, SAMPLING_TIME_CK );
+	//ADC_InjectedChannelConfig( ADC2, RESOLVER_COS_CHANNEL, 4, SAMPLING_TIME_CK );
+
+	ADC_ExternalTrigInjectedConvConfig( ADC2, ADC_ExternalTrigInjecConv_T8_CC2 );
+#endif
+
+#ifdef FOC_ADC_DualMode_RegSimult_InjecSimult
+	/*
+	 * TIM1(CC4) -> ADC1 and ADC2
+	 */
+
+	ADC_InjectedSequencerLengthConfig( ADC2, 2 );
+
+	ADC_InjectedChannelConfig( ADC1, PHASE_A_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
+	ADC_InjectedChannelConfig( ADC1, VOLT_FDBK_CHANNEL, 2, SAMPLING_TIME_CK );
+
+	ADC_InjectedChannelConfig( ADC2, PHASE_B_ADC_CHANNEL, 1, SAMPLING_TIME_CK );
+	ADC_InjectedChannelConfig( ADC2, AIN0_ADC_CHANNEL, 2, SAMPLING_TIME_CK );
+#endif
+
 	ADC_AutoInjectedConvCmd( ADC1, DISABLE );
 	ADC_AutoInjectedConvCmd( ADC2, DISABLE );
 

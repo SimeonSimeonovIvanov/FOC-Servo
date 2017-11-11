@@ -148,31 +148,37 @@ void ADC_IRQHandler( void )
 
 	GPIO_SetBits( GPIOB, GPIO_Pin_2 );
 
-	/*if( ADC_FLAG_JEOC & ADC1->SR ) {
-		current_a = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_1 );
-		dc_voltage = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_2 );
-
-		ADC_ClearITPendingBit( ADC1, ADC_IT_JEOC );
-	}
-
-	if( ADC_FLAG_JEOC & ADC2->SR ) {
-		current_b = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_1 );
-		ai0 = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_2 );
-
-		ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
-	}*/
-
 	if( ADC_FLAG_JEOC & ADC1->SR ) {
+#ifdef FOC_ADC_Mode_Independent
 		current_a = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_1 );
 		current_b = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_2 );
-		ADC_ClearITPendingBit( ADC1, ADC_IT_JEOC );
+#endif
+
+#ifdef FOC_ADC_DualMode_RegSimult_InjecSimult
+		current_a = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_1 );
+		dc_voltage = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_2 );
+#endif
 	}
 
 	if( ADC_FLAG_JEOC & ADC2->SR ) {
+#ifdef FOC_ADC_Mode_Independent
 		dc_voltage = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_1 );
 		ai0 = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_2 );
-		ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
+
+		if( !(ADC_FLAG_JEOC & ADC1->SR) ) {
+			ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
+			return;
+		}
+#endif
+
+#ifdef FOC_ADC_DualMode_RegSimult_InjecSimult
+		current_b = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_1 );
+		ai0 = ADC_GetInjectedConversionValue( ADC2, ADC_InjectedChannel_2 );
+#endif
 	}
+
+	ADC_ClearITPendingBit( ADC1, ADC_IT_JEOC );
+	ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
 
 	adc_current_filter( &current_a, &current_b );
 
@@ -334,8 +340,8 @@ void ADC_IRQHandler( void )
 	mcInvPark( lpFoc );
 	/* mcInvClark( lpFoc ); */
 	///////////////////////////////////////////////////////////////////////////
-	lpFoc->Valpha = SQRT3_DIV2 * lpFoc->Valpha;
-	lpFoc->Vbeta = SQRT3_DIV2 * lpFoc->Vbeta;
+	/*lpFoc->Valpha = SQRT3_DIV2 * lpFoc->Valpha;
+	lpFoc->Vbeta = SQRT3_DIV2 * lpFoc->Vbeta;*/
 	//mcFocSVPWM_ST2( lpFoc );
 	//mcFocSVPWM0( lpFoc );
 	//mcFocSPWM( lpFoc );
