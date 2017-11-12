@@ -7,8 +7,8 @@
 #include "pid/pid.h"
 #include "encoder.h"
 
-#define FOC_ADC_Mode_Independent
-//#define FOC_ADC_DualMode_RegSimult_InjecSimult
+//#define FOC_ADC_Mode_Independent
+#define FOC_ADC_DualMode_RegSimult_InjecSimult
 
 #define SQRT3			1.732050807568877f
 #define divSQRT3		( 1.0f / SQRT3 )		// 0.57735026918f

@@ -35,7 +35,9 @@ void focInit(LP_MC_FOC lpFocExt)
 
 	///////////////////////////////////////////////////////////////////////////
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 35, 7, 2, 0 );
+	//pidInit_test( &pidSpeed, 35, 7, 2, 0 );
+	pidInit_test( &pidSpeed, 20, 7, 2, 0 );
+
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 170 );
 #endif
@@ -316,7 +318,7 @@ void ADC_IRQHandler( void )
 		}
 #endif
 
-		//lpFoc->Iq_des = ai0 - 2047;
+		//lpFoc->Iq_des = (ai0 - 2047)<<1;
 		//lpFoc->Iq_des = 500;
 		//lpFoc->Iq_des = 0;
 	}
