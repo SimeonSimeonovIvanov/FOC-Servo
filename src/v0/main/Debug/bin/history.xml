@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
    <processor signature="6.3.1 -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wall -g -Map=main.map -Os --gc-sections -lm -lgcc -lc -LC:\CooCox\CoIDE\configuration\ProgramData\main -TC:\CooCox\CoIDE\configuration\ProgramData\main/link.ld -g">
-      <target file="main.elf" lastModified="15fb20c9f2a">
+      <target file="main.elf" lastModified="15fb260fd65">
          <source file="..\obj\stm32f4xx_syscfg.o" lastModified="15fb1cdef47"/>
          <source file="..\obj\mb.o" lastModified="15fb1cdefa2"/>
          <source file="..\obj\mbfuncdisc.o" lastModified="15fb1cdefe4"/>
@@ -16,10 +16,10 @@
          <source file="..\obj\main.o" lastModified="15fb1cdf2c1"/>
          <source file="..\obj\mbcrc.o" lastModified="15fb1cdf2f9"/>
          <source file="..\obj\stm32f4xx_rcc.o" lastModified="15fb1cdf36f"/>
-         <source file="..\obj\foc.o" lastModified="15fb1e50a30"/>
+         <source file="..\obj\foc.o" lastModified="15fb23884ba"/>
          <source file="..\obj\stm32f4xx_adc.o" lastModified="15fb1cdf53d"/>
          <source file="..\obj\mbfuncinput.o" lastModified="15fb1cdf581"/>
-         <source file="..\obj\encoder.o" lastModified="15fb20c9d3c"/>
+         <source file="..\obj\encoder.o" lastModified="15fb260fb8c"/>
          <source file="..\obj\mbfuncdiag.o" lastModified="15fb1cdf615"/>
          <source file="..\obj\stm32f4xx_gpio.o" lastModified="15fb1cdf664"/>
          <source file="..\obj\porttimer.o" lastModified="15fb1cdf6a4"/>
@@ -32,7 +32,7 @@
          <source file="..\obj\mbfunccoils.o" lastModified="15fb1cdf8b0"/>
          <source file="..\obj\stm32f4xx_exti.o" lastModified="15fb1cdf8ef"/>
          <source file="..\obj\misc.o" lastModified="15fb1cdf92b"/>
-         <source file="..\obj\svpwm.o" lastModified="15fb1e4135d"/>
+         <source file="..\obj\svpwm.o" lastModified="15fb2383995"/>
          <source file="..\obj\mbtcp.o" lastModified="15fb1cdfabd"/>
          <source file="..\obj\mbascii.o" lastModified="15fb1cdfb26"/>
          <source file="..\obj\pid.o" lastModified="15fb1cdfb65"/>
