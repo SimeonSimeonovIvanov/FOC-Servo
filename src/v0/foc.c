@@ -1,6 +1,6 @@
 #include "foc.h"
 
-//#define __POS_CONTROL__
+#define __POS_CONTROL__
 #ifndef __POS_CONTROL__
 	#define __AI1_SET_SPEED__
 	#ifndef __AI1_SET_SPEED__
@@ -29,14 +29,12 @@ void focInit(LP_MC_FOC lpFocExt)
 
 	memset( lpFoc, 0, sizeof( MC_FOC ) );
 
-	lpFoc->vbus_voltage = 40.0f;
-	lpFoc->Id_des = 0.0f;
-	lpFoc->Iq_des = 0.0f;
+	//lpFoc->vbus_voltage = 40.0f;
 
 	///////////////////////////////////////////////////////////////////////////
 #ifdef __AI1_SET_SPEED__
-	//pidInit_test( &pidSpeed, 35, 7, 2, 0 );
-	pidInit_test( &pidSpeed, 20, 7, 2, 0 );
+	pidInit_test( &pidSpeed, 30, 7, 10, 0 );
+	//pidInit_test( &pidSpeed, 20, 7, 2, 0 );
 
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 170 );
