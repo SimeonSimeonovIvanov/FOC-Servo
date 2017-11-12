@@ -554,7 +554,7 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++???
 
 	mcInvClark(lpFoc);
 
-	if (lpFoc->Va > lpFoc->Vb) {
+	if( lpFoc->Va > lpFoc->Vb ) {
 		vmax = lpFoc->Va;
 		vmin = lpFoc->Vb;
 	} else {
@@ -562,18 +562,18 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++???
 		vmin = lpFoc->Va;
 	}
 
-	if (lpFoc->Vc > vmax) {
+	if( lpFoc->Vc > vmax ) {
 		vmax = lpFoc->Vc;
 	} else {
-		if (lpFoc->Vc < vmin) {
+		if( lpFoc->Vc < vmin ) {
 			vmin = lpFoc->Vc;
 		}
 	}
 
-	vcom = (vmax + vmin) * 0.5f;
-	X = (vcom - lpFoc->Va);
-	Y = (vcom - lpFoc->Vb);
-	Z = (vcom - lpFoc->Vc);
+	vcom = ( vmax + vmin ) * 0.5f;
+	X = ( vcom - lpFoc->Va );
+	Y = ( vcom - lpFoc->Vb );
+	Z = ( vcom - lpFoc->Vc );
 
 	lpFoc->PWM3 = (X * Tpwm) + Tpwm;
 	lpFoc->PWM2 = (Y * Tpwm) + Tpwm;

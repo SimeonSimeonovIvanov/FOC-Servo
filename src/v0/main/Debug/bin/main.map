@@ -2037,7 +2037,7 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_ranges  0x00000ab0       0x40 ..\obj\pid.o
  .debug_ranges  0x00000af0      0x300 ..\obj\stm32f4xx_tim.o
 
-.debug_line     0x00000000     0x84d7
+.debug_line     0x00000000     0x84d9
  .debug_line    0x00000000      0x307 ..\obj\stm32f4xx_syscfg.o
  .debug_line    0x00000307      0x5ac ..\obj\mb.o
  .debug_line    0x000008b3      0x423 ..\obj\mbfuncdisc.o
@@ -2054,20 +2054,20 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_line    0x00003544      0x4bc ..\obj\foc.o
  .debug_line    0x00003a00      0x603 ..\obj\stm32f4xx_adc.o
  .debug_line    0x00004003      0x415 ..\obj\mbfuncinput.o
- .debug_line    0x00004418      0x54c ..\obj\encoder.o
- .debug_line    0x00004964      0x3f7 ..\obj\stm32f4xx_gpio.o
- .debug_line    0x00004d5b      0x377 ..\obj\porttimer.o
- .debug_line    0x000050d2      0x528 ..\obj\mbrtu.o
- .debug_line    0x000055fa      0x23f ..\obj\system_stm32f4xx.o
- .debug_line    0x00005839      0x494 ..\obj\stm32f4xx_dma.o
- .debug_line    0x00005ccd      0x3e2 ..\obj\portserial.o
- .debug_line    0x000060af      0x497 ..\obj\mbfunccoils.o
- .debug_line    0x00006546      0x337 ..\obj\stm32f4xx_exti.o
- .debug_line    0x0000687d      0x2ef ..\obj\misc.o
- .debug_line    0x00006b6c      0x5d7 ..\obj\svpwm.o
- .debug_line    0x00007143      0x59d ..\obj\mbascii.o
- .debug_line    0x000076e0      0x276 ..\obj\pid.o
- .debug_line    0x00007956      0xb81 ..\obj\stm32f4xx_tim.o
+ .debug_line    0x00004418      0x54e ..\obj\encoder.o
+ .debug_line    0x00004966      0x3f7 ..\obj\stm32f4xx_gpio.o
+ .debug_line    0x00004d5d      0x377 ..\obj\porttimer.o
+ .debug_line    0x000050d4      0x528 ..\obj\mbrtu.o
+ .debug_line    0x000055fc      0x23f ..\obj\system_stm32f4xx.o
+ .debug_line    0x0000583b      0x494 ..\obj\stm32f4xx_dma.o
+ .debug_line    0x00005ccf      0x3e2 ..\obj\portserial.o
+ .debug_line    0x000060b1      0x497 ..\obj\mbfunccoils.o
+ .debug_line    0x00006548      0x337 ..\obj\stm32f4xx_exti.o
+ .debug_line    0x0000687f      0x2ef ..\obj\misc.o
+ .debug_line    0x00006b6e      0x5d7 ..\obj\svpwm.o
+ .debug_line    0x00007145      0x59d ..\obj\mbascii.o
+ .debug_line    0x000076e2      0x276 ..\obj\pid.o
+ .debug_line    0x00007958      0xb81 ..\obj\stm32f4xx_tim.o
 
 .debug_str      0x00000000     0x52b1
  .debug_str     0x00000000      0x2fc ..\obj\stm32f4xx_syscfg.o
