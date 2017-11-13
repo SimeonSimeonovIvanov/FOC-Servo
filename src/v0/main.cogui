@@ -23,7 +23,7 @@
 </editor>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" partName="encoder.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/encoder.c" title="encoder.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/encoder.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/encoder.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7538" selectionTopPixel="3845"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7152" selectionTopPixel="3210"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="svpwm.c" partName="svpwm.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/svpwm.c" title="svpwm.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/svpwm.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/svpwm.c"/>

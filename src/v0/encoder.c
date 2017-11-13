@@ -257,51 +257,31 @@ uint16_t read360uvw(void)
 	return encoder;
 }
 
-/* 60 deg.
- *
- *    132645
- *    ||||||
- * 1| 110001
- * 2| 011100
- * 4| 000111
- *-------------------
- * Fix it
- *
- *    132564
- *    ||||||
- * 4| 000111
- * 2| 011010
- * 1| 110100
- *
- *    462315
- *    ||||||
- * 4| 110001
- * 2| 011100
- * 1| 000111
- */
+// IN:  1  3  2  6  4  5	( Raw value from Hall sensor )
+// OUT: 5  4  3  2  1  6	( hall_map[ Raw Hall ] )
 uint16_t readHallMap( void )
 {
 	static uint16_t hall_map[8] = {
 			0,
-// 60  deg: 1, 3, 2, 6, 4, 5,
-			1, 3, 2, 5, 6, 4, // Fix it
-
-//ArrIndex: 1, 2, 3, 4, 5, 6
+			5, 3, 4, 1, 6, 2,
 			0
 	};
 
 	return hall_map[ readRawHallInput() ];
 }
 
+// 60  deg:
+// Return raw value from Hall sensor ( CCW, JOG+ )
+// 1  3  2  6  4  5 - Index for hall_map in readHallMap()
 uint16_t readRawHallInput( void )
 {
 	uint16_t uvw, U, V, W;
 
 	uvw = GPIO_ReadInputData( GPIOD );
 
-	U = ( uvw & GPIO_Pin_12 ) ? 4:0;
+	U = ( uvw & GPIO_Pin_12 ) ? 1:0;
 	V = ( uvw & GPIO_Pin_13 ) ? 2:0;
-	W = ( uvw & GPIO_Pin_14 ) ? 1:0;
+	W = ( uvw & GPIO_Pin_14 ) ? 4:0;
 
 	return U | V | W;
 }
