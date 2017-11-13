@@ -84,8 +84,8 @@ int main(void)
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = hall;
-		usRegHoldingBuf[5] = encoder;
 		usRegHoldingBuf[6] = TIM3->CNT;
+		usRegHoldingBuf[5] = encoder;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 1 ( abs.pos )
 		usRegHoldingBuf[7] = iEncoderGetAbsPos();

@@ -501,58 +501,13 @@ void mcFocSVPWM0(LP_MC_FOC lpFoc) // +++ ?
 	lpFoc->PWM3 = PWM2 * (float)PWM_PERIOD;
 }
 
-void mcFocSPWM(LP_MC_FOC lpFoc) // ---
-{
-	/*float valpha, vbeta;
-	float vb, va_int, vb_int, vc_int;
-
-	valpha = lpFoc->Valpha;
-	vbeta = lpFoc->Vbeta;
-
-	// Va = Valpha
-	// Vb = -1/2 * Valpha + V3/2 * Vbeta
-	// Vc = -1/2 * Valpha - V3/2 * Vbeta
-	va_int = valpha;
-	vb = SQRT3_DIV2 * vbeta;
-	vb_int = -( va_int * 0.5f ) + vb;
-	vc_int = -( va_int * 0.5f ) - vb;
-
-	lpFoc->PWM1 = va_int*50;
-	lpFoc->PWM2 = vb_int*50;
-	lpFoc->PWM3 = vc_int*50;*/
-
-  //#define PHASE_CHANGE
-
-	int T, T_2, T_4;
-
-	T = PWM_PERIOD;
-	T_2 = T * 0.50f;
-	T_4 = T * 0.25f;
-
-	mcInvClark(lpFoc);
-
-  #ifndef PHASE_CHANGE
-	lpFoc->Vb = -lpFoc->Vb;
-  #endif
-
-	lpFoc->PWM1 = T_2 + ( lpFoc->Va * T_2 );
-
-  #ifndef PHASE_CHANGE
-	lpFoc->PWM2 = T_2 + ( lpFoc->Vb * T_2 );
-	lpFoc->PWM3 = T_2 + ( lpFoc->Vc * T_2 );
-  #else
-	lpFoc->PWM3 = T_2 + ( lpFoc->Vb * T_4 );
-	lpFoc->PWM2 = T_2 + ( lpFoc->Vc * T_4 );
-  #endif
-}
-
 // http://www.cnblogs.com/nixianmin/p/4791428.html
-void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++???
+void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++ ?
 {
+	float Tpwm = (float)PWM_PERIOD / 2.0f;
 	float vmin, vmax, vcom, X, Y, Z;
-	float Tpwm = PWM_PERIOD/2;
 
-	mcInvClark(lpFoc);
+	mcInvClark( lpFoc );
 
 	if( lpFoc->Va > lpFoc->Vb ) {
 		vmax = lpFoc->Va;
@@ -575,7 +530,7 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++???
 	Y = ( vcom - lpFoc->Vb );
 	Z = ( vcom - lpFoc->Vc );
 
-	lpFoc->PWM3 = (X * Tpwm) + Tpwm;
-	lpFoc->PWM2 = (Y * Tpwm) + Tpwm;
-	lpFoc->PWM1 = (Z * Tpwm) + Tpwm;
+	lpFoc->PWM3 = ( X * Tpwm ) + Tpwm;
+	lpFoc->PWM2 = ( Y * Tpwm ) + Tpwm;
+	lpFoc->PWM1 = ( Z * Tpwm ) + Tpwm;
 }

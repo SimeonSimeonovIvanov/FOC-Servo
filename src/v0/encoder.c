@@ -181,8 +181,10 @@ uint16_t encoderAddOffset( int16_t angle, int16_t offset )
 uint16_t readRawUVW(void)
 {
 	static uint32_t hall_old = 0;
+
 	static uint32_t map1[] = { 0, 0, 60*11.11f, 120*11.11f, 180*11.11f, 240*11.11f, 300*11.11f, 0 };
 	static uint32_t map2[] = { 0, 60*11.11f, 120*11.11f, 180*11.11f, 240*11.11f, 300*11.11f, 360*11.11f, 0 };
+
 	uint32_t hall = 0, encoder = 0, hall_angle = 0;
 
 	hall = readHallMap();
@@ -222,6 +224,7 @@ uint16_t read360uvw(void)
 	static uint32_t hall_old = 0;
 	static uint32_t map1[] = { 0, 0, 60, 120, 180, 240, 300, 0 };
 	static uint32_t map2[] = { 0, 60, 120, 180, 240, 300, 360, 0 };
+
 	uint32_t hall = 0, encoder = 0, hall_angle = 0;
 
 	hall = readHallMap();

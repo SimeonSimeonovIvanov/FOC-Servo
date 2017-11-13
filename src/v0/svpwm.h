@@ -24,7 +24,6 @@
 void svpwmInit(void);
 void mcFocSVPWM_ST2(LP_MC_FOC lpFoc);
 void mcFocSVPWM0(LP_MC_FOC lpFoc);
-void mcFocSPWM(LP_MC_FOC lpFoc);
 void mcFocSVPWM_TI(LP_MC_FOC lpFoc);
 
 void DMAInit(void);

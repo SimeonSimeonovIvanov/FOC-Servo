@@ -542,8 +542,6 @@ Discarded input sections
                 0x00000000      0x12c ..\obj\svpwm.o
  .text.mcFocSVPWM0
                 0x00000000      0x180 ..\obj\svpwm.o
- .text.mcFocSPWM
-                0x00000000       0x54 ..\obj\svpwm.o
  .text          0x00000000        0x0 ..\obj\mbtcp.o
  .data          0x00000000        0x0 ..\obj\mbtcp.o
  .bss           0x00000000        0x0 ..\obj\mbtcp.o
@@ -1847,7 +1845,7 @@ OUTPUT(main.elf elf32-littlearm)
  .comment       0x0000007f       0x80 ..\obj\pid.o
  .comment       0x0000007f       0x80 ..\obj\stm32f4xx_tim.o
 
-.debug_info     0x00000000    0x15bf1
+.debug_info     0x00000000    0x15b92
  .debug_info    0x00000000      0x2c1 ..\obj\stm32f4xx_syscfg.o
  .debug_info    0x000002c1      0xf3d ..\obj\mb.o
  .debug_info    0x000011fe      0xad5 ..\obj\mbfuncdisc.o
@@ -1874,10 +1872,10 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_info    0x0000ec4b      0xc54 ..\obj\mbfunccoils.o
  .debug_info    0x0000f89f      0x365 ..\obj\stm32f4xx_exti.o
  .debug_info    0x0000fc04      0x54d ..\obj\misc.o
- .debug_info    0x00010151     0x1d45 ..\obj\svpwm.o
- .debug_info    0x00011e96     0x111e ..\obj\mbascii.o
- .debug_info    0x00012fb4      0xc30 ..\obj\pid.o
- .debug_info    0x00013be4     0x200d ..\obj\stm32f4xx_tim.o
+ .debug_info    0x00010151     0x1ce6 ..\obj\svpwm.o
+ .debug_info    0x00011e37     0x111e ..\obj\mbascii.o
+ .debug_info    0x00012f55      0xc30 ..\obj\pid.o
+ .debug_info    0x00013b85     0x200d ..\obj\stm32f4xx_tim.o
 
 .debug_abbrev   0x00000000     0x4094
  .debug_abbrev  0x00000000      0x173 ..\obj\stm32f4xx_syscfg.o
@@ -1911,7 +1909,7 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_abbrev  0x00003b46      0x289 ..\obj\pid.o
  .debug_abbrev  0x00003dcf      0x2c5 ..\obj\stm32f4xx_tim.o
 
-.debug_loc      0x00000000     0x73d9
+.debug_loc      0x00000000     0x73ad
  .debug_loc     0x00000000       0x97 ..\obj\stm32f4xx_syscfg.o
  .debug_loc     0x00000097      0x299 ..\obj\mb.o
  .debug_loc     0x00000330      0x183 ..\obj\mbfuncdisc.o
@@ -1938,12 +1936,12 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_loc     0x000046f5      0x400 ..\obj\mbfunccoils.o
  .debug_loc     0x00004af5      0x188 ..\obj\stm32f4xx_exti.o
  .debug_loc     0x00004c7d      0x15c ..\obj\misc.o
- .debug_loc     0x00004dd9      0x789 ..\obj\svpwm.o
- .debug_loc     0x00005562      0x411 ..\obj\mbascii.o
- .debug_loc     0x00005973      0x176 ..\obj\pid.o
- .debug_loc     0x00005ae9     0x18f0 ..\obj\stm32f4xx_tim.o
+ .debug_loc     0x00004dd9      0x75d ..\obj\svpwm.o
+ .debug_loc     0x00005536      0x411 ..\obj\mbascii.o
+ .debug_loc     0x00005947      0x176 ..\obj\pid.o
+ .debug_loc     0x00005abd     0x18f0 ..\obj\stm32f4xx_tim.o
 
-.debug_aranges  0x00000000      0xe70
+.debug_aranges  0x00000000      0xe68
  .debug_aranges
                 0x00000000       0x48 ..\obj\stm32f4xx_syscfg.o
  .debug_aranges
@@ -1997,15 +1995,15 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_aranges
                 0x00000a28       0x40 ..\obj\misc.o
  .debug_aranges
-                0x00000a68       0x88 ..\obj\svpwm.o
+                0x00000a68       0x80 ..\obj\svpwm.o
  .debug_aranges
-                0x00000af0       0x58 ..\obj\mbascii.o
+                0x00000ae8       0x58 ..\obj\mbascii.o
  .debug_aranges
-                0x00000b48       0x50 ..\obj\pid.o
+                0x00000b40       0x50 ..\obj\pid.o
  .debug_aranges
-                0x00000b98      0x2d8 ..\obj\stm32f4xx_tim.o
+                0x00000b90      0x2d8 ..\obj\stm32f4xx_tim.o
 
-.debug_ranges   0x00000000      0xdf0
+.debug_ranges   0x00000000      0xde8
  .debug_ranges  0x00000000       0x38 ..\obj\stm32f4xx_syscfg.o
  .debug_ranges  0x00000038       0x38 ..\obj\mb.o
  .debug_ranges  0x00000070       0x10 ..\obj\mbfuncdisc.o
@@ -2032,12 +2030,12 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_ranges  0x00000920       0x20 ..\obj\mbfunccoils.o
  .debug_ranges  0x00000940       0x40 ..\obj\stm32f4xx_exti.o
  .debug_ranges  0x00000980       0x30 ..\obj\misc.o
- .debug_ranges  0x000009b0       0x78 ..\obj\svpwm.o
- .debug_ranges  0x00000a28       0x88 ..\obj\mbascii.o
- .debug_ranges  0x00000ab0       0x40 ..\obj\pid.o
- .debug_ranges  0x00000af0      0x300 ..\obj\stm32f4xx_tim.o
+ .debug_ranges  0x000009b0       0x70 ..\obj\svpwm.o
+ .debug_ranges  0x00000a20       0x88 ..\obj\mbascii.o
+ .debug_ranges  0x00000aa8       0x40 ..\obj\pid.o
+ .debug_ranges  0x00000ae8      0x300 ..\obj\stm32f4xx_tim.o
 
-.debug_line     0x00000000     0x84d7
+.debug_line     0x00000000     0x84b9
  .debug_line    0x00000000      0x307 ..\obj\stm32f4xx_syscfg.o
  .debug_line    0x00000307      0x5ac ..\obj\mb.o
  .debug_line    0x000008b3      0x423 ..\obj\mbfuncdisc.o
@@ -2048,28 +2046,28 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_line    0x00001d45      0x3e5 ..\obj\stm32f4xx_dac.o
  .debug_line    0x0000212a       0xbb ..\obj\startup_stm32f4xx.o
  .debug_line    0x000021e5      0x4cb ..\obj\mbfuncholding.o
- .debug_line    0x000026b0      0x5e5 ..\obj\main.o
- .debug_line    0x00002c95      0x281 ..\obj\mbcrc.o
- .debug_line    0x00002f16      0x62e ..\obj\stm32f4xx_rcc.o
- .debug_line    0x00003544      0x4bc ..\obj\foc.o
- .debug_line    0x00003a00      0x603 ..\obj\stm32f4xx_adc.o
- .debug_line    0x00004003      0x415 ..\obj\mbfuncinput.o
- .debug_line    0x00004418      0x54c ..\obj\encoder.o
- .debug_line    0x00004964      0x3f7 ..\obj\stm32f4xx_gpio.o
- .debug_line    0x00004d5b      0x377 ..\obj\porttimer.o
- .debug_line    0x000050d2      0x528 ..\obj\mbrtu.o
- .debug_line    0x000055fa      0x23f ..\obj\system_stm32f4xx.o
- .debug_line    0x00005839      0x494 ..\obj\stm32f4xx_dma.o
- .debug_line    0x00005ccd      0x3e2 ..\obj\portserial.o
- .debug_line    0x000060af      0x497 ..\obj\mbfunccoils.o
- .debug_line    0x00006546      0x337 ..\obj\stm32f4xx_exti.o
- .debug_line    0x0000687d      0x2ef ..\obj\misc.o
- .debug_line    0x00006b6c      0x5d7 ..\obj\svpwm.o
- .debug_line    0x00007143      0x59d ..\obj\mbascii.o
- .debug_line    0x000076e0      0x276 ..\obj\pid.o
- .debug_line    0x00007956      0xb81 ..\obj\stm32f4xx_tim.o
+ .debug_line    0x000026b0      0x5e0 ..\obj\main.o
+ .debug_line    0x00002c90      0x281 ..\obj\mbcrc.o
+ .debug_line    0x00002f11      0x62e ..\obj\stm32f4xx_rcc.o
+ .debug_line    0x0000353f      0x4bc ..\obj\foc.o
+ .debug_line    0x000039fb      0x603 ..\obj\stm32f4xx_adc.o
+ .debug_line    0x00003ffe      0x415 ..\obj\mbfuncinput.o
+ .debug_line    0x00004413      0x550 ..\obj\encoder.o
+ .debug_line    0x00004963      0x3f7 ..\obj\stm32f4xx_gpio.o
+ .debug_line    0x00004d5a      0x377 ..\obj\porttimer.o
+ .debug_line    0x000050d1      0x528 ..\obj\mbrtu.o
+ .debug_line    0x000055f9      0x23f ..\obj\system_stm32f4xx.o
+ .debug_line    0x00005838      0x494 ..\obj\stm32f4xx_dma.o
+ .debug_line    0x00005ccc      0x3e2 ..\obj\portserial.o
+ .debug_line    0x000060ae      0x497 ..\obj\mbfunccoils.o
+ .debug_line    0x00006545      0x337 ..\obj\stm32f4xx_exti.o
+ .debug_line    0x0000687c      0x2ef ..\obj\misc.o
+ .debug_line    0x00006b6b      0x5ba ..\obj\svpwm.o
+ .debug_line    0x00007125      0x59d ..\obj\mbascii.o
+ .debug_line    0x000076c2      0x276 ..\obj\pid.o
+ .debug_line    0x00007938      0xb81 ..\obj\stm32f4xx_tim.o
 
-.debug_str      0x00000000     0x52b1
+.debug_str      0x00000000     0x52a7
  .debug_str     0x00000000      0x2fc ..\obj\stm32f4xx_syscfg.o
                                 0x35a (size before relaxing)
  .debug_str     0x000002fc      0x8b7 ..\obj\mb.o
@@ -2122,16 +2120,16 @@ OUTPUT(main.elf elf32-littlearm)
                                 0x3a8 (size before relaxing)
  .debug_str     0x00004335      0x15c ..\obj\misc.o
                                 0x41d (size before relaxing)
- .debug_str     0x00004491      0x3e8 ..\obj\svpwm.o
-                               0x13e6 (size before relaxing)
- .debug_str     0x00004879      0x1ba ..\obj\mbascii.o
+ .debug_str     0x00004491      0x3de ..\obj\svpwm.o
+                               0x13dc (size before relaxing)
+ .debug_str     0x0000486f      0x1ba ..\obj\mbascii.o
                                 0xa35 (size before relaxing)
- .debug_str     0x00004a33      0x10f ..\obj\pid.o
+ .debug_str     0x00004a29      0x10f ..\obj\pid.o
                                 0x6be (size before relaxing)
- .debug_str     0x00004b42      0x76f ..\obj\stm32f4xx_tim.o
+ .debug_str     0x00004b38      0x76f ..\obj\stm32f4xx_tim.o
                                 0xe4d (size before relaxing)
 
-.debug_frame    0x00000000     0x24f8
+.debug_frame    0x00000000     0x24e0
  .debug_frame   0x00000000       0x84 ..\obj\stm32f4xx_syscfg.o
  .debug_frame   0x00000084       0xb8 ..\obj\mb.o
  .debug_frame   0x0000013c       0x38 ..\obj\mbfuncdisc.o
@@ -2158,23 +2156,23 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_frame   0x000015c4       0x78 ..\obj\mbfunccoils.o
  .debug_frame   0x0000163c       0x9c ..\obj\stm32f4xx_exti.o
  .debug_frame   0x000016d8       0x68 ..\obj\misc.o
- .debug_frame   0x00001740      0x1c0 ..\obj\svpwm.o
- .debug_frame   0x00001900       0xf0 ..\obj\mbascii.o
- .debug_frame   0x000019f0       0xa0 ..\obj\pid.o
- .debug_frame   0x00001a90      0x6bc ..\obj\stm32f4xx_tim.o
- .debug_frame   0x0000214c       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_cos.o)
- .debug_frame   0x00002180       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_sin.o)
- .debug_frame   0x000021b4       0x3c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
- .debug_frame   0x000021f0       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_cos.o)
- .debug_frame   0x00002210       0x5c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
- .debug_frame   0x0000226c       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_sin.o)
- .debug_frame   0x0000228c       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_fabs.o)
- .debug_frame   0x000022ac       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_floor.o)
- .debug_frame   0x000022cc       0x44 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_scalbn.o)
- .debug_frame   0x00002310       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_copysign.o)
- .debug_frame   0x00002330       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-memset.o)
- .debug_frame   0x00002364       0x5c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__call_atexit.o)
- .debug_frame   0x000023c0       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-atexit.o)
- .debug_frame   0x000023e0       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-fini.o)
- .debug_frame   0x00002414       0xb0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
- .debug_frame   0x000024c4       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__atexit.o)
+ .debug_frame   0x00001740      0x1a8 ..\obj\svpwm.o
+ .debug_frame   0x000018e8       0xf0 ..\obj\mbascii.o
+ .debug_frame   0x000019d8       0xa0 ..\obj\pid.o
+ .debug_frame   0x00001a78      0x6bc ..\obj\stm32f4xx_tim.o
+ .debug_frame   0x00002134       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_cos.o)
+ .debug_frame   0x00002168       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_sin.o)
+ .debug_frame   0x0000219c       0x3c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
+ .debug_frame   0x000021d8       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_cos.o)
+ .debug_frame   0x000021f8       0x5c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
+ .debug_frame   0x00002254       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_sin.o)
+ .debug_frame   0x00002274       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_fabs.o)
+ .debug_frame   0x00002294       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_floor.o)
+ .debug_frame   0x000022b4       0x44 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_scalbn.o)
+ .debug_frame   0x000022f8       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_copysign.o)
+ .debug_frame   0x00002318       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-memset.o)
+ .debug_frame   0x0000234c       0x5c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__call_atexit.o)
+ .debug_frame   0x000023a8       0x20 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-atexit.o)
+ .debug_frame   0x000023c8       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-fini.o)
+ .debug_frame   0x000023fc       0xb0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
+ .debug_frame   0x000024ac       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__atexit.o)
