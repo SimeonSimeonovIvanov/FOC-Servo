@@ -1,6 +1,6 @@
 #include "foc.h"
 
-#define __POS_CONTROL__
+//#define __POS_CONTROL__
 #ifndef __POS_CONTROL__
 	#define __AI1_SET_SPEED__
 	#ifndef __AI1_SET_SPEED__
@@ -313,7 +313,7 @@ void ADC_IRQHandler( void )
 #endif
 
 		//lpFoc->Iq_des = (ai0 - 2047)<<1;
-		lpFoc->Iq_des = 500;
+		//lpFoc->Iq_des = 500;
 		//lpFoc->Iq_des = 0;
 	}
 
@@ -335,8 +335,8 @@ void ADC_IRQHandler( void )
 	mcInvClark( lpFoc );
 	///////////////////////////////////////////////////////////////////////////
 	//mcFocSVPWM_ST2( lpFoc );
-	mcFocSVPWM0( lpFoc );
-	//mcFocSVPWM_TI(lpFoc);
+	//mcFocSVPWM0( lpFoc );
+	mcFocSVPWM_TI(lpFoc);
 	///////////////////////////////////////////////////////////////////////////
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
