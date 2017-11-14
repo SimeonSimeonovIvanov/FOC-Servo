@@ -133,10 +133,6 @@ void mcInvClark(LP_MC_FOC lpFoc)
 	lpFoc->Vb = lpFoc->Vbeta;
 	lpFoc->Va = ( -lpFoc->Vbeta + ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
 	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
-
-	/*lpFoc->Va = lpFoc->Valpha;
-	lpFoc->Vb = ( -lpFoc->Valpha + ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;
-	lpFoc->Vc = ( -lpFoc->Valpha - ( SQRT3 * lpFoc->Vbeta ) ) * 0.5f;*/
 }
 
 void ADC_IRQHandler( void )
@@ -317,39 +313,30 @@ void ADC_IRQHandler( void )
 #endif
 
 		//lpFoc->Iq_des = (ai0 - 2047)<<1;
-		//lpFoc->Iq_des = 500;
+		lpFoc->Iq_des = 500;
 		//lpFoc->Iq_des = 0;
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	Ia = 1.0f * (float)( current_a - current_a_offset );
-	Ib = 1.0f * (float)( current_b - current_b_offset );
+	Ia = -1.0f * (float)( current_a - current_a_offset );
+	Ib = -1.0f * (float)( current_b - current_b_offset );
 	///////////////////////////////////////////////////////////////////////////
 	angle = readRawUVW();
 	mcFocSetAngle( lpFoc, angle );
 	mcFocSetCurrent( lpFoc, Ia, Ib );
 	///////////////////////////////////////////////////////////////////////////
 	mcClark( lpFoc );
-	lpFoc->Ibeta = -lpFoc->Ibeta; // ???
-
 	mcPark( lpFoc );
 	///////////////////////////////////////////////////////////////////////////
 	lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
 	lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
 	///////////////////////////////////////////////////////////////////////////
 	mcInvPark( lpFoc );
-	/* mcInvClark( lpFoc ); */
+	mcInvClark( lpFoc );
 	///////////////////////////////////////////////////////////////////////////
-	/*lpFoc->Valpha = SQRT3_DIV2 * lpFoc->Valpha;
-	lpFoc->Vbeta = SQRT3_DIV2 * lpFoc->Vbeta;*/
 	//mcFocSVPWM_ST2( lpFoc );
-	//mcFocSVPWM0( lpFoc );
-	//mcFocSPWM( lpFoc );
-	mcFocSVPWM_TI(lpFoc);
-
-	/*lpFoc->Valpha = 0.6 * (float)lpFoc->Valpha;
-	lpFoc->Vbeta = 0.6 * (float)lpFoc->Vbeta;
-	mcFocSVPWM( lpFoc );*/
+	mcFocSVPWM0( lpFoc );
+	//mcFocSVPWM_TI(lpFoc);
 	///////////////////////////////////////////////////////////////////////////
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );

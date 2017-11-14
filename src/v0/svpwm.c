@@ -328,8 +328,14 @@ void mcFocSVPWM_ST2(LP_MC_FOC lpFoc) // +++
 	Ubeta	= T * -lpFoc->Vbeta;
 
 	X = Ubeta;
-	Y = ( +Ualpha + Ubeta ) * 0.5f;
-	Z = ( -Ualpha + Ubeta ) * 0.5f;
+	Y = ( Ubeta - Ualpha ) * 0.5f;
+	Z = ( Ubeta + Ualpha ) * 0.5f;
+
+	/* From STM32x_svpwm_ics.c
+	 *X = Ubeta;
+	 *Y = ( +Ualpha + Ubeta ) * 0.5f;
+	 *Z = ( -Ualpha + Ubeta ) * 0.5f;
+	 */
 
 	if ( Y < 0 ) {
 		if (Z < 0) {
@@ -390,10 +396,8 @@ void mcFocSVPWM0(LP_MC_FOC lpFoc) // +++ ?
 	float PWM1, PWM2, PWM3;
 	float Tpwm = 1.0;
 
-	mcInvClark(lpFoc);
-
-	Uref1 = lpFoc->Vb;
-	Uref2 = lpFoc->Va;
+	Uref1 = lpFoc->Va;
+	Uref2 = lpFoc->Vb;
 	Uref3 = lpFoc->Vc;
 
 	if (Uref3 <= 0) {
@@ -418,9 +422,9 @@ void mcFocSVPWM0(LP_MC_FOC lpFoc) // +++ ?
 		}
 	}
 
-	X = lpFoc->Vbeta;
-	Y = 0.5f * (lpFoc->Vbeta + SQRT3 * lpFoc->Valpha);
-	Z = 0.5f * (lpFoc->Vbeta - SQRT3 * lpFoc->Valpha);
+	X = ( lpFoc->Vbeta );
+	Y = ( lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
+	Z = ( lpFoc->Vbeta + ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
 
 	switch (lpFoc->sector) {
 	case 1:
@@ -507,8 +511,6 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++ ?
 	float Tpwm = (float)PWM_PERIOD / 2.0f;
 	float vmin, vmax, vcom, X, Y, Z;
 
-	mcInvClark( lpFoc );
-
 	if( lpFoc->Va > lpFoc->Vb ) {
 		vmax = lpFoc->Va;
 		vmin = lpFoc->Vb;
@@ -530,7 +532,7 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++ ?
 	Y = ( vcom - lpFoc->Vb );
 	Z = ( vcom - lpFoc->Vc );
 
-	lpFoc->PWM3 = ( X * Tpwm ) + Tpwm;
+	lpFoc->PWM1 = ( X * Tpwm ) + Tpwm;
 	lpFoc->PWM2 = ( Y * Tpwm ) + Tpwm;
-	lpFoc->PWM1 = ( Z * Tpwm ) + Tpwm;
+	lpFoc->PWM3 = ( Z * Tpwm ) + Tpwm;
 }

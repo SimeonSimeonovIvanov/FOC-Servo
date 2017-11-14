@@ -216,7 +216,7 @@ uint16_t readRawUVW(void)
 
 	hall_old = hall;
 
-	return encoder;
+	return 3999 - encoder;
 }
 
 uint16_t read360uvw(void)
@@ -257,7 +257,7 @@ uint16_t read360uvw(void)
 
 	hall_old = hall;
 
-	return encoder;
+	return 360 - encoder;
 }
 
 // IN:  1  3  2  6  4  5	( Raw value from Hall sensor )
