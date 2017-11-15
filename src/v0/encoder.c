@@ -178,7 +178,7 @@ uint16_t encoderAddOffset( int16_t angle, int16_t offset )
 	return angle;
 }
 
-uint16_t readRawUVW(void)
+uint16_t readRawUVW(void) // !!!
 {
 	static uint32_t hall_old = 0;
 
@@ -262,7 +262,7 @@ uint16_t read360uvw(void)
 
 // IN:  1  3  2  6  4  5	( Raw value from Hall sensor )
 // OUT: 5  4  3  2  1  6	( hall_map[ Raw Hall ] )
-uint16_t readHallMap( void )
+uint16_t readHallMap( void ) // !!!
 {
 	static uint16_t hall_map[8] = {
 			0,

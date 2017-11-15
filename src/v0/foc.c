@@ -238,13 +238,13 @@ void ADC_IRQHandler( void )
 				sp_speed = -sp_speed;
 			}
 
-			if( !sp_speed || ( sp_speed < 47 && sp_speed > -47 ) ) {
-				sp_speed = 0.0f;
+			if( !sp_speed || ( sp_speed < 50 && sp_speed > -50 ) ) {
+				//sp_speed = 0.0f;
 			} else {
 				if( sp_speed>=0 ) {
-					sp_speed -= 47;
+					//sp_speed -= 10;
 				} else {
-					sp_speed += 47;
+					//sp_speed += 10;
 				}
 			}
 

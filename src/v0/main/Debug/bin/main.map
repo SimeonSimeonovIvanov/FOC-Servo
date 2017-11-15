@@ -785,7 +785,7 @@ LOAD c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/g
 LOAD c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/crt0.o
                 0x20020000                _eram = 0x20020000
 
-.text           0x08000000     0x4d58
+.text           0x08000000     0x4d0c
  *(.isr_vector)
  .isr_vector    0x08000000      0x188 ..\obj\startup_stm32f4xx.o
                 0x08000000                g_pfnVectors
@@ -987,502 +987,502 @@ LOAD c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/g
                 0x08000a60       0xe4 ..\obj\main.o
                 0x08000a60                boardInit
  .text.startup.main
-                0x08000b44      0x154 ..\obj\main.o
+                0x08000b44      0x158 ..\obj\main.o
                 0x08000b44                main
  .text.usMBCRC16
-                0x08000c98       0x2c ..\obj\mbcrc.o
-                0x08000c98                usMBCRC16
+                0x08000c9c       0x2c ..\obj\mbcrc.o
+                0x08000c9c                usMBCRC16
  .text.RCC_GetClocksFreq
-                0x08000cc4       0x88 ..\obj\stm32f4xx_rcc.o
-                0x08000cc4                RCC_GetClocksFreq
+                0x08000cc8       0x88 ..\obj\stm32f4xx_rcc.o
+                0x08000cc8                RCC_GetClocksFreq
  .text.RCC_AHB1PeriphClockCmd
-                0x08000d4c       0x18 ..\obj\stm32f4xx_rcc.o
-                0x08000d4c                RCC_AHB1PeriphClockCmd
+                0x08000d50       0x18 ..\obj\stm32f4xx_rcc.o
+                0x08000d50                RCC_AHB1PeriphClockCmd
  .text.RCC_APB1PeriphClockCmd
-                0x08000d64       0x18 ..\obj\stm32f4xx_rcc.o
-                0x08000d64                RCC_APB1PeriphClockCmd
+                0x08000d68       0x18 ..\obj\stm32f4xx_rcc.o
+                0x08000d68                RCC_APB1PeriphClockCmd
  .text.RCC_APB2PeriphClockCmd
-                0x08000d7c       0x18 ..\obj\stm32f4xx_rcc.o
-                0x08000d7c                RCC_APB2PeriphClockCmd
+                0x08000d80       0x18 ..\obj\stm32f4xx_rcc.o
+                0x08000d80                RCC_APB2PeriphClockCmd
  .text.RCC_APB1PeriphResetCmd
-                0x08000d94       0x18 ..\obj\stm32f4xx_rcc.o
-                0x08000d94                RCC_APB1PeriphResetCmd
+                0x08000d98       0x18 ..\obj\stm32f4xx_rcc.o
+                0x08000d98                RCC_APB1PeriphResetCmd
  .text.RCC_APB2PeriphResetCmd
-                0x08000dac       0x18 ..\obj\stm32f4xx_rcc.o
-                0x08000dac                RCC_APB2PeriphResetCmd
- .text.initDAC  0x08000dc4       0x5c ..\obj\foc.o
-                0x08000dc4                initDAC
- .text.focInit  0x08000e20      0x130 ..\obj\foc.o
-                0x08000e20                focInit
+                0x08000db0       0x18 ..\obj\stm32f4xx_rcc.o
+                0x08000db0                RCC_APB2PeriphResetCmd
+ .text.initDAC  0x08000dc8       0x5c ..\obj\foc.o
+                0x08000dc8                initDAC
+ .text.focInit  0x08000e24      0x130 ..\obj\foc.o
+                0x08000e24                focInit
  .text.mcFocSetAngle
-                0x08000f50       0x2a ..\obj\foc.o
-                0x08000f50                mcFocSetAngle
- *fill*         0x08000f7a        0x2 
- .text.mcClark  0x08000f7c       0x28 ..\obj\foc.o
-                0x08000f7c                mcClark
- .text.mcPark   0x08000fa4       0x2a ..\obj\foc.o
-                0x08000fa4                mcPark
+                0x08000f54       0x2a ..\obj\foc.o
+                0x08000f54                mcFocSetAngle
+ *fill*         0x08000f7e        0x2 
+ .text.mcClark  0x08000f80       0x28 ..\obj\foc.o
+                0x08000f80                mcClark
+ .text.mcPark   0x08000fa8       0x2a ..\obj\foc.o
+                0x08000fa8                mcPark
  .text.mcInvPark
-                0x08000fce       0x2a ..\obj\foc.o
-                0x08000fce                mcInvPark
+                0x08000fd2       0x2a ..\obj\foc.o
+                0x08000fd2                mcInvPark
  .text.mcInvClark
-                0x08000ff8       0x3c ..\obj\foc.o
-                0x08000ff8                mcInvClark
+                0x08000ffc       0x3c ..\obj\foc.o
+                0x08000ffc                mcInvClark
  .text.adc_current_filter
-                0x08001034       0xd4 ..\obj\foc.o
-                0x08001034                adc_current_filter
+                0x08001038       0xd4 ..\obj\foc.o
+                0x08001038                adc_current_filter
  .text.ADC_IRQHandler
-                0x08001108      0x2d4 ..\obj\foc.o
-                0x08001108                ADC_IRQHandler
+                0x0800110c      0x284 ..\obj\foc.o
+                0x0800110c                ADC_IRQHandler
  .text.ADC_Init
-                0x080013dc       0x4c ..\obj\stm32f4xx_adc.o
-                0x080013dc                ADC_Init
+                0x08001390       0x4c ..\obj\stm32f4xx_adc.o
+                0x08001390                ADC_Init
  .text.ADC_StructInit
-                0x08001428       0x14 ..\obj\stm32f4xx_adc.o
-                0x08001428                ADC_StructInit
+                0x080013dc       0x14 ..\obj\stm32f4xx_adc.o
+                0x080013dc                ADC_StructInit
  .text.ADC_CommonInit
-                0x0800143c       0x28 ..\obj\stm32f4xx_adc.o
-                0x0800143c                ADC_CommonInit
+                0x080013f0       0x28 ..\obj\stm32f4xx_adc.o
+                0x080013f0                ADC_CommonInit
  .text.ADC_CommonStructInit
-                0x08001464        0xc ..\obj\stm32f4xx_adc.o
-                0x08001464                ADC_CommonStructInit
- .text.ADC_Cmd  0x08001470       0x12 ..\obj\stm32f4xx_adc.o
-                0x08001470                ADC_Cmd
+                0x08001418        0xc ..\obj\stm32f4xx_adc.o
+                0x08001418                ADC_CommonStructInit
+ .text.ADC_Cmd  0x08001424       0x12 ..\obj\stm32f4xx_adc.o
+                0x08001424                ADC_Cmd
  .text.ADC_RegularChannelConfig
-                0x08001482       0x8c ..\obj\stm32f4xx_adc.o
-                0x08001482                ADC_RegularChannelConfig
+                0x08001436       0x8c ..\obj\stm32f4xx_adc.o
+                0x08001436                ADC_RegularChannelConfig
  .text.ADC_DMACmd
-                0x0800150e       0x12 ..\obj\stm32f4xx_adc.o
-                0x0800150e                ADC_DMACmd
+                0x080014c2       0x12 ..\obj\stm32f4xx_adc.o
+                0x080014c2                ADC_DMACmd
  .text.ADC_DMARequestAfterLastTransferCmd
-                0x08001520       0x12 ..\obj\stm32f4xx_adc.o
-                0x08001520                ADC_DMARequestAfterLastTransferCmd
+                0x080014d4       0x12 ..\obj\stm32f4xx_adc.o
+                0x080014d4                ADC_DMARequestAfterLastTransferCmd
  .text.ADC_InjectedChannelConfig
-                0x08001532       0x58 ..\obj\stm32f4xx_adc.o
-                0x08001532                ADC_InjectedChannelConfig
+                0x080014e6       0x58 ..\obj\stm32f4xx_adc.o
+                0x080014e6                ADC_InjectedChannelConfig
  .text.ADC_InjectedSequencerLengthConfig
-                0x0800158a       0x10 ..\obj\stm32f4xx_adc.o
-                0x0800158a                ADC_InjectedSequencerLengthConfig
+                0x0800153e       0x10 ..\obj\stm32f4xx_adc.o
+                0x0800153e                ADC_InjectedSequencerLengthConfig
  .text.ADC_ExternalTrigInjectedConvConfig
-                0x0800159a        0xc ..\obj\stm32f4xx_adc.o
-                0x0800159a                ADC_ExternalTrigInjectedConvConfig
+                0x0800154e        0xc ..\obj\stm32f4xx_adc.o
+                0x0800154e                ADC_ExternalTrigInjectedConvConfig
  .text.ADC_ExternalTrigInjectedConvEdgeConfig
-                0x080015a6        0xc ..\obj\stm32f4xx_adc.o
-                0x080015a6                ADC_ExternalTrigInjectedConvEdgeConfig
+                0x0800155a        0xc ..\obj\stm32f4xx_adc.o
+                0x0800155a                ADC_ExternalTrigInjectedConvEdgeConfig
  .text.ADC_AutoInjectedConvCmd
-                0x080015b2       0x12 ..\obj\stm32f4xx_adc.o
-                0x080015b2                ADC_AutoInjectedConvCmd
+                0x08001566       0x12 ..\obj\stm32f4xx_adc.o
+                0x08001566                ADC_AutoInjectedConvCmd
  .text.ADC_InjectedDiscModeCmd
-                0x080015c4       0x12 ..\obj\stm32f4xx_adc.o
-                0x080015c4                ADC_InjectedDiscModeCmd
+                0x08001578       0x12 ..\obj\stm32f4xx_adc.o
+                0x08001578                ADC_InjectedDiscModeCmd
  .text.ADC_GetInjectedConversionValue
-                0x080015d6       0x1a ..\obj\stm32f4xx_adc.o
-                0x080015d6                ADC_GetInjectedConversionValue
+                0x0800158a       0x1a ..\obj\stm32f4xx_adc.o
+                0x0800158a                ADC_GetInjectedConversionValue
  .text.ADC_ITConfig
-                0x080015f0       0x18 ..\obj\stm32f4xx_adc.o
-                0x080015f0                ADC_ITConfig
+                0x080015a4       0x18 ..\obj\stm32f4xx_adc.o
+                0x080015a4                ADC_ITConfig
  .text.ADC_ClearITPendingBit
-                0x08001608        0x8 ..\obj\stm32f4xx_adc.o
-                0x08001608                ADC_ClearITPendingBit
+                0x080015bc        0x8 ..\obj\stm32f4xx_adc.o
+                0x080015bc                ADC_ClearITPendingBit
  .text.eMBFuncReadInputRegister
-                0x08001610       0x58 ..\obj\mbfuncinput.o
-                0x08001610                eMBFuncReadInputRegister
+                0x080015c4       0x58 ..\obj\mbfuncinput.o
+                0x080015c4                eMBFuncReadInputRegister
  .text.encoderInitZ
-                0x08001668       0x80 ..\obj\encoder.o
-                0x08001668                encoderInitZ
+                0x0800161c       0x80 ..\obj\encoder.o
+                0x0800161c                encoderInitZ
  .text.initHall
-                0x080016e8       0x3c ..\obj\encoder.o
-                0x080016e8                initHall
+                0x0800169c       0x3c ..\obj\encoder.o
+                0x0800169c                initHall
  .text.iEncoderGetAbsPos
-                0x08001724        0xa ..\obj\encoder.o
-                0x08001724                iEncoderGetAbsPos
+                0x080016d8        0xa ..\obj\encoder.o
+                0x080016d8                iEncoderGetAbsPos
  .text.encoderAddOffset
-                0x0800172e       0x20 ..\obj\encoder.o
-                0x0800172e                encoderAddOffset
- *fill*         0x0800174e        0x2 
+                0x080016e2       0x20 ..\obj\encoder.o
+                0x080016e2                encoderAddOffset
+ *fill*         0x08001702        0x2 
  .text.readRawHallInput
-                0x08001750       0x2c ..\obj\encoder.o
-                0x08001750                readRawHallInput
+                0x08001704       0x2c ..\obj\encoder.o
+                0x08001704                readRawHallInput
  .text.readHallMap
-                0x0800177c       0x14 ..\obj\encoder.o
-                0x0800177c                readHallMap
+                0x08001730       0x14 ..\obj\encoder.o
+                0x08001730                readHallMap
  .text.readRawUVW
-                0x08001790       0x9c ..\obj\encoder.o
-                0x08001790                readRawUVW
+                0x08001744       0x9c ..\obj\encoder.o
+                0x08001744                readRawUVW
  .text.read360uvw
-                0x0800182c       0x94 ..\obj\encoder.o
-                0x0800182c                read360uvw
+                0x080017e0       0x94 ..\obj\encoder.o
+                0x080017e0                read360uvw
  .text.read360uvwWithOffset
-                0x080018c0       0x28 ..\obj\encoder.o
-                0x080018c0                read360uvwWithOffset
+                0x08001874       0x28 ..\obj\encoder.o
+                0x08001874                read360uvwWithOffset
  .text.EXTI15_10_IRQHandler
-                0x080018e8       0x1a ..\obj\encoder.o
-                0x080018e8                EXTI15_10_IRQHandler
- *fill*         0x08001902        0x2 
+                0x0800189c       0x1a ..\obj\encoder.o
+                0x0800189c                EXTI15_10_IRQHandler
+ *fill*         0x080018b6        0x2 
  .text.createSinCosTable
-                0x08001904       0x5c ..\obj\encoder.o
-                0x08001904                createSinCosTable
+                0x080018b8       0x5c ..\obj\encoder.o
+                0x080018b8                createSinCosTable
  .text.fSinAngle
-                0x08001960       0x10 ..\obj\encoder.o
-                0x08001960                fSinAngle
+                0x08001914       0x10 ..\obj\encoder.o
+                0x08001914                fSinAngle
  .text.fCosAngle
-                0x08001970       0x10 ..\obj\encoder.o
-                0x08001970                fCosAngle
+                0x08001924       0x10 ..\obj\encoder.o
+                0x08001924                fCosAngle
  .text.initTim10
-                0x08001980       0xc0 ..\obj\encoder.o
-                0x08001980                initTim10
+                0x08001934       0xc0 ..\obj\encoder.o
+                0x08001934                initTim10
  .text.initEncoder
-                0x08001a40      0x1a8 ..\obj\encoder.o
-                0x08001a40                initEncoder
+                0x080019f4      0x1a8 ..\obj\encoder.o
+                0x080019f4                initEncoder
  .text.TIM1_UP_TIM10_IRQHandler
-                0x08001be8       0x34 ..\obj\encoder.o
-                0x08001be8                TIM1_UP_TIM10_IRQHandler
+                0x08001b9c       0x34 ..\obj\encoder.o
+                0x08001b9c                TIM1_UP_TIM10_IRQHandler
  .text.GPIO_Init
-                0x08001c1c       0x9c ..\obj\stm32f4xx_gpio.o
-                0x08001c1c                GPIO_Init
+                0x08001bd0       0x9c ..\obj\stm32f4xx_gpio.o
+                0x08001bd0                GPIO_Init
  .text.GPIO_StructInit
-                0x08001cb8       0x12 ..\obj\stm32f4xx_gpio.o
-                0x08001cb8                GPIO_StructInit
+                0x08001c6c       0x12 ..\obj\stm32f4xx_gpio.o
+                0x08001c6c                GPIO_StructInit
  .text.GPIO_ReadInputData
-                0x08001cca        0x6 ..\obj\stm32f4xx_gpio.o
-                0x08001cca                GPIO_ReadInputData
+                0x08001c7e        0x6 ..\obj\stm32f4xx_gpio.o
+                0x08001c7e                GPIO_ReadInputData
  .text.GPIO_SetBits
-                0x08001cd0        0x4 ..\obj\stm32f4xx_gpio.o
-                0x08001cd0                GPIO_SetBits
+                0x08001c84        0x4 ..\obj\stm32f4xx_gpio.o
+                0x08001c84                GPIO_SetBits
  .text.GPIO_ResetBits
-                0x08001cd4        0x4 ..\obj\stm32f4xx_gpio.o
-                0x08001cd4                GPIO_ResetBits
+                0x08001c88        0x4 ..\obj\stm32f4xx_gpio.o
+                0x08001c88                GPIO_ResetBits
  .text.GPIO_ToggleBits
-                0x08001cd8        0x8 ..\obj\stm32f4xx_gpio.o
-                0x08001cd8                GPIO_ToggleBits
+                0x08001c8c        0x8 ..\obj\stm32f4xx_gpio.o
+                0x08001c8c                GPIO_ToggleBits
  .text.GPIO_PinAFConfig
-                0x08001ce0       0x24 ..\obj\stm32f4xx_gpio.o
-                0x08001ce0                GPIO_PinAFConfig
+                0x08001c94       0x24 ..\obj\stm32f4xx_gpio.o
+                0x08001c94                GPIO_PinAFConfig
  .text.xMBPortTimersInit
-                0x08001d04       0x74 ..\obj\porttimer.o
-                0x08001d04                xMBPortTimersInit
+                0x08001cb8       0x74 ..\obj\porttimer.o
+                0x08001cb8                xMBPortTimersInit
  .text.vMBPortTimersEnable
-                0x08001d78       0x1c ..\obj\porttimer.o
-                0x08001d78                vMBPortTimersEnable
+                0x08001d2c       0x1c ..\obj\porttimer.o
+                0x08001d2c                vMBPortTimersEnable
  .text.vMBPortTimersDisable
-                0x08001d94        0xc ..\obj\porttimer.o
-                0x08001d94                vMBPortTimersDisable
+                0x08001d48        0xc ..\obj\porttimer.o
+                0x08001d48                vMBPortTimersDisable
  .text.TIM7_IRQHandler
-                0x08001da0       0x28 ..\obj\porttimer.o
-                0x08001da0                TIM7_IRQHandler
+                0x08001d54       0x28 ..\obj\porttimer.o
+                0x08001d54                TIM7_IRQHandler
  .text.eMBRTUInit
-                0x08001dc8       0x3c ..\obj\mbrtu.o
-                0x08001dc8                eMBRTUInit
+                0x08001d7c       0x3c ..\obj\mbrtu.o
+                0x08001d7c                eMBRTUInit
  .text.eMBRTUStart
-                0x08001e04       0x1c ..\obj\mbrtu.o
-                0x08001e04                eMBRTUStart
+                0x08001db8       0x1c ..\obj\mbrtu.o
+                0x08001db8                eMBRTUStart
  .text.eMBRTUStop
-                0x08001e20       0x14 ..\obj\mbrtu.o
-                0x08001e20                eMBRTUStop
+                0x08001dd4       0x14 ..\obj\mbrtu.o
+                0x08001dd4                eMBRTUStop
  .text.eMBRTUReceive
-                0x08001e34       0x48 ..\obj\mbrtu.o
-                0x08001e34                eMBRTUReceive
+                0x08001de8       0x48 ..\obj\mbrtu.o
+                0x08001de8                eMBRTUReceive
  .text.eMBRTUSend
-                0x08001e7c       0x68 ..\obj\mbrtu.o
-                0x08001e7c                eMBRTUSend
+                0x08001e30       0x68 ..\obj\mbrtu.o
+                0x08001e30                eMBRTUSend
  .text.xMBRTUReceiveFSM
-                0x08001ee4       0x68 ..\obj\mbrtu.o
-                0x08001ee4                xMBRTUReceiveFSM
+                0x08001e98       0x68 ..\obj\mbrtu.o
+                0x08001e98                xMBRTUReceiveFSM
  .text.xMBRTUTransmitFSM
-                0x08001f4c       0x58 ..\obj\mbrtu.o
-                0x08001f4c                xMBRTUTransmitFSM
+                0x08001f00       0x58 ..\obj\mbrtu.o
+                0x08001f00                xMBRTUTransmitFSM
  .text.xMBRTUTimerT35Expired
-                0x08001fa4       0x2c ..\obj\mbrtu.o
-                0x08001fa4                xMBRTUTimerT35Expired
+                0x08001f58       0x2c ..\obj\mbrtu.o
+                0x08001f58                xMBRTUTimerT35Expired
  .text.SystemInit
-                0x08001fd0       0xf8 ..\obj\system_stm32f4xx.o
-                0x08001fd0                SystemInit
+                0x08001f84       0xf8 ..\obj\system_stm32f4xx.o
+                0x08001f84                SystemInit
  .text.SystemCoreClockUpdate
-                0x080020c8       0x70 ..\obj\system_stm32f4xx.o
-                0x080020c8                SystemCoreClockUpdate
+                0x0800207c       0x70 ..\obj\system_stm32f4xx.o
+                0x0800207c                SystemCoreClockUpdate
  .text.DMA_Init
-                0x08002138       0x54 ..\obj\stm32f4xx_dma.o
-                0x08002138                DMA_Init
+                0x080020ec       0x54 ..\obj\stm32f4xx_dma.o
+                0x080020ec                DMA_Init
  .text.DMA_StructInit
-                0x0800218c       0x22 ..\obj\stm32f4xx_dma.o
-                0x0800218c                DMA_StructInit
- .text.DMA_Cmd  0x080021ae       0x12 ..\obj\stm32f4xx_dma.o
-                0x080021ae                DMA_Cmd
+                0x08002140       0x22 ..\obj\stm32f4xx_dma.o
+                0x08002140                DMA_StructInit
+ .text.DMA_Cmd  0x08002162       0x12 ..\obj\stm32f4xx_dma.o
+                0x08002162                DMA_Cmd
  .text.vMBPortSerialEnable
-                0x080021c0       0x54 ..\obj\portserial.o
-                0x080021c0                vMBPortSerialEnable
+                0x08002174       0x54 ..\obj\portserial.o
+                0x08002174                vMBPortSerialEnable
  .text.xMBPortSerialInit
-                0x08002214      0x128 ..\obj\portserial.o
-                0x08002214                xMBPortSerialInit
+                0x080021c8      0x128 ..\obj\portserial.o
+                0x080021c8                xMBPortSerialInit
  .text.USART3_IRQHandler
-                0x0800233c       0x70 ..\obj\portserial.o
-                0x0800233c                USART3_IRQHandler
+                0x080022f0       0x70 ..\obj\portserial.o
+                0x080022f0                USART3_IRQHandler
  .text.xMBPortSerialPutByte
-                0x080023ac       0x14 ..\obj\portserial.o
-                0x080023ac                xMBPortSerialPutByte
+                0x08002360       0x14 ..\obj\portserial.o
+                0x08002360                xMBPortSerialPutByte
  .text.xMBPortSerialGetByte
-                0x080023c0       0x14 ..\obj\portserial.o
-                0x080023c0                xMBPortSerialGetByte
+                0x08002374       0x14 ..\obj\portserial.o
+                0x08002374                xMBPortSerialGetByte
  .text.eMBFuncReadCoils
-                0x080023d4       0x6c ..\obj\mbfunccoils.o
-                0x080023d4                eMBFuncReadCoils
+                0x08002388       0x6c ..\obj\mbfunccoils.o
+                0x08002388                eMBFuncReadCoils
  .text.eMBFuncWriteCoil
-                0x08002440       0x4a ..\obj\mbfunccoils.o
-                0x08002440                eMBFuncWriteCoil
+                0x080023f4       0x4a ..\obj\mbfunccoils.o
+                0x080023f4                eMBFuncWriteCoil
  .text.eMBFuncWriteMultipleCoils
-                0x0800248a       0x58 ..\obj\mbfunccoils.o
-                0x0800248a                eMBFuncWriteMultipleCoils
- *fill*         0x080024e2        0x2 
+                0x0800243e       0x58 ..\obj\mbfunccoils.o
+                0x0800243e                eMBFuncWriteMultipleCoils
+ *fill*         0x08002496        0x2 
  .text.EXTI_Init
-                0x080024e4       0x74 ..\obj\stm32f4xx_exti.o
-                0x080024e4                EXTI_Init
+                0x08002498       0x74 ..\obj\stm32f4xx_exti.o
+                0x08002498                EXTI_Init
  .text.EXTI_GetITStatus
-                0x08002558       0x1c ..\obj\stm32f4xx_exti.o
-                0x08002558                EXTI_GetITStatus
+                0x0800250c       0x1c ..\obj\stm32f4xx_exti.o
+                0x0800250c                EXTI_GetITStatus
  .text.EXTI_ClearITPendingBit
-                0x08002574        0xc ..\obj\stm32f4xx_exti.o
-                0x08002574                EXTI_ClearITPendingBit
+                0x08002528        0xc ..\obj\stm32f4xx_exti.o
+                0x08002528                EXTI_ClearITPendingBit
  .text.NVIC_PriorityGroupConfig
-                0x08002580       0x14 ..\obj\misc.o
-                0x08002580                NVIC_PriorityGroupConfig
+                0x08002534       0x14 ..\obj\misc.o
+                0x08002534                NVIC_PriorityGroupConfig
  .text.NVIC_Init
-                0x08002594       0x68 ..\obj\misc.o
-                0x08002594                NVIC_Init
+                0x08002548       0x68 ..\obj\misc.o
+                0x08002548                NVIC_Init
  .text.svpwmInitGPIO
-                0x080025fc       0x94 ..\obj\svpwm.o
-                0x080025fc                svpwmInitGPIO
+                0x080025b0       0x94 ..\obj\svpwm.o
+                0x080025b0                svpwmInitGPIO
  .text.svpwmInitTIM
-                0x08002690      0x134 ..\obj\svpwm.o
-                0x08002690                svpwmInitTIM
+                0x08002644      0x134 ..\obj\svpwm.o
+                0x08002644                svpwmInitTIM
  .text.RCC_Configuration_Adc1
-                0x080027c4       0x20 ..\obj\svpwm.o
-                0x080027c4                RCC_Configuration_Adc1
+                0x08002778       0x20 ..\obj\svpwm.o
+                0x08002778                RCC_Configuration_Adc1
  .text.RCC_Configuration_Adc2
-                0x080027e4       0x18 ..\obj\svpwm.o
-                0x080027e4                RCC_Configuration_Adc2
+                0x08002798       0x18 ..\obj\svpwm.o
+                0x08002798                RCC_Configuration_Adc2
  .text.GPIO_Configuration_Adc1
-                0x080027fc       0x60 ..\obj\svpwm.o
-                0x080027fc                GPIO_Configuration_Adc1
+                0x080027b0       0x60 ..\obj\svpwm.o
+                0x080027b0                GPIO_Configuration_Adc1
  .text.GPIO_Configuration_Adc2
-                0x0800285c       0x3c ..\obj\svpwm.o
-                0x0800285c                GPIO_Configuration_Adc2
- .text.DMAInit  0x08002898       0x74 ..\obj\svpwm.o
-                0x08002898                DMAInit
+                0x08002810       0x3c ..\obj\svpwm.o
+                0x08002810                GPIO_Configuration_Adc2
+ .text.DMAInit  0x0800284c       0x74 ..\obj\svpwm.o
+                0x0800284c                DMAInit
  .text.svpwmInitADC
-                0x0800290c      0x16c ..\obj\svpwm.o
-                0x0800290c                svpwmInitADC
+                0x080028c0      0x16c ..\obj\svpwm.o
+                0x080028c0                svpwmInitADC
  .text.svpwmInit
-                0x08002a78        0xe ..\obj\svpwm.o
-                0x08002a78                svpwmInit
+                0x08002a2c        0xe ..\obj\svpwm.o
+                0x08002a2c                svpwmInit
  .text.DMA1_Stream1_IRQHandler
-                0x08002a86        0x2 ..\obj\svpwm.o
-                0x08002a86                DMA1_Stream1_IRQHandler
+                0x08002a3a        0x2 ..\obj\svpwm.o
+                0x08002a3a                DMA1_Stream1_IRQHandler
  .text.mcFocSVPWM_TI
-                0x08002a88       0x90 ..\obj\svpwm.o
-                0x08002a88                mcFocSVPWM_TI
+                0x08002a3c       0x90 ..\obj\svpwm.o
+                0x08002a3c                mcFocSVPWM_TI
  .text.eMBASCIIInit
-                0x08002b18       0x34 ..\obj\mbascii.o
-                0x08002b18                eMBASCIIInit
+                0x08002acc       0x34 ..\obj\mbascii.o
+                0x08002acc                eMBASCIIInit
  .text.eMBASCIIStart
-                0x08002b4c       0x20 ..\obj\mbascii.o
-                0x08002b4c                eMBASCIIStart
+                0x08002b00       0x20 ..\obj\mbascii.o
+                0x08002b00                eMBASCIIStart
  .text.eMBASCIIStop
-                0x08002b6c       0x14 ..\obj\mbascii.o
-                0x08002b6c                eMBASCIIStop
+                0x08002b20       0x14 ..\obj\mbascii.o
+                0x08002b20                eMBASCIIStop
  .text.eMBASCIIReceive
-                0x08002b80       0x5c ..\obj\mbascii.o
-                0x08002b80                eMBASCIIReceive
+                0x08002b34       0x5c ..\obj\mbascii.o
+                0x08002b34                eMBASCIIReceive
  .text.eMBASCIISend
-                0x08002bdc       0x6c ..\obj\mbascii.o
-                0x08002bdc                eMBASCIISend
+                0x08002b90       0x6c ..\obj\mbascii.o
+                0x08002b90                eMBASCIISend
  .text.xMBASCIIReceiveFSM
-                0x08002c48       0xf4 ..\obj\mbascii.o
-                0x08002c48                xMBASCIIReceiveFSM
+                0x08002bfc       0xf4 ..\obj\mbascii.o
+                0x08002bfc                xMBASCIIReceiveFSM
  .text.xMBASCIITransmitFSM
-                0x08002d3c       0xbc ..\obj\mbascii.o
-                0x08002d3c                xMBASCIITransmitFSM
+                0x08002cf0       0xbc ..\obj\mbascii.o
+                0x08002cf0                xMBASCIITransmitFSM
  .text.xMBASCIITimerT1SExpired
-                0x08002df8       0x1c ..\obj\mbascii.o
-                0x08002df8                xMBASCIITimerT1SExpired
+                0x08002dac       0x1c ..\obj\mbascii.o
+                0x08002dac                xMBASCIITimerT1SExpired
  .text.pidInit_test
-                0x08002e14       0x18 ..\obj\pid.o
-                0x08002e14                pidInit_test
+                0x08002dc8       0x18 ..\obj\pid.o
+                0x08002dc8                pidInit_test
  .text.pidSetOutLimit_test
-                0x08002e2c        0xa ..\obj\pid.o
-                0x08002e2c                pidSetOutLimit_test
+                0x08002de0        0xa ..\obj\pid.o
+                0x08002de0                pidSetOutLimit_test
  .text.pidSetIntegralLimit_test
-                0x08002e36        0x6 ..\obj\pid.o
-                0x08002e36                pidSetIntegralLimit_test
+                0x08002dea        0x6 ..\obj\pid.o
+                0x08002dea                pidSetIntegralLimit_test
  .text.pidTask_test
-                0x08002e3c       0x96 ..\obj\pid.o
-                0x08002e3c                pidTask_test
- .text.pidInit  0x08002ed2       0x18 ..\obj\pid.o
-                0x08002ed2                pidInit
+                0x08002df0       0x96 ..\obj\pid.o
+                0x08002df0                pidTask_test
+ .text.pidInit  0x08002e86       0x18 ..\obj\pid.o
+                0x08002e86                pidInit
  .text.pidSetOutLimit
-                0x08002eea        0xa ..\obj\pid.o
-                0x08002eea                pidSetOutLimit
+                0x08002e9e        0xa ..\obj\pid.o
+                0x08002e9e                pidSetOutLimit
  .text.pidSetIntegralLimit
-                0x08002ef4        0xe ..\obj\pid.o
-                0x08002ef4                pidSetIntegralLimit
+                0x08002ea8        0xe ..\obj\pid.o
+                0x08002ea8                pidSetIntegralLimit
  .text.pidSetInputRange
-                0x08002f02        0xe ..\obj\pid.o
-                0x08002f02                pidSetInputRange
- .text.pidTask  0x08002f10       0xcc ..\obj\pid.o
-                0x08002f10                pidTask
+                0x08002eb6        0xe ..\obj\pid.o
+                0x08002eb6                pidSetInputRange
+ .text.pidTask  0x08002ec4       0xcc ..\obj\pid.o
+                0x08002ec4                pidTask
  .text.TI1_Config
-                0x08002fdc       0x36 ..\obj\stm32f4xx_tim.o
+                0x08002f90       0x36 ..\obj\stm32f4xx_tim.o
  .text.TI2_Config
-                0x08003012       0x3c ..\obj\stm32f4xx_tim.o
- *fill*         0x0800304e        0x2 
+                0x08002fc6       0x3c ..\obj\stm32f4xx_tim.o
+ *fill*         0x08003002        0x2 
  .text.TIM_DeInit
-                0x08003050      0x16c ..\obj\stm32f4xx_tim.o
-                0x08003050                TIM_DeInit
+                0x08003004      0x16c ..\obj\stm32f4xx_tim.o
+                0x08003004                TIM_DeInit
  .text.TIM_TimeBaseInit
-                0x080031bc       0x7c ..\obj\stm32f4xx_tim.o
-                0x080031bc                TIM_TimeBaseInit
+                0x08003170       0x7c ..\obj\stm32f4xx_tim.o
+                0x08003170                TIM_TimeBaseInit
  .text.TIM_TimeBaseStructInit
-                0x08003238       0x12 ..\obj\stm32f4xx_tim.o
-                0x08003238                TIM_TimeBaseStructInit
+                0x080031ec       0x12 ..\obj\stm32f4xx_tim.o
+                0x080031ec                TIM_TimeBaseStructInit
  .text.TIM_SetCounter
-                0x0800324a        0x4 ..\obj\stm32f4xx_tim.o
-                0x0800324a                TIM_SetCounter
+                0x080031fe        0x4 ..\obj\stm32f4xx_tim.o
+                0x080031fe                TIM_SetCounter
  .text.TIM_ARRPreloadConfig
-                0x0800324e       0x18 ..\obj\stm32f4xx_tim.o
-                0x0800324e                TIM_ARRPreloadConfig
- .text.TIM_Cmd  0x08003266       0x18 ..\obj\stm32f4xx_tim.o
-                0x08003266                TIM_Cmd
- *fill*         0x0800327e        0x2 
+                0x08003202       0x18 ..\obj\stm32f4xx_tim.o
+                0x08003202                TIM_ARRPreloadConfig
+ .text.TIM_Cmd  0x0800321a       0x18 ..\obj\stm32f4xx_tim.o
+                0x0800321a                TIM_Cmd
+ *fill*         0x08003232        0x2 
  .text.TIM_OC1Init
-                0x08003280       0x70 ..\obj\stm32f4xx_tim.o
-                0x08003280                TIM_OC1Init
+                0x08003234       0x70 ..\obj\stm32f4xx_tim.o
+                0x08003234                TIM_OC1Init
  .text.TIM_OC2Init
-                0x080032f0       0x80 ..\obj\stm32f4xx_tim.o
-                0x080032f0                TIM_OC2Init
+                0x080032a4       0x80 ..\obj\stm32f4xx_tim.o
+                0x080032a4                TIM_OC2Init
  .text.TIM_OC3Init
-                0x08003370       0x7c ..\obj\stm32f4xx_tim.o
-                0x08003370                TIM_OC3Init
+                0x08003324       0x7c ..\obj\stm32f4xx_tim.o
+                0x08003324                TIM_OC3Init
  .text.TIM_OC4Init
-                0x080033ec       0x64 ..\obj\stm32f4xx_tim.o
-                0x080033ec                TIM_OC4Init
+                0x080033a0       0x64 ..\obj\stm32f4xx_tim.o
+                0x080033a0                TIM_OC4Init
  .text.TIM_OCStructInit
-                0x08003450       0x14 ..\obj\stm32f4xx_tim.o
-                0x08003450                TIM_OCStructInit
+                0x08003404       0x14 ..\obj\stm32f4xx_tim.o
+                0x08003404                TIM_OCStructInit
  .text.TIM_SetCompare1
-                0x08003464        0x4 ..\obj\stm32f4xx_tim.o
-                0x08003464                TIM_SetCompare1
+                0x08003418        0x4 ..\obj\stm32f4xx_tim.o
+                0x08003418                TIM_SetCompare1
  .text.TIM_SetCompare2
-                0x08003468        0x4 ..\obj\stm32f4xx_tim.o
-                0x08003468                TIM_SetCompare2
+                0x0800341c        0x4 ..\obj\stm32f4xx_tim.o
+                0x0800341c                TIM_SetCompare2
  .text.TIM_SetCompare3
-                0x0800346c        0x4 ..\obj\stm32f4xx_tim.o
-                0x0800346c                TIM_SetCompare3
+                0x08003420        0x4 ..\obj\stm32f4xx_tim.o
+                0x08003420                TIM_SetCompare3
  .text.TIM_OC1PreloadConfig
-                0x08003470       0x10 ..\obj\stm32f4xx_tim.o
-                0x08003470                TIM_OC1PreloadConfig
+                0x08003424       0x10 ..\obj\stm32f4xx_tim.o
+                0x08003424                TIM_OC1PreloadConfig
  .text.TIM_OC2PreloadConfig
-                0x08003480       0x14 ..\obj\stm32f4xx_tim.o
-                0x08003480                TIM_OC2PreloadConfig
+                0x08003434       0x14 ..\obj\stm32f4xx_tim.o
+                0x08003434                TIM_OC2PreloadConfig
  .text.TIM_OC3PreloadConfig
-                0x08003494       0x10 ..\obj\stm32f4xx_tim.o
-                0x08003494                TIM_OC3PreloadConfig
+                0x08003448       0x10 ..\obj\stm32f4xx_tim.o
+                0x08003448                TIM_OC3PreloadConfig
  .text.TIM_OC4PreloadConfig
-                0x080034a4       0x14 ..\obj\stm32f4xx_tim.o
-                0x080034a4                TIM_OC4PreloadConfig
+                0x08003458       0x14 ..\obj\stm32f4xx_tim.o
+                0x08003458                TIM_OC4PreloadConfig
  .text.TIM_ICStructInit
-                0x080034b8       0x10 ..\obj\stm32f4xx_tim.o
-                0x080034b8                TIM_ICStructInit
+                0x0800346c       0x10 ..\obj\stm32f4xx_tim.o
+                0x0800346c                TIM_ICStructInit
  .text.TIM_GetCapture1
-                0x080034c8        0x4 ..\obj\stm32f4xx_tim.o
-                0x080034c8                TIM_GetCapture1
+                0x0800347c        0x4 ..\obj\stm32f4xx_tim.o
+                0x0800347c                TIM_GetCapture1
  .text.TIM_SetIC1Prescaler
-                0x080034cc       0x16 ..\obj\stm32f4xx_tim.o
-                0x080034cc                TIM_SetIC1Prescaler
+                0x08003480       0x16 ..\obj\stm32f4xx_tim.o
+                0x08003480                TIM_SetIC1Prescaler
  .text.TIM_SetIC2Prescaler
-                0x080034e2       0x1a ..\obj\stm32f4xx_tim.o
-                0x080034e2                TIM_SetIC2Prescaler
+                0x08003496       0x1a ..\obj\stm32f4xx_tim.o
+                0x08003496                TIM_SetIC2Prescaler
  .text.TIM_SetIC3Prescaler
-                0x080034fc       0x16 ..\obj\stm32f4xx_tim.o
-                0x080034fc                TIM_SetIC3Prescaler
+                0x080034b0       0x16 ..\obj\stm32f4xx_tim.o
+                0x080034b0                TIM_SetIC3Prescaler
  .text.TIM_SetIC4Prescaler
-                0x08003512       0x1a ..\obj\stm32f4xx_tim.o
-                0x08003512                TIM_SetIC4Prescaler
+                0x080034c6       0x1a ..\obj\stm32f4xx_tim.o
+                0x080034c6                TIM_SetIC4Prescaler
  .text.TIM_ICInit
-                0x0800352c       0xae ..\obj\stm32f4xx_tim.o
-                0x0800352c                TIM_ICInit
+                0x080034e0       0xae ..\obj\stm32f4xx_tim.o
+                0x080034e0                TIM_ICInit
  .text.TIM_BDTRConfig
-                0x080035da       0x22 ..\obj\stm32f4xx_tim.o
-                0x080035da                TIM_BDTRConfig
+                0x0800358e       0x22 ..\obj\stm32f4xx_tim.o
+                0x0800358e                TIM_BDTRConfig
  .text.TIM_GetITStatus
-                0x080035fc       0x16 ..\obj\stm32f4xx_tim.o
-                0x080035fc                TIM_GetITStatus
+                0x080035b0       0x16 ..\obj\stm32f4xx_tim.o
+                0x080035b0                TIM_GetITStatus
  .text.TIM_ClearITPendingBit
-                0x08003612        0x8 ..\obj\stm32f4xx_tim.o
-                0x08003612                TIM_ClearITPendingBit
+                0x080035c6        0x8 ..\obj\stm32f4xx_tim.o
+                0x080035c6                TIM_ClearITPendingBit
  .text.TIM_DMACmd
-                0x0800361a       0x12 ..\obj\stm32f4xx_tim.o
-                0x0800361a                TIM_DMACmd
+                0x080035ce       0x12 ..\obj\stm32f4xx_tim.o
+                0x080035ce                TIM_DMACmd
  .text.TIM_ITConfig
-                0x0800362c        0x4 ..\obj\stm32f4xx_tim.o
-                0x0800362c                TIM_ITConfig
+                0x080035e0        0x4 ..\obj\stm32f4xx_tim.o
+                0x080035e0                TIM_ITConfig
  .text.TIM_SelectOutputTrigger
-                0x08003630       0x16 ..\obj\stm32f4xx_tim.o
-                0x08003630                TIM_SelectOutputTrigger
+                0x080035e4       0x16 ..\obj\stm32f4xx_tim.o
+                0x080035e4                TIM_SelectOutputTrigger
  .text.TIM_EncoderInterfaceConfig
-                0x08003646       0x3e ..\obj\stm32f4xx_tim.o
-                0x08003646                TIM_EncoderInterfaceConfig
- .text.cosf     0x08003684       0x90 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_cos.o)
-                0x08003684                cosf
- .text.sinf     0x08003714       0x94 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_sin.o)
-                0x08003714                sinf
+                0x080035fa       0x3e ..\obj\stm32f4xx_tim.o
+                0x080035fa                TIM_EncoderInterfaceConfig
+ .text.cosf     0x08003638       0x90 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_cos.o)
+                0x08003638                cosf
+ .text.sinf     0x080036c8       0x94 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_sin.o)
+                0x080036c8                sinf
  .text.__ieee754_rem_pio2f
-                0x080037a8      0x290 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
-                0x080037a8                __ieee754_rem_pio2f
+                0x0800375c      0x290 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
+                0x0800375c                __ieee754_rem_pio2f
  .text.__kernel_cosf
-                0x08003a38      0x104 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_cos.o)
-                0x08003a38                __kernel_cosf
+                0x080039ec      0x104 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_cos.o)
+                0x080039ec                __kernel_cosf
  .text.__kernel_rem_pio2f
-                0x08003b3c      0x690 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
-                0x08003b3c                __kernel_rem_pio2f
+                0x08003af0      0x690 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
+                0x08003af0                __kernel_rem_pio2f
  .text.__kernel_sinf
-                0x080041cc       0x90 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_sin.o)
-                0x080041cc                __kernel_sinf
- .text.fabsf    0x0800425c       0x10 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_fabs.o)
-                0x0800425c                fabsf
- .text.floorf   0x0800426c       0x90 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_floor.o)
-                0x0800426c                floorf
- .text.scalbnf  0x080042fc       0xd0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_scalbn.o)
-                0x080042fc                scalbnf
+                0x08004180       0x90 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_sin.o)
+                0x08004180                __kernel_sinf
+ .text.fabsf    0x08004210       0x10 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_fabs.o)
+                0x08004210                fabsf
+ .text.floorf   0x08004220       0x90 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_floor.o)
+                0x08004220                floorf
+ .text.scalbnf  0x080042b0       0xd0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_scalbn.o)
+                0x080042b0                scalbnf
  .text.copysignf
-                0x080043cc       0x18 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_copysign.o)
-                0x080043cc                copysignf
- .text          0x080043e4      0x134 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-memcpy.o)
-                0x080043e4                memcpy
- .text.memset   0x08004518       0x9c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-memset.o)
-                0x08004518                memset
+                0x08004380       0x18 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-sf_copysign.o)
+                0x08004380                copysignf
+ .text          0x08004398      0x134 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-memcpy.o)
+                0x08004398                memcpy
+ .text.memset   0x080044cc       0x9c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-memset.o)
+                0x080044cc                memset
  .text.startup.register_fini
-                0x080045b4       0x14 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__call_atexit.o)
- .text.atexit   0x080045c8        0xc c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-atexit.o)
-                0x080045c8                atexit
+                0x08004568       0x14 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__call_atexit.o)
+ .text.atexit   0x0800457c        0xc c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-atexit.o)
+                0x0800457c                atexit
  .text.__libc_fini_array
-                0x080045d4       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-fini.o)
-                0x080045d4                __libc_fini_array
+                0x08004588       0x34 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-fini.o)
+                0x08004588                __libc_fini_array
  .text.__retarget_lock_acquire_recursive
-                0x08004608        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
-                0x08004608                __retarget_lock_acquire_recursive
+                0x080045bc        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
+                0x080045bc                __retarget_lock_acquire_recursive
  .text.__retarget_lock_release_recursive
-                0x0800460c        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
-                0x0800460c                __retarget_lock_release_recursive
+                0x080045c0        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-lock.o)
+                0x080045c0                __retarget_lock_release_recursive
  .text.__register_exitproc
-                0x08004610       0xc4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__atexit.o)
-                0x08004610                __register_exitproc
+                0x080045c4       0xc4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-__atexit.o)
+                0x080045c4                __register_exitproc
  *(.init)
- .init          0x080046d4        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crti.o
-                0x080046d4                _init
- .init          0x080046d8        0x8 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
+ .init          0x08004688        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crti.o
+                0x08004688                _init
+ .init          0x0800468c        0x8 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
  *(.fini)
- .fini          0x080046e0        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crti.o
-                0x080046e0                _fini
- .fini          0x080046e4        0x8 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
+ .fini          0x08004694        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crti.o
+                0x08004694                _fini
+ .fini          0x08004698        0x8 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
  *crtbegin.o(.ctors)
  *crtbegin?.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .ctors)
@@ -1494,53 +1494,53 @@ LOAD c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/g
  *(SORT(.dtors.*))
  *(.dtors)
  *(.rodata*)
- .rodata        0x080046ec        0x8 ..\obj\mbutils.o
- .rodata        0x080046f4      0x200 ..\obj\mbcrc.o
- .rodata        0x080048f4       0x90 ..\obj\encoder.o
+ .rodata        0x080046a0        0x8 ..\obj\mbutils.o
+ .rodata        0x080046a8      0x200 ..\obj\mbcrc.o
+ .rodata        0x080048a8       0x90 ..\obj\encoder.o
  .rodata.npio2_hw
-                0x08004984       0x80 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
+                0x08004938       0x80 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
  .rodata.two_over_pi
-                0x08004a04      0x318 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
- .rodata.PIo2   0x08004d1c       0x2c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
+                0x080049b8      0x318 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-ef_rem_pio2.o)
+ .rodata.PIo2   0x08004cd0       0x2c c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
  .rodata.init_jk
-                0x08004d48        0xc c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
+                0x08004cfc        0xc c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libm.a(lib_a-kf_rem_pio2.o)
  .rodata._global_impure_ptr
-                0x08004d54        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-impure.o)
-                0x08004d54                _global_impure_ptr
+                0x08004d08        0x4 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard\libc.a(lib_a-impure.o)
+                0x08004d08                _global_impure_ptr
  *(.eh_fram e*)
 
-.eh_frame       0x08004d58        0x0
- .eh_frame      0x08004d58        0x0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
+.eh_frame       0x08004d0c        0x0
+ .eh_frame      0x08004d0c        0x0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
 
-.glue_7         0x08004d58        0x0
- .glue_7        0x08004d58        0x0 linker stubs
+.glue_7         0x08004d0c        0x0
+ .glue_7        0x08004d0c        0x0 linker stubs
 
-.glue_7t        0x08004d58        0x0
- .glue_7t       0x08004d58        0x0 linker stubs
+.glue_7t        0x08004d0c        0x0
+ .glue_7t       0x08004d0c        0x0 linker stubs
 
-.vfp11_veneer   0x08004d58        0x0
- .vfp11_veneer  0x08004d58        0x0 linker stubs
+.vfp11_veneer   0x08004d0c        0x0
+ .vfp11_veneer  0x08004d0c        0x0 linker stubs
 
-.v4_bx          0x08004d58        0x0
- .v4_bx         0x08004d58        0x0 linker stubs
+.v4_bx          0x08004d0c        0x0
+ .v4_bx         0x08004d0c        0x0 linker stubs
 
-.iplt           0x08004d58        0x0
- .iplt          0x08004d58        0x0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
+.iplt           0x08004d0c        0x0
+ .iplt          0x08004d0c        0x0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
 
-.rel.dyn        0x08004d58        0x0
- .rel.iplt      0x08004d58        0x0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
+.rel.dyn        0x08004d0c        0x0
+ .rel.iplt      0x08004d0c        0x0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x08004d58                __exidx_start = .
+                0x08004d0c                __exidx_start = .
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-                0x08004d58                __exidx_end = .
-                0x08004d58                __etext = .
-                0x08004d58                _sidata = __etext
+                0x08004d0c                __exidx_end = .
+                0x08004d0c                __etext = .
+                0x08004d0c                _sidata = __etext
 
-.data           0x20000000      0x4ec load address 0x08004d58
+.data           0x20000000      0x4ec load address 0x08004d0c
                 0x20000000                __data_start__ = .
                 0x20000000                _sdata = __data_start__
  *(vtable)
@@ -1583,10 +1583,10 @@ LOAD c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/g
                 0x200004ec                __data_end__ = .
                 0x200004ec                _edata = __data_end__
 
-.igot.plt       0x200004ec        0x0 load address 0x08005244
+.igot.plt       0x200004ec        0x0 load address 0x080051f8
  .igot.plt      0x200004ec        0x0 c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/gcc/arm-none-eabi/6.3.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
 
-.bss            0x200004ec     0x80c4 load address 0x08005244
+.bss            0x200004ec     0x80c4 load address 0x080051f8
                 0x200004ec                . = ALIGN (0x4)
                 0x200004ec                __bss_start__ = .
                 0x200004ec                _sbss = __bss_start__
@@ -1651,7 +1651,7 @@ LOAD c:/program files (x86)/gnu tools arm embedded/6 2017-q1-update/bin/../lib/g
  *(.heap*)
                 0x200085b0                __HeapLimit = .
 
-.co_stack       0x200085b0      0x800 load address 0x0800d308
+.co_stack       0x200085b0      0x800 load address 0x0800d2bc
                 0x200085b0                . = ALIGN (0x8)
  *(.co_stack .co_stack.*)
  .co_stack      0x200085b0      0x800 ..\obj\startup_stm32f4xx.o
@@ -1847,7 +1847,7 @@ OUTPUT(main.elf elf32-littlearm)
  .comment       0x0000007f       0x80 ..\obj\pid.o
  .comment       0x0000007f       0x80 ..\obj\stm32f4xx_tim.o
 
-.debug_info     0x00000000    0x15bb7
+.debug_info     0x00000000    0x15bbf
  .debug_info    0x00000000      0x2c1 ..\obj\stm32f4xx_syscfg.o
  .debug_info    0x000002c1      0xf3d ..\obj\mb.o
  .debug_info    0x000011fe      0xad5 ..\obj\mbfuncdisc.o
@@ -1861,25 +1861,25 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_info    0x000054af     0x130e ..\obj\main.o
  .debug_info    0x000067bd      0x191 ..\obj\mbcrc.o
  .debug_info    0x0000694e      0xca3 ..\obj\stm32f4xx_rcc.o
- .debug_info    0x000075f1     0x12a1 ..\obj\foc.o
- .debug_info    0x00008892      0xc7e ..\obj\stm32f4xx_adc.o
- .debug_info    0x00009510      0xac6 ..\obj\mbfuncinput.o
- .debug_info    0x00009fd6     0x1495 ..\obj\encoder.o
- .debug_info    0x0000b46b      0x712 ..\obj\stm32f4xx_gpio.o
- .debug_info    0x0000bb7d      0x836 ..\obj\porttimer.o
- .debug_info    0x0000c3b3      0xf30 ..\obj\mbrtu.o
- .debug_info    0x0000d2e3      0x5e9 ..\obj\system_stm32f4xx.o
- .debug_info    0x0000d8cc      0x732 ..\obj\stm32f4xx_dma.o
- .debug_info    0x0000dffe      0xca1 ..\obj\portserial.o
- .debug_info    0x0000ec9f      0xc54 ..\obj\mbfunccoils.o
- .debug_info    0x0000f8f3      0x365 ..\obj\stm32f4xx_exti.o
- .debug_info    0x0000fc58      0x54d ..\obj\misc.o
- .debug_info    0x000101a5     0x1cb7 ..\obj\svpwm.o
- .debug_info    0x00011e5c     0x111e ..\obj\mbascii.o
- .debug_info    0x00012f7a      0xc30 ..\obj\pid.o
- .debug_info    0x00013baa     0x200d ..\obj\stm32f4xx_tim.o
+ .debug_info    0x000075f1     0x12a9 ..\obj\foc.o
+ .debug_info    0x0000889a      0xc7e ..\obj\stm32f4xx_adc.o
+ .debug_info    0x00009518      0xac6 ..\obj\mbfuncinput.o
+ .debug_info    0x00009fde     0x1495 ..\obj\encoder.o
+ .debug_info    0x0000b473      0x712 ..\obj\stm32f4xx_gpio.o
+ .debug_info    0x0000bb85      0x836 ..\obj\porttimer.o
+ .debug_info    0x0000c3bb      0xf30 ..\obj\mbrtu.o
+ .debug_info    0x0000d2eb      0x5e9 ..\obj\system_stm32f4xx.o
+ .debug_info    0x0000d8d4      0x732 ..\obj\stm32f4xx_dma.o
+ .debug_info    0x0000e006      0xca1 ..\obj\portserial.o
+ .debug_info    0x0000eca7      0xc54 ..\obj\mbfunccoils.o
+ .debug_info    0x0000f8fb      0x365 ..\obj\stm32f4xx_exti.o
+ .debug_info    0x0000fc60      0x54d ..\obj\misc.o
+ .debug_info    0x000101ad     0x1cb7 ..\obj\svpwm.o
+ .debug_info    0x00011e64     0x111e ..\obj\mbascii.o
+ .debug_info    0x00012f82      0xc30 ..\obj\pid.o
+ .debug_info    0x00013bb2     0x200d ..\obj\stm32f4xx_tim.o
 
-.debug_abbrev   0x00000000     0x4092
+.debug_abbrev   0x00000000     0x4094
  .debug_abbrev  0x00000000      0x173 ..\obj\stm32f4xx_syscfg.o
  .debug_abbrev  0x00000173      0x2f7 ..\obj\mb.o
  .debug_abbrev  0x0000046a      0x238 ..\obj\mbfuncdisc.o
@@ -1893,23 +1893,23 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_abbrev  0x00001300      0x31a ..\obj\main.o
  .debug_abbrev  0x0000161a       0xc9 ..\obj\mbcrc.o
  .debug_abbrev  0x000016e3      0x21c ..\obj\stm32f4xx_rcc.o
- .debug_abbrev  0x000018ff      0x354 ..\obj\foc.o
- .debug_abbrev  0x00001c53      0x205 ..\obj\stm32f4xx_adc.o
- .debug_abbrev  0x00001e58      0x238 ..\obj\mbfuncinput.o
- .debug_abbrev  0x00002090      0x2f2 ..\obj\encoder.o
- .debug_abbrev  0x00002382      0x1ff ..\obj\stm32f4xx_gpio.o
- .debug_abbrev  0x00002581      0x1be ..\obj\porttimer.o
- .debug_abbrev  0x0000273f      0x2c1 ..\obj\mbrtu.o
- .debug_abbrev  0x00002a00      0x17b ..\obj\system_stm32f4xx.o
- .debug_abbrev  0x00002b7b      0x1af ..\obj\stm32f4xx_dma.o
- .debug_abbrev  0x00002d2a      0x210 ..\obj\portserial.o
- .debug_abbrev  0x00002f3a      0x252 ..\obj\mbfunccoils.o
- .debug_abbrev  0x0000318c      0x206 ..\obj\stm32f4xx_exti.o
- .debug_abbrev  0x00003392      0x17f ..\obj\misc.o
- .debug_abbrev  0x00003511      0x2e1 ..\obj\svpwm.o
- .debug_abbrev  0x000037f2      0x352 ..\obj\mbascii.o
- .debug_abbrev  0x00003b44      0x289 ..\obj\pid.o
- .debug_abbrev  0x00003dcd      0x2c5 ..\obj\stm32f4xx_tim.o
+ .debug_abbrev  0x000018ff      0x356 ..\obj\foc.o
+ .debug_abbrev  0x00001c55      0x205 ..\obj\stm32f4xx_adc.o
+ .debug_abbrev  0x00001e5a      0x238 ..\obj\mbfuncinput.o
+ .debug_abbrev  0x00002092      0x2f2 ..\obj\encoder.o
+ .debug_abbrev  0x00002384      0x1ff ..\obj\stm32f4xx_gpio.o
+ .debug_abbrev  0x00002583      0x1be ..\obj\porttimer.o
+ .debug_abbrev  0x00002741      0x2c1 ..\obj\mbrtu.o
+ .debug_abbrev  0x00002a02      0x17b ..\obj\system_stm32f4xx.o
+ .debug_abbrev  0x00002b7d      0x1af ..\obj\stm32f4xx_dma.o
+ .debug_abbrev  0x00002d2c      0x210 ..\obj\portserial.o
+ .debug_abbrev  0x00002f3c      0x252 ..\obj\mbfunccoils.o
+ .debug_abbrev  0x0000318e      0x206 ..\obj\stm32f4xx_exti.o
+ .debug_abbrev  0x00003394      0x17f ..\obj\misc.o
+ .debug_abbrev  0x00003513      0x2e1 ..\obj\svpwm.o
+ .debug_abbrev  0x000037f4      0x352 ..\obj\mbascii.o
+ .debug_abbrev  0x00003b46      0x289 ..\obj\pid.o
+ .debug_abbrev  0x00003dcf      0x2c5 ..\obj\stm32f4xx_tim.o
 
 .debug_loc      0x00000000     0x73f0
  .debug_loc     0x00000000       0x97 ..\obj\stm32f4xx_syscfg.o
@@ -2005,7 +2005,7 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_aranges
                 0x00000b90      0x2d8 ..\obj\stm32f4xx_tim.o
 
-.debug_ranges   0x00000000      0xe00
+.debug_ranges   0x00000000      0xdd0
  .debug_ranges  0x00000000       0x38 ..\obj\stm32f4xx_syscfg.o
  .debug_ranges  0x00000038       0x38 ..\obj\mb.o
  .debug_ranges  0x00000070       0x10 ..\obj\mbfuncdisc.o
@@ -2019,25 +2019,25 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_ranges  0x00000288       0xc0 ..\obj\main.o
  .debug_ranges  0x00000348       0x10 ..\obj\mbcrc.o
  .debug_ranges  0x00000358      0x168 ..\obj\stm32f4xx_rcc.o
- .debug_ranges  0x000004c0       0x88 ..\obj\foc.o
- .debug_ranges  0x00000548      0x130 ..\obj\stm32f4xx_adc.o
- .debug_ranges  0x00000678       0x10 ..\obj\mbfuncinput.o
- .debug_ranges  0x00000688       0xb8 ..\obj\encoder.o
- .debug_ranges  0x00000740       0x78 ..\obj\stm32f4xx_gpio.o
- .debug_ranges  0x000007b8       0x28 ..\obj\porttimer.o
- .debug_ranges  0x000007e0       0x48 ..\obj\mbrtu.o
- .debug_ranges  0x00000828       0x30 ..\obj\system_stm32f4xx.o
- .debug_ranges  0x00000858       0x98 ..\obj\stm32f4xx_dma.o
- .debug_ranges  0x000008f0       0x48 ..\obj\portserial.o
- .debug_ranges  0x00000938       0x20 ..\obj\mbfunccoils.o
- .debug_ranges  0x00000958       0x40 ..\obj\stm32f4xx_exti.o
- .debug_ranges  0x00000998       0x30 ..\obj\misc.o
- .debug_ranges  0x000009c8       0x70 ..\obj\svpwm.o
- .debug_ranges  0x00000a38       0x88 ..\obj\mbascii.o
- .debug_ranges  0x00000ac0       0x40 ..\obj\pid.o
- .debug_ranges  0x00000b00      0x300 ..\obj\stm32f4xx_tim.o
+ .debug_ranges  0x000004c0       0x58 ..\obj\foc.o
+ .debug_ranges  0x00000518      0x130 ..\obj\stm32f4xx_adc.o
+ .debug_ranges  0x00000648       0x10 ..\obj\mbfuncinput.o
+ .debug_ranges  0x00000658       0xb8 ..\obj\encoder.o
+ .debug_ranges  0x00000710       0x78 ..\obj\stm32f4xx_gpio.o
+ .debug_ranges  0x00000788       0x28 ..\obj\porttimer.o
+ .debug_ranges  0x000007b0       0x48 ..\obj\mbrtu.o
+ .debug_ranges  0x000007f8       0x30 ..\obj\system_stm32f4xx.o
+ .debug_ranges  0x00000828       0x98 ..\obj\stm32f4xx_dma.o
+ .debug_ranges  0x000008c0       0x48 ..\obj\portserial.o
+ .debug_ranges  0x00000908       0x20 ..\obj\mbfunccoils.o
+ .debug_ranges  0x00000928       0x40 ..\obj\stm32f4xx_exti.o
+ .debug_ranges  0x00000968       0x30 ..\obj\misc.o
+ .debug_ranges  0x00000998       0x70 ..\obj\svpwm.o
+ .debug_ranges  0x00000a08       0x88 ..\obj\mbascii.o
+ .debug_ranges  0x00000a90       0x40 ..\obj\pid.o
+ .debug_ranges  0x00000ad0      0x300 ..\obj\stm32f4xx_tim.o
 
-.debug_line     0x00000000     0x84da
+.debug_line     0x00000000     0x84ca
  .debug_line    0x00000000      0x307 ..\obj\stm32f4xx_syscfg.o
  .debug_line    0x00000307      0x5ac ..\obj\mb.o
  .debug_line    0x000008b3      0x423 ..\obj\mbfuncdisc.o
@@ -2048,26 +2048,26 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_line    0x00001d45      0x3e5 ..\obj\stm32f4xx_dac.o
  .debug_line    0x0000212a       0xbb ..\obj\startup_stm32f4xx.o
  .debug_line    0x000021e5      0x4cb ..\obj\mbfuncholding.o
- .debug_line    0x000026b0      0x5e0 ..\obj\main.o
- .debug_line    0x00002c90      0x281 ..\obj\mbcrc.o
- .debug_line    0x00002f11      0x62e ..\obj\stm32f4xx_rcc.o
- .debug_line    0x0000353f      0x4dd ..\obj\foc.o
- .debug_line    0x00003a1c      0x603 ..\obj\stm32f4xx_adc.o
- .debug_line    0x0000401f      0x415 ..\obj\mbfuncinput.o
- .debug_line    0x00004434      0x550 ..\obj\encoder.o
- .debug_line    0x00004984      0x3f7 ..\obj\stm32f4xx_gpio.o
- .debug_line    0x00004d7b      0x377 ..\obj\porttimer.o
- .debug_line    0x000050f2      0x528 ..\obj\mbrtu.o
- .debug_line    0x0000561a      0x23f ..\obj\system_stm32f4xx.o
- .debug_line    0x00005859      0x494 ..\obj\stm32f4xx_dma.o
- .debug_line    0x00005ced      0x3e2 ..\obj\portserial.o
- .debug_line    0x000060cf      0x497 ..\obj\mbfunccoils.o
- .debug_line    0x00006566      0x337 ..\obj\stm32f4xx_exti.o
- .debug_line    0x0000689d      0x2ef ..\obj\misc.o
- .debug_line    0x00006b8c      0x5ba ..\obj\svpwm.o
- .debug_line    0x00007146      0x59d ..\obj\mbascii.o
- .debug_line    0x000076e3      0x276 ..\obj\pid.o
- .debug_line    0x00007959      0xb81 ..\obj\stm32f4xx_tim.o
+ .debug_line    0x000026b0      0x5e5 ..\obj\main.o
+ .debug_line    0x00002c95      0x281 ..\obj\mbcrc.o
+ .debug_line    0x00002f16      0x62e ..\obj\stm32f4xx_rcc.o
+ .debug_line    0x00003544      0x4c8 ..\obj\foc.o
+ .debug_line    0x00003a0c      0x603 ..\obj\stm32f4xx_adc.o
+ .debug_line    0x0000400f      0x415 ..\obj\mbfuncinput.o
+ .debug_line    0x00004424      0x550 ..\obj\encoder.o
+ .debug_line    0x00004974      0x3f7 ..\obj\stm32f4xx_gpio.o
+ .debug_line    0x00004d6b      0x377 ..\obj\porttimer.o
+ .debug_line    0x000050e2      0x528 ..\obj\mbrtu.o
+ .debug_line    0x0000560a      0x23f ..\obj\system_stm32f4xx.o
+ .debug_line    0x00005849      0x494 ..\obj\stm32f4xx_dma.o
+ .debug_line    0x00005cdd      0x3e2 ..\obj\portserial.o
+ .debug_line    0x000060bf      0x497 ..\obj\mbfunccoils.o
+ .debug_line    0x00006556      0x337 ..\obj\stm32f4xx_exti.o
+ .debug_line    0x0000688d      0x2ef ..\obj\misc.o
+ .debug_line    0x00006b7c      0x5ba ..\obj\svpwm.o
+ .debug_line    0x00007136      0x59d ..\obj\mbascii.o
+ .debug_line    0x000076d3      0x276 ..\obj\pid.o
+ .debug_line    0x00007949      0xb81 ..\obj\stm32f4xx_tim.o
 
 .debug_str      0x00000000     0x52bb
  .debug_str     0x00000000      0x2fc ..\obj\stm32f4xx_syscfg.o

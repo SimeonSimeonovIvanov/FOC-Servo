@@ -83,7 +83,7 @@ int main(void)
 		usRegHoldingBuf[3] = ai0 - 2047;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 0 ( rot.angle )
-		usRegHoldingBuf[4] = hall;
+		usRegHoldingBuf[4] = 7 - hall; // !!!
 		usRegHoldingBuf[6] = TIM3->CNT;
 		usRegHoldingBuf[5] = encoder;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
