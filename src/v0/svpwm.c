@@ -221,7 +221,7 @@ void svpwmInitADC( void )
 
 	ADC_ITConfig( ADC1, ADC_IT_JEOC | ADC_IT_EOC, ENABLE );
 
-	//ADC_SoftwareStartConv( ADC1 );
+	ADC_SoftwareStartConv( ADC1 );
 }
 
 void RCC_Configuration_Adc1( void )

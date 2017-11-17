@@ -3,7 +3,7 @@
 //static float arr_sin[361], arr_cos[361];
 static float arr_sin[4000], arr_cos[4000];
 
-uint16_t uwTIM10PulseLength = 0;
+int32_t uwTIM10PulseLength = 0;
 
 void initEncoder(void)
 {

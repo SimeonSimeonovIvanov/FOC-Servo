@@ -3,14 +3,16 @@
 #define REG_HOLDING_START   40001
 #define REG_HOLDING_NREGS   20
 
-void boardInit(void);
-
-extern volatile uint16_t current_a, current_b, dc_voltage, ai0, ai1;
-extern PID pidPos;
+extern volatile uint16_t current_a, current_b, ai0, ai1;
+extern uint16_t uwTIM10PulseLength;
 extern int16_t enc_delta;
+extern PID pidPos;
 
 static USHORT usRegHoldingStart = REG_HOLDING_START;
 static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ];
+
+float f_rpm_m, f_rpm_t, f_rpm_mt;
+float f_rpm_m_filtered_value, f_rpm_t_filtered_value, f_rpm_mt_filtered_value;
 
 int current_a_offset = 2047;
 int current_b_offset = 2047;
@@ -22,14 +24,15 @@ int main_state = 0;
 
 MC_FOC stFoc;
 
-extern uint16_t uwTIM10PulseLength;
-
 int main(void)
 {
 	int hall;
 	int encoder;
 	eMBErrorCode eStatus;
 	float Iq_filtered_value = 0, Iq_des_filtered_value = 0, enc_delta_filtered_value = 0, TIM10PulseLength_filtered_value = 0;
+	float ai0_filtered_value = 0, dc_bus_filtered_value = 0;
+
+	uint32_t charge_relya_on_delay = 100000, charge_relya_on_delay_counter = 0;
 
 	SystemInit();
 	SystemCoreClockUpdate();
@@ -62,25 +65,44 @@ int main(void)
 	while( 1 ) {
 		GPIO_ToggleBits( GPIOA, GPIO_Pin_15 );
 
-		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
-		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
+		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.0000005f );
+		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.0000005f );
 
 		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.00002f );
-		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)(uwTIM10PulseLength),  0.000015f );
+		//FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.000015f );
+		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.000015f );
+
+		FirstOrderLagFilter( &dc_bus_filtered_value, stFoc.vbus_voltage, 0.0002f );
+		FirstOrderLagFilter( &ai0_filtered_value,  (float)ai0 - 2047.0f, 0.00002f );
+
+		FirstOrderLagFilter( &f_rpm_m_filtered_value, f_rpm_m, 0.002f );
+		FirstOrderLagFilter( &f_rpm_t_filtered_value, f_rpm_t, 0.002f );
+		FirstOrderLagFilter( &f_rpm_mt_filtered_value, f_rpm_mt, 0.00002f );
+
+		if( dc_bus_filtered_value > 200 ) {
+			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
+				GPIO_SetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
+				GPIO_SetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
+			} else {
+				++charge_relya_on_delay_counter;
+			}
+		}else
+		if( dc_bus_filtered_value < 100 ) {
+			GPIO_ResetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
+			GPIO_ResetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
+			charge_relya_on_delay_counter = 0;
+		}
 
 		hall = readHallMap();
 		encoder = read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
 
 		//float dc_current = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[0] = (int)Iq_des_filtered_value;//(int)stFoc.Iq_des;
-		usRegHoldingBuf[1] = (int)Iq_filtered_value;//(int)stFoc.Iq;
-		//usRegHoldingBuf[0] = current_a - current_a_offset;
-		//usRegHoldingBuf[1] = current_b - current_b_offset;
-		//usRegHoldingBuf[1] = 1000 * pidPos.sumError;-( ( 4095 - current_b ) - current_b_offset );
+		usRegHoldingBuf[0] = (int)f_rpm_m_filtered_value;Iq_des_filtered_value;
+		usRegHoldingBuf[1] = (int)Iq_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[2] = dc_voltage; sp_counter - iEncoderGetAbsPos();
-		usRegHoldingBuf[3] = ai0 - 2047;
+		usRegHoldingBuf[2] = dc_bus_filtered_value;
+		usRegHoldingBuf[3] = (int)ai0_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = 7 - hall; // !!!
@@ -266,8 +288,8 @@ void boardInit(void)
 
 	GPIO_Init( GPIOD, &GPIO_InitStructure );
 
-	GPIO_SetBits( GPIOD, GPIO_Pin_10 );
-	GPIO_SetBits( GPIOD, GPIO_Pin_11 );
+	//GPIO_SetBits( GPIOD, GPIO_Pin_10 );
+	//GPIO_SetBits( GPIOD, GPIO_Pin_11 );
 	///////////////////////////////////////////////////////////////////////////
 
 	///////////////////////////////////////////////////////////////////////////
