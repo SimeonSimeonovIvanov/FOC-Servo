@@ -40,6 +40,11 @@ typedef struct {
 	float angle;
 	float fSinAngle, fCosAngle;
 
+	int main_state;
+
+	int16_t current_a, current_b;
+	int16_t current_a_offset, current_b_offset;
+
 	float Ia, Ib;
 	float Ialpha, Ibeta;
 
@@ -63,7 +68,7 @@ typedef struct {
 
 void focInit(LP_MC_FOC lpFocExt);
 void mcFocSetAngle(LP_MC_FOC lpFoc, int angle);
-void mcFocSetCurrent(LP_MC_FOC lpFoc, float Ia, float Ib);
+void mcFocCalcCurrent(LP_MC_FOC lpFoc);
 
 void mcClark(LP_MC_FOC lpFoc);
 void mcPark(LP_MC_FOC lpFoc);

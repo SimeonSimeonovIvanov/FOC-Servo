@@ -477,38 +477,41 @@ void mcFocSPWM(LP_MC_FOC lpFoc) // ???
 #endif
 }
 
-// http://www.cnblogs.com/nixianmin/p/4791428.html
-void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++???
+/*
+*	Triangular Third Harmonic Injection  ( TTHI )
+*	http://www.cnblogs.com/nixianmin/p/4791428.html
+*/
+void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
+	float Tpwm = 100.0f / 2.0f;
 	float vmin, vmax, vcom, X, Y, Z;
-	float Tpwm = 100/2;
-
-	mcInvClark(lpFoc);
 
 	if (lpFoc->Va > lpFoc->Vb) {
 		vmax = lpFoc->Va;
 		vmin = lpFoc->Vb;
-	} else {
+	}
+	else {
 		vmax = lpFoc->Vb;
 		vmin = lpFoc->Va;
 	}
 
 	if (lpFoc->Vc > vmax) {
 		vmax = lpFoc->Vc;
-	} else {
+	}
+	else {
 		if (lpFoc->Vc < vmin) {
 			vmin = lpFoc->Vc;
 		}
 	}
 
-	vcom = (vmax + vmin) * 0.5f;
-	X = (vcom - lpFoc->Va);
-	Y = (vcom - lpFoc->Vb);
-	Z = (vcom - lpFoc->Vc);
+	vcom = (vmax + vmin) * -0.5f;
+	X = (lpFoc->Va + vcom) * 1.1547f;
+	Y = (lpFoc->Vb + vcom) * 1.1547f;
+	Z = (lpFoc->Vc + vcom) * 1.1547f;
 
-	lpFoc->PWM3 = (X * Tpwm) + Tpwm;
-	lpFoc->PWM2 = (Y * Tpwm) + Tpwm;
-	lpFoc->PWM1 = (Z * Tpwm) + Tpwm;
+	lpFoc->PWM1 = Tpwm - (X * Tpwm);
+	lpFoc->PWM2 = Tpwm - (Y * Tpwm);
+	lpFoc->PWM3 = Tpwm - (Z * Tpwm);
 
 	static int index = 0, sector_old = 0;
 	if (sector_old != lpFoc->sector) {

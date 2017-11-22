@@ -199,11 +199,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			mcInvPark(&stFoc);
 			mcInvClark(&stFoc);
 			///////////////////////////////////////////////////////////////////
-			mcFocSVPWM_ST2(&stFoc);
+			//mcFocSVPWM_ST2(&stFoc);
 			//mcFocSVPWM_ST1(&stFoc);
 			//mcFocSVPWM0(&stFoc);
 			//mcFocSPWM(&stFoc);
-			//mcFocSVPWM_TI(&stFoc);
+			mcFocSVPWM_TTHI(&stFoc);
 			///////////////////////////////////////////////////////////////////
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;

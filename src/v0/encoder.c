@@ -3,7 +3,7 @@
 //static float arr_sin[361], arr_cos[361];
 static float arr_sin[4000], arr_cos[4000];
 
-int32_t uwTIM10PulseLength = 0;
+uint32_t uwTIM10PulseLength = 0;
 
 void initEncoder(void)
 {
@@ -178,10 +178,54 @@ uint16_t encoderAddOffset( int16_t angle, int16_t offset )
 	return angle;
 }
 
-uint16_t readRawUVW(void) // !!!
+///////////////////////////////////////////////////////////////////////////////
+
+uint16_t readSanyoWareSaveEncoder(void) // .........................
+{
+	//static uint32_t map1[] = { 0, 0, 60*11.11f, 120*11.11f, 180*11.11f, 240*11.11f, 300*11.11f, 0 };
+	static uint32_t map1[] = { 0, 0, 666, 1333, 1999, 2666, 3333, 0 };
+	static uint32_t first_run = 1;
+	int hall;
+
+	if( !first_run ) {
+		return ( 3999 - TIM3->CNT );
+	}
+
+	hall = readHallMap();
+	TIM3->CNT = map1[hall] + 333;
+
+	first_run = 0;
+
+	return ( 3999 - TIM3->CNT );
+}
+
+uint16_t initSanyoWareSaveEncoder(void)
+{
+	/*
+	 *	1) Подава захранване на енкодер
+	 *	2) Прочита A, B и C отговарящи съответно на HALL UVW
+	 *	3) Запизва стартовия ъгъл на енкодера ( +- 30 deg. )
+	 */
+
+}
+
+void EXTI15_10_IRQHandler(void)
+{
+	static uint32_t first_run = 1;
+	if( RESET != EXTI_GetITStatus( EXTI_Line15 ) ) {
+		if(first_run) {
+			TIM3->CNT = 999;
+			first_run = 0;
+		}
+    	EXTI_ClearITPendingBit( EXTI_Line15 );
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+uint16_t readRawEncoderWithUVW(void) // !!!
 {
 	static uint32_t hall_old = 0;
-
 	static uint32_t map1[] = { 0, 0, 60*11.11f, 120*11.11f, 180*11.11f, 240*11.11f, 300*11.11f, 0 };
 	static uint32_t map2[] = { 0, 60*11.11f, 120*11.11f, 180*11.11f, 240*11.11f, 300*11.11f, 360*11.11f, 0 };
 
@@ -260,6 +304,8 @@ uint16_t read360uvw(void)
 	return 360 - encoder;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 // IN:  1  3  2  6  4  5	( Raw value from Hall sensor )
 // OUT: 5  4  3  2  1  6	( hall_map[ Raw Hall ] )
 uint16_t readHallMap( void ) // !!!
@@ -289,13 +335,7 @@ uint16_t readRawHallInput( void )
 	return U | V | W;
 }
 
-void EXTI15_10_IRQHandler(void)
-{
-	if( RESET != EXTI_GetITStatus( EXTI_Line15 ) ) {
-    	EXTI_ClearITPendingBit( EXTI_Line15 );
-    	//TIM3->CNT = 0;
-    }
-}
+///////////////////////////////////////////////////////////////////////////////
 
 void createSinCosTable(void)
 {

@@ -3,36 +3,38 @@
 #define REG_HOLDING_START   40001
 #define REG_HOLDING_NREGS   20
 
-extern volatile uint16_t current_a, current_b, ai0, ai1;
-extern uint16_t uwTIM10PulseLength;
+extern float ai0_filtered_value;
+
+extern volatile float f_rpm_m, f_rpm_m_filtered_value;
+extern volatile float f_rpm_t, f_rpm_t_filtered_value;
+extern volatile float f_rpm_mt, f_rpm_mt_filtered_value;
+extern volatile float f_rpm_mt_temp, f_rpm_mt_temp_filtered_value;
+
+extern volatile float sp_speed, pv_speed;
+
+
+extern volatile uint16_t ai0, ai1;
+extern uint32_t uwTIM10PulseLength;
 extern int16_t enc_delta;
 extern PID pidPos;
 
 static USHORT usRegHoldingStart = REG_HOLDING_START;
-static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ];
+static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ] = { 0 };
 
-float f_rpm_m, f_rpm_t, f_rpm_mt;
-float f_rpm_m_filtered_value, f_rpm_t_filtered_value, f_rpm_mt_filtered_value;
+volatile int32_t sp_counter = 0;
+static volatile int32_t counter = 0;
 
-int current_a_offset = 2047;
-int current_b_offset = 2047;
-
-int32_t sp_counter = 0;
-int32_t counter = 0;
-
-int main_state = 0;
-
-MC_FOC stFoc;
+volatile MC_FOC stFoc;
 
 int main(void)
 {
-	int hall;
-	int encoder;
-	eMBErrorCode eStatus;
-	float Iq_filtered_value = 0, Iq_des_filtered_value = 0, enc_delta_filtered_value = 0, TIM10PulseLength_filtered_value = 0;
-	float ai0_filtered_value = 0, dc_bus_filtered_value = 0;
+	float enc_delta_filtered_value = 0, TIM10PulseLength_filtered_value = 0;
+	float Iq_filtered_value = 0, Iq_des_filtered_value = 0;
+	float dc_bus_filtered_value = 0;
 
 	uint32_t charge_relya_on_delay = 100000, charge_relya_on_delay_counter = 0;
+	eMBErrorCode eStatus;
+	int hall, encoder;
 
 	SystemInit();
 	SystemCoreClockUpdate();
@@ -46,38 +48,34 @@ int main(void)
 		eStatus = eMBEnable();
 	}
 
-	usRegHoldingBuf[9] = 0;
-
+	///////////////////////////////////////////////////////////////////////////
 	uint32_t sum_a = 0, sum_b = 0;
 	for( int i = 0; i < 100; i++ ) {
 		for( volatile uint32_t i = 0; i < 100000; i++ );
-		sum_a += current_a;
-		sum_b += current_b;
+		sum_a += stFoc.current_a;
+		sum_b += stFoc.current_b;
 	}
 
-	current_a_offset = sum_a / 100;
-	current_b_offset = sum_b / 100;
-
-	main_state = 1;
-
-	float tim10_cr1;
+	stFoc.current_a_offset = sum_a / 100;
+	stFoc.current_b_offset = sum_b / 100;
+	///////////////////////////////////////////////////////////////////////////
+	stFoc.main_state = 1;
 
 	while( 1 ) {
 		GPIO_ToggleBits( GPIOA, GPIO_Pin_15 );
 
-		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.0000005f );
-		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.0000005f );
-
-		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.00002f );
-		//FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.000015f );
-		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.000015f );
-
+		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
+		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
 		FirstOrderLagFilter( &dc_bus_filtered_value, stFoc.vbus_voltage, 0.0002f );
-		FirstOrderLagFilter( &ai0_filtered_value,  (float)ai0 - 2047.0f, 0.00002f );
+		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.005f );
 
-		FirstOrderLagFilter( &f_rpm_m_filtered_value, f_rpm_m, 0.002f );
-		FirstOrderLagFilter( &f_rpm_t_filtered_value, f_rpm_t, 0.002f );
-		FirstOrderLagFilter( &f_rpm_mt_filtered_value, f_rpm_mt, 0.00002f );
+		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.0005f );
+		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.0005f );
+		FirstOrderLagFilter( &f_rpm_m_filtered_value, f_rpm_m, 0.0005f );
+		FirstOrderLagFilter( &f_rpm_t_filtered_value, f_rpm_t, 0.0005f );
+
+		FirstOrderLagFilter( &f_rpm_mt_filtered_value, f_rpm_mt, 0.01f );
+		FirstOrderLagFilter( &f_rpm_mt_temp_filtered_value, f_rpm_mt_temp, 0.0005f );
 
 		if( dc_bus_filtered_value > 200 ) {
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
@@ -94,15 +92,15 @@ int main(void)
 		}
 
 		hall = readHallMap();
-		encoder = read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
+		//encoder = 0.09f * (float)readRawUVW();
+		read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
 
-		//float dc_current = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[0] = (int)f_rpm_m_filtered_value;Iq_des_filtered_value;
-		usRegHoldingBuf[1] = (int)Iq_filtered_value;
+		usRegHoldingBuf[0] = (int)stFoc.Ia;
+		usRegHoldingBuf[1] = (int)stFoc.Ib;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[2] = dc_bus_filtered_value;
-		usRegHoldingBuf[3] = (int)ai0_filtered_value;
+		usRegHoldingBuf[2] = (int)dc_bus_filtered_value;
+		usRegHoldingBuf[3] = ai0_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = 7 - hall; // !!!
@@ -113,11 +111,10 @@ int main(void)
 		usRegHoldingBuf[7] = iEncoderGetAbsPos();
 		usRegHoldingBuf[8] = iEncoderGetAbsPos()>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		//usRegHoldingBuf[11] = (int)enc_delta_filtered_value;
-		//usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
-
-		usRegHoldingBuf[11] = (int)enc_delta;
-		usRegHoldingBuf[12] = (uint16_t)uwTIM10PulseLength;
+		usRegHoldingBuf[11] = (int16_t)enc_delta_filtered_value;
+		usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		usRegHoldingBuf[13] = (int)sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,7 +127,7 @@ void EXTI9_5_IRQHandler(void) {
 		/* Clear interrupt flag */
 		EXTI_ClearITPendingBit( EXTI_Line6 );
 
-		if( !main_state ) {
+		if( !stFoc.main_state ) {
 			return;
 		}
 
@@ -163,6 +160,7 @@ void EXTI9_5_IRQHandler(void) {
  * Input #3: Desired Fraction of Change (Frac)
  * This is the (minimum) accuracy with which a change in the raw sensor value (at time t) will be reflected in the filtered sensor value (at or before time t + Tr).
  *
+ * 1 - ( e^( ln( 1 - 0.06 ) * ( 0.0006 / 0.02 ) ) ) = 0.00185454032 ( Google calc )
  */
 void FirstOrderLagFilter( float *filtered_value, float raw_sensor_value, float k )
 {

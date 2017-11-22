@@ -15,12 +15,14 @@ void encoderInitZ(void);
 
 void initHall(void);
 
-int32_t iEncoderGetAbsPos(void);
-
 uint16_t read360(void);
-uint16_t readRawUVW(void);
 uint16_t read360uvw(void);
 uint16_t read360uvwWithOffset( int16_t offset );
+
+uint16_t readRawEncoderWithUVW(void);
+
+uint16_t initSanyoWareSaveEncoder(void);
+uint16_t readSanyoWareSaveEncoder(void);
 
 uint16_t readHallMap( void );
 uint16_t readRawHallInput(void);
@@ -28,5 +30,7 @@ uint16_t readRawHallInput(void);
 float fSinAngle(int angle);
 float fCosAngle(int angle);
 void createSinCosTable(void);
+
+int32_t iEncoderGetAbsPos(void); // TIM2 ( 32 bits )
 
 #endif

@@ -312,7 +312,7 @@ void DMA1_Stream1_IRQHandler( void )
 * Description        : ICS current reading and PWM generation module
 * SVPWM_IcsCalcDutyCycles
 ********************************************************************************/
-void mcFocSVPWM_ST2(LP_MC_FOC lpFoc) // +++
+void mcFocSVPWM_ST2_TTHI(LP_MC_FOC lpFoc) // +++
 {
 	int hTimePhA, hTimePhB, hTimePhC;
 	int Ualpha, Ubeta;
@@ -387,7 +387,7 @@ void mcFocSVPWM_ST2(LP_MC_FOC lpFoc) // +++
 	lpFoc->PWM3 = hTimePhC;
 }
 
-void mcFocSVPWM0(LP_MC_FOC lpFoc) // +++ ?
+void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
 {
 	float Uref1, Uref2, Uref3;
 	float X, Y, Z;
@@ -505,8 +505,11 @@ void mcFocSVPWM0(LP_MC_FOC lpFoc) // +++ ?
 	lpFoc->PWM3 = PWM2 * (float)PWM_PERIOD;
 }
 
-// http://www.cnblogs.com/nixianmin/p/4791428.html
-void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++ ?
+/*
+ *	Triangular Third Harmonic Injection  ( TTHI )
+ *	http://www.cnblogs.com/nixianmin/p/4791428.html
+ */
+void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
 	float Tpwm = (float)PWM_PERIOD / 2.0f;
 	float vmin, vmax, vcom, X, Y, Z;
@@ -527,12 +530,19 @@ void mcFocSVPWM_TI(LP_MC_FOC lpFoc) // +++ ?
 		}
 	}
 
-	vcom = ( vmax + vmin ) * 0.5f;
-	X = ( vcom - lpFoc->Va );
-	Y = ( vcom - lpFoc->Vb );
-	Z = ( vcom - lpFoc->Vc );
+	vcom = ( vmax + vmin ) * -0.5f;
+	X = ( lpFoc->Va + vcom );// * 1.1547f;
+	Y = ( lpFoc->Vb + vcom );// * 1.1547f;
+	Z = ( lpFoc->Vc + vcom );// * 1.1547f;
 
-	lpFoc->PWM1 = ( X * Tpwm ) + Tpwm;
-	lpFoc->PWM2 = ( Y * Tpwm ) + Tpwm;
-	lpFoc->PWM3 = ( Z * Tpwm ) + Tpwm;
+	lpFoc->PWM1 = Tpwm - ( X * Tpwm );
+	lpFoc->PWM2 = Tpwm - ( Y * Tpwm );
+	lpFoc->PWM3 = Tpwm - ( Z * Tpwm );
+}
+
+/*
+ *	Sinusoidal Third Harmonic Injection ( STHI )
+ */
+void mcFocSVPWM_STHI(LP_MC_FOC lpFoc)
+{
 }

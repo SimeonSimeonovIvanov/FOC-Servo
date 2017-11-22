@@ -408,6 +408,7 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 		if (!iResult) {
 			int current_a, current_b, dc_voltage, ai0, uvw, encoder0_raw, encoder0_angle, encoder1_pos, offset;
 			int rpm_t, rpm_m, rpm_tm;
+			int dc_current;
 
 			current_a = mbU16toSI(hreg[0]);
 			current_b = mbU16toSI(hreg[1]);
@@ -422,6 +423,7 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 
 			rpm_m = mbU16toSI(hreg[11]);
 			rpm_t = hreg[12];
+			dc_current = mbU16toSI(hreg[13]);
 
 			sprintf(szBuffer, "CA: %d", current_a);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC0), szBuffer);
@@ -432,8 +434,11 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			sprintf(szBuffer, "Ubus: %d", dc_voltage);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC2), szBuffer);
 
-			sprintf(szBuffer, "AI0: %d", ai0);
+			sprintf(szBuffer, "AI0: %d", ai0 - 2047);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC3), szBuffer);
+
+			sprintf(szBuffer, "Sref: %d", dc_current);
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC4), szBuffer);
 
 			sprintf(szBuffer, "%d", 0x07 & uvw);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_HALL_POS), szBuffer);
@@ -456,22 +461,26 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			///////////////////////////////////////////////////////////////////////////////////////
 			float m1 = rpm_m, m2 = rpm_t;
 			float P = 8000.0f;
-			float Ts = 0.0024f;
+			float Ts = 0.0025f;
 			float fc = 4000000.0f;
 
-			float f_rpm_m = 60 * ( m1 / ( P * Ts ) );
-			float f_rpm_t = 60 * ( fc / ( P * m2 ) );
-			float f_rpm_mt;
+			float f_rpm_m, f_rpm_t, f_rpm_mt;
+
+			f_rpm_m = 60 * (m1 / (P * Ts));
+			f_rpm_t = 60 * (fc / (P * m2));
+
+			if (f_rpm_m<0) f_rpm_t = -f_rpm_t;
 
 			if (m2) {
 				f_rpm_mt = 60 * ((fc * m1) / (P * m2));
-			} else {
+			}
+			else {
 				f_rpm_mt = 0.0f;
 			}
 
 			if (1) {
 				if (f_rpm_m + f_rpm_t) {
-					f_rpm_mt = 2 * (f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t);
+					f_rpm_mt = 2 * ((f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t));
 				}
 				else {
 					f_rpm_mt = 0.0f;
