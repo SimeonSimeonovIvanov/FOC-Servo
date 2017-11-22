@@ -92,9 +92,6 @@ int main(void)
 		}
 
 		hall = readHallMap();
-		//encoder = 0.09f * (float)readRawUVW();
-		read360uvwWithOffset( (int16_t)usRegHoldingBuf[9] );
-
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[0] = (int)stFoc.Ia;
 		usRegHoldingBuf[1] = (int)stFoc.Ib;
@@ -105,7 +102,7 @@ int main(void)
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = 7 - hall; // !!!
 		usRegHoldingBuf[6] = TIM3->CNT;
-		usRegHoldingBuf[5] = encoder;
+		usRegHoldingBuf[5] = stFoc.angle*0.09f;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 1 ( abs.pos )
 		usRegHoldingBuf[7] = iEncoderGetAbsPos();

@@ -73,15 +73,19 @@ void initEncoder(void)
 	TIM_Cmd( TIM3, ENABLE );
 	TIM_Cmd( TIM4, ENABLE );
 
-	encoderInitZ();
-
 	TIM2->CNT = 0; // abs.pos
 	TIM3->CNT = 0; // Rotor angle
-	TIM4->CNT = 0;
+	TIM4->CNT = 0; // Speed counter
+
+	encoderInitZ();
 
 	createSinCosTable();
 
 	initTim10();
+
+	if( 1 || !readHallMap() ) {
+		initSanyoWareSaveEncoder();
+	}
 }
 
 void encoderInitZ(void)
@@ -180,33 +184,28 @@ uint16_t encoderAddOffset( int16_t angle, int16_t offset )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-uint16_t readSanyoWareSaveEncoder(void) // .........................
+uint16_t initSanyoWareSaveEncoder(void) // ---
 {
-	//static uint32_t map1[] = { 0, 0, 60*11.11f, 120*11.11f, 180*11.11f, 240*11.11f, 300*11.11f, 0 };
-	static uint32_t map1[] = { 0, 0, 666, 1333, 1999, 2666, 3333, 0 };
-	static uint32_t first_run = 1;
-	int hall;
+	uint32_t map1[] = { 0, 0, 666 + 333, 1333 + 333, 1999 + 333, 2666 + 333, 3333 + 333, 0 };
+	uint16_t hall_map[8] = { 0, 5, 3, 4, 1, 6, 2, 0 };
+	uint16_t ab, z, AU, BV, ZW;
+	uint16_t uvw = 0;
 
-	if( !first_run ) {
-		return ( 3999 - TIM3->CNT );
-	}
+	ab = GPIO_ReadInputData( GPIOA );
+	z = GPIO_ReadInputData( GPIOD );
 
-	hall = readHallMap();
-	TIM3->CNT = map1[hall] + 333;
+	uvw |= ( ab & GPIO_Pin_0 ) ? 1:0;
+	uvw |= ( ab & GPIO_Pin_1 ) ? 2:0;
+	uvw |= ( z & GPIO_Pin_15 ) ? 4:0;
 
-	first_run = 0;
+	TIM3->CNT = 3999-map1[ hall_map[ uvw ] ];
 
-	return ( 3999 - TIM3->CNT );
+	return 0;
 }
 
-uint16_t initSanyoWareSaveEncoder(void)
+uint16_t readSanyoWareSaveEncoder(void) // ---
 {
-	/*
-	 *	1) Подава захранване на енкодер
-	 *	2) Прочита A, B и C отговарящи съответно на HALL UVW
-	 *	3) Запизва стартовия ъгъл на енкодера ( +- 30 deg. )
-	 */
-
+	return ( 3999 - TIM3->CNT );
 }
 
 void EXTI15_10_IRQHandler(void)
@@ -214,7 +213,7 @@ void EXTI15_10_IRQHandler(void)
 	static uint32_t first_run = 1;
 	if( RESET != EXTI_GetITStatus( EXTI_Line15 ) ) {
 		if(first_run) {
-			TIM3->CNT = 999;
+			TIM3->CNT = 1333;
 			first_run = 0;
 		}
     	EXTI_ClearITPendingBit( EXTI_Line15 );
