@@ -64,6 +64,12 @@ typedef struct {
 	int sector;
 	int PWM1, PWM2, PWM3;
 
+
+	float f_rpm_m, f_rpm_m_filtered_value;
+	float f_rpm_t, f_rpm_t_filtered_value;
+	float f_rpm_mt, f_rpm_mt_filtered_value;
+	float f_rpm_mt_temp, f_rpm_mt_temp_filtered_value;
+
 } MC_FOC, *LP_MC_FOC;
 
 void focInit(LP_MC_FOC lpFocExt);

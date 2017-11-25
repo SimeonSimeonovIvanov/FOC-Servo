@@ -3,15 +3,8 @@
 #define REG_HOLDING_START   40001
 #define REG_HOLDING_NREGS   20
 
-extern float ai0_filtered_value;
-
-extern volatile float f_rpm_m, f_rpm_m_filtered_value;
-extern volatile float f_rpm_t, f_rpm_t_filtered_value;
-extern volatile float f_rpm_mt, f_rpm_mt_filtered_value;
-extern volatile float f_rpm_mt_temp, f_rpm_mt_temp_filtered_value;
-
 extern volatile float sp_speed, pv_speed;
-
+extern float ai0_filtered_value;
 
 extern volatile uint16_t ai0, ai1;
 extern uint32_t uwTIM10PulseLength;
@@ -22,8 +15,6 @@ static USHORT usRegHoldingStart = REG_HOLDING_START;
 static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ] = { 0 };
 
 volatile int32_t sp_counter = 0;
-static volatile int32_t counter = 0;
-
 volatile MC_FOC stFoc;
 
 int main(void)
@@ -67,15 +58,15 @@ int main(void)
 		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
 		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
 		FirstOrderLagFilter( &dc_bus_filtered_value, stFoc.vbus_voltage, 0.0002f );
-		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.0052f );
+		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.001f );
 
 		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.0005f );
 		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.0005f );
-		FirstOrderLagFilter( &f_rpm_m_filtered_value, f_rpm_m, 0.0005f );
-		FirstOrderLagFilter( &f_rpm_t_filtered_value, f_rpm_t, 0.0005f );
+		FirstOrderLagFilter( &stFoc.f_rpm_m_filtered_value, stFoc.f_rpm_m, 0.0005f );
+		FirstOrderLagFilter( &stFoc.f_rpm_t_filtered_value, stFoc.f_rpm_t, 0.0005f );
 
-		FirstOrderLagFilter( &f_rpm_mt_filtered_value, f_rpm_mt, 0.01f );
-		FirstOrderLagFilter( &f_rpm_mt_temp_filtered_value, f_rpm_mt_temp, 0.0005f );
+		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.001f );
+		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt_temp, 0.0005f );
 
 		if( dc_bus_filtered_value > 200 ) {
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
@@ -111,7 +102,7 @@ int main(void)
 		usRegHoldingBuf[11] = (int16_t)enc_delta_filtered_value;
 		usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[13] = (int)sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
+		usRegHoldingBuf[13] = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,6 +121,7 @@ void EXTI9_5_IRQHandler(void) {
 
 		uint16_t pinb = GPIO_ReadInputData( GPIOB );
 		uint8_t dir = ( pinb & GPIO_Pin_13 ) ? 1 : 0;
+		static int32_t counter = 0;
 
 		if( dir ) {
 			--counter;

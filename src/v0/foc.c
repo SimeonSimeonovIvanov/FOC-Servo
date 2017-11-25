@@ -1,9 +1,9 @@
 #include <string.h>
 #include "foc.h"
 
-//#define __AI1_SET_SPEED__
+#define __AI1_SET_SPEED__
 //#define __POS_CONTROL__
-#define __POS_AND_SPEED_CONTROL__
+//#define __POS_AND_SPEED_CONTROL__
 
 const float P = 8000.0f;
 const float Ts = 0.0025f;
@@ -17,15 +17,8 @@ static volatile int32_t arrSpPos[10];
 static volatile int32_t pv_pos = 0;
 static volatile LP_MC_FOC lpFoc;
 
-volatile float f_rpm_m, f_rpm_m_filtered_value;
-volatile float f_rpm_t, f_rpm_t_filtered_value;
-volatile float f_rpm_mt, f_rpm_mt_filtered_value;
-volatile float f_rpm_mt_temp, f_rpm_mt_temp_filtered_value;
-
 volatile float sp_speed, pv_speed;
 volatile int16_t enc_delta;
-
-int32_t sp_counter_temp, sp_counter_old;
 
 volatile uint16_t ai0, ai1, ADC_values[ARRAYSIZE];
 volatile float ai0_filtered_value;
@@ -41,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 4, .09, 0, 0 );
+	pidInit_test( &pidSpeed, 5, .09, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 1375 );
 
@@ -206,22 +199,22 @@ void ADC_IRQHandler( void )
 			rpm_m = (float)enc_delta;
 			rpm_t = (float)uwTIM10PulseLength;
 
-			f_rpm_m = 60.0f * ( rpm_m / ( P * Ts ) );
-			f_rpm_t = 60.0f * ( fc / ( P * rpm_t ) );
+			lpFoc->f_rpm_m = 120.0f * ( rpm_m / ( P * Ts ) );
+			lpFoc->f_rpm_t = 120.0f * ( fc / ( P * rpm_t ) );
 
-			if(enc_delta<0) f_rpm_t = -f_rpm_t;
+			if(enc_delta<0) lpFoc->f_rpm_t = -lpFoc->f_rpm_t;
 
-			if( f_rpm_t ) {
-				f_rpm_mt_temp = 60 * ( ( fc * rpm_m ) / ( P * rpm_t ) );
+			if( lpFoc->f_rpm_t ) {
+				lpFoc->f_rpm_mt_temp = 60 * ( ( fc * rpm_m ) / ( P * rpm_t ) );
 			} else {
-				f_rpm_mt_temp = 0.0f;
+				lpFoc->f_rpm_mt_temp = 0.0f;
 			}
 
 			if( 1 ) {
-				if( f_rpm_m + f_rpm_t ) {
-					f_rpm_mt = 2.0f * ((f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t));
+				if( lpFoc->f_rpm_m + lpFoc->f_rpm_t ) {
+					lpFoc->f_rpm_mt = 1.0f * ((lpFoc->f_rpm_m * lpFoc->f_rpm_t) / (lpFoc->f_rpm_m + lpFoc->f_rpm_t));
 				} else {
-					f_rpm_mt = 0.0f;
+					lpFoc->f_rpm_mt = 0.0f;
 				}
 			}
 
@@ -236,7 +229,7 @@ void ADC_IRQHandler( void )
 #endif
 
 #ifdef __AI1_SET_SPEED__
-		if( 8 == ++counter2 ) {
+		if( 4 == ++counter2 ) {
 			sp_speed = ai0_filtered_value - 2047.0f;
 			//sp_speed = 60.0f;
 
@@ -244,8 +237,7 @@ void ADC_IRQHandler( void )
 				sp_speed = -sp_speed;
 			}
 
-			pv_speed = ((float)f_rpm_mt*10.0f);
-			pv_speed *= 0.1f;
+			pv_speed = lpFoc->f_rpm_mt;
 
 			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, pv_speed );
 			//lpFoc->Iq_des = pidTask( &pidSpeed, sp_speed, pv_speed );
@@ -258,7 +250,7 @@ void ADC_IRQHandler( void )
 		if( 8 == ++counter ) {
 			pv_pos = iEncoderGetAbsPos();
 			sp_pos = sp_counter;
-			sp_speed = 3000*pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			sp_speed = 3000 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter = 0;
 		}
 
@@ -274,7 +266,7 @@ void ADC_IRQHandler( void )
 			//sp_speed = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] + arrSpeedSP[4] + arrSpeedSP[5] + arrSpeedSP[6]  + arrSpeedSP[7]  + arrSpeedSP[8] + arrSpeedSP[9] ) / 10;
 			//sp_speed = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] ) / 4;
 
-			pv_speed = f_rpm_mt;
+			pv_speed = lpFoc->f_rpm_mt;
 
 			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, pv_speed );
 			//lpFoc->Iq_des = pidTask( &pidSpeed, sp_speed, pv_speed );
@@ -324,16 +316,7 @@ void ADC_IRQHandler( void )
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
 	TIM_SetCompare3( TIM1, lpFoc->PWM3 );
 	///////////////////////////////////////////////////////////////////////////
-	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id + 2047, lpFoc->Iq + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, ( lpFoc->angle * 10 ), lpFoc->Iq + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, (int16_t)f_rpm_m_filtered_value/3*10 + 2047, lpFoc->Iq + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, (int16_t)enc_delta*5 + 2047, lpFoc->Iq + 2047 );
-
-	DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 1 + 2047, (sp_pos - pv_pos) * 1 + 2047 );
-
-	DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 1 + 2047, f_rpm_m * 1 + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 4 + 2047, enc_delta * 4 + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 4 + 2047, (int16_t)f_rpm_m * 4 + 2047 );
+	DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 1 + 2047, lpFoc->f_rpm_mt_filtered_value * 1 + 2047 );
 
 	GPIO_ResetBits( GPIOB, GPIO_Pin_2 );
 }
