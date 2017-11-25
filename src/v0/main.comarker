@@ -3,16 +3,21 @@
 <breakpoint enabled="true" persistant="true" registered="true">
 <resource path="/main/foc/source/encoder.c" type="1"/>
 <marker lineNumber="328" type="org.eclipse.cdt.debug.core.cLineBreakpointMarker">
-<attrib name="message" value="Line breakpoint: encoder.c [line: 328]"/>
+<attrib name="enabled" value="true"/>
 <attrib name="org.eclipse.cdt.debug.core.condition" value=""/>
 <attrib name="org.eclipse.debug.core.id" value="org.eclipse.cdt.debug.core"/>
-<attrib name="org.eclipse.cdt.debug.core.installCount" value="0"/>
-<attrib name="org.eclipse.cdt.debug.core.sourceHandle" value="D:\Developments\Elektronika\Motor Control\Projects\FOC Servo\src\v0\encoder.c"/>
-<attrib name="org.eclipse.cdt.debug.core.breakpointType" value="0"/>
-<attrib name="org.eclipse.cdt.debug.core.ignoreCount" value="0"/>
-<attrib name="org.eclipse.debug.core.enabled" value="true"/>
 <attrib name="workingset_name" value=""/>
+<attrib name="org.eclipse.cdt.debug.core.installCount" value="0"/>
+<attrib name="type" value="org.eclipse.cdt.debug.core.cLineBreakpointMarker"/>
+<attrib name="persistant" value="true"/>
+<attrib name="org.eclipse.cdt.debug.core.breakpointType" value="0"/>
 <attrib name="workingset_id" value="org.eclipse.debug.ui.breakpointWorkingSet"/>
+<attrib name="message" value="Line breakpoint: encoder.c [line: 328]"/>
+<attrib name="registered" value="true"/>
+<attrib name="path" value="/main/foc/source/encoder.c"/>
+<attrib name="org.eclipse.cdt.debug.core.sourceHandle" value="D:\Developments\Elektronika\Motor Control\Projects\FOC Servo\src\v0\encoder.c"/>
+<attrib name="org.eclipse.debug.core.enabled" value="true"/>
+<attrib name="org.eclipse.cdt.debug.core.ignoreCount" value="0"/>
 </marker>
 </breakpoint>
 </breakpoints>
