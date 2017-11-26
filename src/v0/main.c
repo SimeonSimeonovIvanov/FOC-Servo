@@ -10,6 +10,7 @@ extern volatile uint16_t ai0, ai1;
 extern uint32_t uwTIM10PulseLength;
 extern int16_t enc_delta;
 extern PID pidPos;
+extern uint16_t sanyo_uvw;
 
 static USHORT usRegHoldingStart = REG_HOLDING_START;
 static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ] = { 0 };
@@ -72,6 +73,7 @@ int main(void)
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
 				GPIO_SetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
 				GPIO_SetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
+				stFoc.enable = 1;
 			} else {
 				++charge_relya_on_delay_counter;
 			}
@@ -80,6 +82,7 @@ int main(void)
 			GPIO_ResetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
 			GPIO_ResetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
 			charge_relya_on_delay_counter = 0;
+			stFoc.enable = 0;
 		}
 
 		hall = readHallMap();
@@ -93,7 +96,7 @@ int main(void)
 		// Encoder 0 ( rot.angle )
 		usRegHoldingBuf[4] = 7 - hall; // !!!
 		usRegHoldingBuf[6] = TIM3->CNT;
-		usRegHoldingBuf[5] = sp_counter-iEncoderGetAbsPos();stFoc.angle*0.09f;
+		usRegHoldingBuf[5] = stFoc.angle*0.0879f;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 1 ( abs.pos )
 		usRegHoldingBuf[7] = iEncoderGetAbsPos();

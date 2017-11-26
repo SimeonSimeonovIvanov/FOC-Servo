@@ -40,7 +40,7 @@ typedef struct {
 	float angle;
 	float fSinAngle, fCosAngle;
 
-	int main_state;
+	int enable, main_state;
 
 	int16_t current_a, current_b;
 	int16_t current_a_offset, current_b_offset;

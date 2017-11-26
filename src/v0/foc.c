@@ -147,7 +147,7 @@ void mcInvClark(LP_MC_FOC lpFoc)
 void ADC_IRQHandler( void )
 {
 	volatile static uint16_t angle = 0;
-	static volatile int32_t counter = 0, counter_get_speed = 0, counter2 = 0;
+	static volatile int32_t counter_pos_reg = 0, counter_get_speed = 0, counter_speed_reg = 0;
 
 	GPIO_SetBits( GPIOB, GPIO_Pin_2 );
 
@@ -189,47 +189,53 @@ void ADC_IRQHandler( void )
 		return;
 	}
 
-	if(1) {
-		if( 40 == ++counter_get_speed ) {
-			volatile float rpm_m, rpm_t;
+	if( 40 == ++counter_get_speed ) {
+		volatile float rpm_m, rpm_t;
 
-			enc_delta = -TIM4->CNT;
-			TIM4->CNT = 0;
+		enc_delta = -TIM4->CNT;
+		TIM4->CNT = 0;
 
-			rpm_m = (float)enc_delta;
-			rpm_t = (float)uwTIM10PulseLength;
+		rpm_m = (float)enc_delta;
+		rpm_t = (float)uwTIM10PulseLength;
 
-			lpFoc->f_rpm_m = 120.0f * ( rpm_m / ( P * Ts ) );
+		lpFoc->f_rpm_m = 120.0f * ( rpm_m / ( P * Ts ) );
+
+		if( rpm_t ) {
 			lpFoc->f_rpm_t = 120.0f * ( fc / ( P * rpm_t ) );
-
-			if(enc_delta<0) lpFoc->f_rpm_t = -lpFoc->f_rpm_t;
-
-			if( lpFoc->f_rpm_t ) {
-				lpFoc->f_rpm_mt_temp = 60 * ( ( fc * rpm_m ) / ( P * rpm_t ) );
-			} else {
-				lpFoc->f_rpm_mt_temp = 0.0f;
+			if( enc_delta < 0 ) {
+				lpFoc->f_rpm_t = -lpFoc->f_rpm_t;
 			}
-
-			if( 1 ) {
-				if( lpFoc->f_rpm_m + lpFoc->f_rpm_t ) {
-					lpFoc->f_rpm_mt = 1.0f * ((lpFoc->f_rpm_m * lpFoc->f_rpm_t) / (lpFoc->f_rpm_m + lpFoc->f_rpm_t));
-				} else {
-					lpFoc->f_rpm_mt = 0.0f;
-				}
-			}
-
-			counter_get_speed = 0;
+		} else {
+			lpFoc->f_rpm_t = 0.0f;
 		}
 
+		if( lpFoc->f_rpm_t ) {
+			lpFoc->f_rpm_mt_temp = 60 * ( ( fc * rpm_m ) / ( P * rpm_t ) );
+		} else {
+			lpFoc->f_rpm_mt_temp = 0.0f;
+		}
+
+		if( 1 ) {
+			if( lpFoc->f_rpm_m + lpFoc->f_rpm_t ) {
+				lpFoc->f_rpm_mt = ((lpFoc->f_rpm_m * lpFoc->f_rpm_t) / (lpFoc->f_rpm_m + lpFoc->f_rpm_t));
+			} else {
+				lpFoc->f_rpm_mt = 0.0f;
+			}
+		}
+
+		counter_get_speed = 0;
+	}
+
+	if( lpFoc->enable ) {
 #ifdef __POS_CONTROL__
-		if( 1 == ++counter ) {
+		if( 1 == ++counter_pos_reg ) {
 			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-			counter = 0;
+			counter_pos_reg = 0;
 		}
 #endif
 
 #ifdef __AI1_SET_SPEED__
-		if( 4 == ++counter2 ) {
+		if( 4 == ++counter_speed_reg ) {
 			sp_speed = ai0_filtered_value - 2047.0f;
 			//sp_speed = 60.0f;
 
@@ -240,21 +246,20 @@ void ADC_IRQHandler( void )
 			pv_speed = lpFoc->f_rpm_mt;
 
 			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, pv_speed );
-			//lpFoc->Iq_des = pidTask( &pidSpeed, sp_speed, pv_speed );
 
-			counter2 = 0;
+			counter_speed_reg = 0;
 		}
 #endif
 
 #ifdef __POS_AND_SPEED_CONTROL__
-		if( 8 == ++counter ) {
+		if( 8 == ++counter_pos_reg ) {
 			pv_pos = iEncoderGetAbsPos();
 			sp_pos = sp_counter;
 			sp_speed = 3000 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-			counter = 0;
+			counter_pos_reg = 0;
 		}
 
-		if( 4 == ++counter2 ) {
+		if( 4 == ++counter_speed_reg ) {
 			static float arrSpeedSP[10];
 
 			arrSpeedSP[9] = arrSpeedSP[8];	arrSpeedSP[8] = arrSpeedSP[7];
@@ -271,9 +276,15 @@ void ADC_IRQHandler( void )
 			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, pv_speed );
 			//lpFoc->Iq_des = pidTask( &pidSpeed, sp_speed, pv_speed );
 
-			counter2 = 0;
+			counter_speed_reg = 0;
 		}
 #endif
+	} else {
+		pidTask_test( &pidSpeed, 0, 0 );
+		pidTask_test( &pidPos, 0, 0 );
+
+		counter_speed_reg = 0;
+		counter_pos_reg = 0;
 	}
 
 	/*static float dt = 1.0f/16000.0f;
@@ -300,6 +311,10 @@ void ADC_IRQHandler( void )
 	mcClark( lpFoc );
 	mcPark( lpFoc );
 	///////////////////////////////////////////////////////////////////////////
+	if( !lpFoc->enable ) {
+		lpFoc->Id_des = 0; lpFoc->Id = 0;
+		lpFoc->Iq_des = 0; lpFoc->Iq = 0;
+	}
 	lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
 	lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
 	///////////////////////////////////////////////////////////////////////////

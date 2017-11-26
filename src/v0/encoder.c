@@ -1,9 +1,10 @@
 #include "encoder.h"
 
 //static float arr_sin[361], arr_cos[361];
-static float arr_sin[5000], arr_cos[5000];
+static float arr_sin[4096], arr_cos[4096];
 
 uint32_t uwTIM10PulseLength = 0;
+uint16_t sanyo_uvw = 0;
 
 void initEncoder(void)
 {
@@ -83,8 +84,9 @@ void initEncoder(void)
 
 	initTim10();
 
-	if( 0 || !readHallMap() ) {
-		//initSanyoWareSaveEncoder();
+	if( 0 && !readHallMap() ) {
+		for(volatile uint32_t i = 0; i < 2000000; i++);
+		initSanyoWareSaveEncoder();
 	}
 }
 
@@ -144,7 +146,7 @@ int32_t iEncoderGetAbsPos(void)
 uint16_t read360(void)
 {
 	uint16_t encoder;
-	encoder = TIM3->CNT * 0.09f;
+	encoder = TIM3->CNT * 0.0897f;
 	return 360 - encoder;
 }
 
@@ -196,7 +198,7 @@ uint16_t initSanyoWareSaveEncoder(void) // ---
 			300*11.37f + 30*11.37f,
 			0
 	};
-	uint16_t hall_map[8] = { 0, 5, 3, 4, 1, 6, 2, 0 };
+	static uint16_t hall_map[8] = { 0, 5, 3, 4, 1, 6, 2, 0 };
 	uint16_t ab, z, AU, BV, ZW;
 	uint16_t uvw = 0;
 
@@ -207,7 +209,9 @@ uint16_t initSanyoWareSaveEncoder(void) // ---
 	uvw |= ( ab & GPIO_Pin_1 ) ? 2:0;
 	uvw |= ( z & GPIO_Pin_15 ) ? 4:0;
 
-	TIM3->CNT = TIM3->ARR - map1[ hall_map[ uvw ] ];
+	sanyo_uvw = hall_map[ uvw ];
+
+	TIM3->CNT = map1[ hall_map[ uvw ] ];
 
 	return 0;
 }
@@ -223,7 +227,7 @@ void EXTI15_10_IRQHandler(void)
 	if( RESET != EXTI_GetITStatus( EXTI_Line15 ) ) {
 		if(first_run) {
 			TIM3->CNT = 1364;
-			first_run = 0;
+			//first_run = 0;
 		}
     	EXTI_ClearITPendingBit( EXTI_Line15 );
     }
@@ -296,12 +300,12 @@ uint16_t read360uvw(void)
 			}
 		}
 
-		hall_angle = ( 1.0f / 0.09f ) * hall_angle;
+		hall_angle = ( 1.0f / 0.0879f ) * hall_angle;
 		TIM3->CNT = hall_angle;
 	}
 
 	// 4000 Импулса за половин оборот (180 мех.градуса) на енкодер = 360 ел.градуса ( 4 полюсен мотор ):
-	encoder = TIM3->CNT * 0.09f;
+	encoder = TIM3->CNT * 0.0879f;
 
 	if( !hall_old ) {
 		encoder = encoderAddOffset( encoder, 30 );
