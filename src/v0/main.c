@@ -107,6 +107,10 @@ int main(void)
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[13] = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		int32_t rpm = stFoc.f_rpm_mt_filtered_value * 100;
+		usRegHoldingBuf[14] = rpm;
+		usRegHoldingBuf[15] = rpm>>16;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	}

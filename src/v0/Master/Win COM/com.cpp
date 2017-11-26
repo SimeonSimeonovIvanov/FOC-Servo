@@ -404,11 +404,12 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 	while (1) {
 		unsigned int hreg[9];
 
-		iResult = mbReadHoldingRegisters(&lpMainData->mbMaster, lpMainData->SlaveID, 40000, 15, hreg);
+		iResult = mbReadHoldingRegisters(&lpMainData->mbMaster, lpMainData->SlaveID, 40000, 17, hreg);
 		if (!iResult) {
 			int current_a, current_b, dc_voltage, ai0, uvw, encoder0_raw, encoder0_angle, encoder1_pos, offset;
 			int rpm_t, rpm_m, rpm_tm;
 			int dc_current;
+			int mcu_rpm;
 
 			current_a = mbU16toSI(hreg[0]);
 			current_b = mbU16toSI(hreg[1]);
@@ -424,6 +425,9 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			rpm_m = mbU16toSI(hreg[11]);
 			rpm_t = hreg[12];
 			dc_current = mbU16toSI(hreg[13]);
+
+			mcu_rpm = mbU32toSI(hreg[15] << 16 | hreg[14]);
+			//mcu_rpm = mbU16toSI(hreg[14]);
 
 			sprintf(szBuffer, "CA: %d", current_a);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC0), szBuffer);
@@ -452,6 +456,9 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			sprintf(szBuffer, "%d", encoder1_pos);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_ENC1_ABS_POS), szBuffer);
 
+			sprintf(szBuffer, "%4.2f", (float)mcu_rpm * 0.01f );
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_MCU_RPM), szBuffer);
+
 			///////////////////////////////////////////////////////////////////////////////////////
 			sprintf(szBuffer, "%d", rpm_m);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_M_RAW), szBuffer);
@@ -460,9 +467,9 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_T_RAW), szBuffer);
 			///////////////////////////////////////////////////////////////////////////////////////
 			float m1 = rpm_m, m2 = rpm_t;
-			float P = 8000.0f;
-			float Ts = 0.0025f;
-			float fc = 4000000.0f;
+			float P = 2048.0f;
+			float Ts = 0.005f;
+			float fc = 2000000.0f;
 
 			float f_rpm_m, f_rpm_t, f_rpm_mt;
 
@@ -471,20 +478,11 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 
 			if (f_rpm_m<0) f_rpm_t = -f_rpm_t;
 
-			if (m2) {
-				f_rpm_mt = 60 * ((fc * m1) / (P * m2));
+			if (f_rpm_m + f_rpm_t) {
+				f_rpm_mt = 0.98 * ((f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t));
 			}
 			else {
 				f_rpm_mt = 0.0f;
-			}
-
-			if (1) {
-				if (f_rpm_m + f_rpm_t) {
-					f_rpm_mt = 2 * ((f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t));
-				}
-				else {
-					f_rpm_mt = 0.0f;
-				}
 			}
 
 			sprintf(szBuffer, "%4.3f", f_rpm_m);

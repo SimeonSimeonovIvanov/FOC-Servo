@@ -5,9 +5,9 @@
 //#define __POS_CONTROL__
 //#define __POS_AND_SPEED_CONTROL__
 
-const float P = 8000.0f;
-const float Ts = 0.0025f;
-const float fc = 4000000.0f;
+const float P = 2048.0f;
+const float Ts = 0.005f;
+const float fc = 2000000.0f;
 
 extern uint32_t uwTIM10PulseLength;
 extern int32_t sp_counter;
@@ -197,30 +197,31 @@ void ADC_IRQHandler( void )
 
 		rpm_m = (float)enc_delta;
 		rpm_t = (float)uwTIM10PulseLength;
+		if( enc_delta < 0 ) {
+			rpm_t = -rpm_t;
+		}
 
-		lpFoc->f_rpm_m = 120.0f * ( rpm_m / ( P * Ts ) );
+		lpFoc->f_rpm_m = 60.0f * ( rpm_m / ( P * Ts ) );
 
 		if( rpm_t ) {
-			lpFoc->f_rpm_t = 120.0f * ( fc / ( P * rpm_t ) );
-			if( enc_delta < 0 ) {
-				lpFoc->f_rpm_t = -lpFoc->f_rpm_t;
-			}
+			lpFoc->f_rpm_t = 60.0f * ( fc / ( P * rpm_t ) );
 		} else {
 			lpFoc->f_rpm_t = 0.0f;
 		}
 
-		if( lpFoc->f_rpm_t ) {
-			lpFoc->f_rpm_mt_temp = 60 * ( ( fc * rpm_m ) / ( P * rpm_t ) );
+		if( lpFoc->f_rpm_m + lpFoc->f_rpm_t ) {
+			lpFoc->f_rpm_mt = 0.98*( lpFoc->f_rpm_m * lpFoc->f_rpm_t ) / ( lpFoc->f_rpm_m + lpFoc->f_rpm_t );
 		} else {
-			lpFoc->f_rpm_mt_temp = 0.0f;
+			lpFoc->f_rpm_mt = 0.0f;
 		}
 
-		if( 1 ) {
-			if( lpFoc->f_rpm_m + lpFoc->f_rpm_t ) {
-				lpFoc->f_rpm_mt = ((lpFoc->f_rpm_m * lpFoc->f_rpm_t) / (lpFoc->f_rpm_m + lpFoc->f_rpm_t));
-			} else {
-				lpFoc->f_rpm_mt = 0.0f;
+		if( rpm_t ) {
+			lpFoc->f_rpm_mt_temp =  ( ( 1 * 2000000 * rpm_m ) / ( 2000 * rpm_t ) );
+			if( enc_delta < 0 ) {
+				lpFoc->f_rpm_mt_temp = -lpFoc->f_rpm_mt_temp;
 			}
+		} else {
+			lpFoc->f_rpm_mt_temp = 0.0f;
 		}
 
 		counter_get_speed = 0;

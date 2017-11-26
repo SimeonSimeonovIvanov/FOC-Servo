@@ -51,6 +51,8 @@
 #define IDC_STATIC_RPM_T_RAW            45
 #define IDC_STATIC_RPM_M_RAW            46
 #define IDC_STATIC_RPM_MT_RAW           47
+#define IDC_STATIC_RPM_MT2              48
+#define IDC_STATIC_MCU_RPM              49
 #define IDM_CONNECTION_COMSELECT_COM1   201
 #define IDM_CONNECTION_COMSELECT_COM2   202
 #define IDM_CONNECTION_COMSELECT_COM3   203
