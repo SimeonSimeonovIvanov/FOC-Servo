@@ -511,7 +511,7 @@ void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
  */
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
-	float Tpwm = (float)PWM_PERIOD / 2.0f;
+	float Tpwm = (float)PWM_PERIOD * 0.5f;
 	float vmin, vmax, vcom, X, Y, Z;
 
 	if( lpFoc->Va > lpFoc->Vb ) {

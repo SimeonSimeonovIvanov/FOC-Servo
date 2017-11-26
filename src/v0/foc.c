@@ -2,7 +2,7 @@
 #include "foc.h"
 
 #define __AI1_SET_SPEED__
-//#define __POS_CONTROL__
+#define __POS_CONTROL__
 //#define __POS_AND_SPEED_CONTROL__
 
 const float P = 2048.0f;
@@ -34,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 5, .09, 0, 0 );
+	pidInit_test( &pidSpeed, 4.5, .2, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 1375 );
 
@@ -56,11 +56,11 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __POS_AND_SPEED_CONTROL__
-	pidInit_test( &pidSpeed, 4, .09, 0, 0 );
+	pidInit_test( &pidSpeed, 3.5f, 0.09f, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 1375 );
 
-	pidInit( &pidPos, .7f, 0.013f, 0.0f, 1.001f );
+	pidInit( &pidPos, 0.7f, 0.013f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.3f );
 	pidSetInputRange( &pidPos, 2000 );
@@ -227,9 +227,12 @@ void ADC_IRQHandler( void )
 		counter_get_speed = 0;
 	}
 
+	pv_pos = iEncoderGetAbsPos();
+	sp_pos = sp_counter;
+
 	if( lpFoc->enable ) {
 #ifdef __POS_CONTROL__
-		if( 1 == ++counter_pos_reg ) {
+		if( 8 == ++counter_pos_reg ) {
 			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter_pos_reg = 0;
 		}
@@ -254,9 +257,7 @@ void ADC_IRQHandler( void )
 
 #ifdef __POS_AND_SPEED_CONTROL__
 		if( 8 == ++counter_pos_reg ) {
-			pv_pos = iEncoderGetAbsPos();
-			sp_pos = sp_counter;
-			sp_speed = 3000 * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			sp_speed = 3000.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter_pos_reg = 0;
 		}
 
@@ -270,12 +271,11 @@ void ADC_IRQHandler( void )
 			arrSpeedSP[1] = arrSpeedSP[0];	arrSpeedSP[0] = sp_speed;
 
 			//sp_speed = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] + arrSpeedSP[4] + arrSpeedSP[5] + arrSpeedSP[6]  + arrSpeedSP[7]  + arrSpeedSP[8] + arrSpeedSP[9] ) / 10;
-			//sp_speed = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] ) / 4;
+			sp_speed = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] ) / 4;
 
 			pv_speed = lpFoc->f_rpm_mt;
 
 			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, pv_speed );
-			//lpFoc->Iq_des = pidTask( &pidSpeed, sp_speed, pv_speed );
 
 			counter_speed_reg = 0;
 		}
