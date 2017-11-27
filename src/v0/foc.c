@@ -2,8 +2,8 @@
 #include "foc.h"
 
 //#define __POS_CONTROL__
-#define __AI1_SET_SPEED__
-//#define __POS_AND_SPEED_CONTROL__
+//#define __AI1_SET_SPEED__
+#define __POS_AND_SPEED_CONTROL__
 
 const float P = 2048.0f;
 const float Ts = 0.005f;
@@ -72,7 +72,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.2f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.30f, 0.0018f, 0.0f, 1.00006f ); // Vbus: 40; P: 0.7;
+	pidInit( &lpFoc->pid_q, 0.30f, 0.0018f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.2f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -241,7 +241,6 @@ void ADC_IRQHandler( void )
 #ifdef __AI1_SET_SPEED__
 		if( 4 == ++counter_speed_reg ) {
 			sp_speed = ai0_filtered_value - 2047.0f;
-			//sp_speed = 60.0f;
 
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
