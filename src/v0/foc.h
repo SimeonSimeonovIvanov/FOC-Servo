@@ -6,6 +6,7 @@
 
 #include "pid/pid.h"
 #include "encoder.h"
+#include "filter.h"
 
 //#define FOC_ADC_Mode_Independent
 #define FOC_ADC_DualMode_RegSimult_InjecSimult
