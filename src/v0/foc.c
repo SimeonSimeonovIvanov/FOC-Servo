@@ -267,7 +267,7 @@ void ADC_IRQHandler( void )
 
 		if( 4 == ++counter_speed_reg ) {
 			static float arrSpeedSP[10];
-			float sp_speed_temp;
+			volatile float sp_speed_temp;
 
 			arrSpeedSP[9] = arrSpeedSP[8];	arrSpeedSP[8] = arrSpeedSP[7];
 			arrSpeedSP[7] = arrSpeedSP[6];	arrSpeedSP[6] = arrSpeedSP[5];

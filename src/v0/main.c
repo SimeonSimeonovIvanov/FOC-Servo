@@ -69,7 +69,7 @@ int main(void)
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.001f );
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt_temp, 0.0005f );
 
-		if( dc_bus_filtered_value > 200 ) {
+		if( dc_bus_filtered_value > 480 ) {
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
 				GPIO_SetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
 				GPIO_SetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
@@ -77,11 +77,13 @@ int main(void)
 			} else {
 				++charge_relya_on_delay_counter;
 			}
-		}else
-		if( dc_bus_filtered_value < 100 ) {
-			GPIO_ResetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
-			GPIO_ResetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
-			charge_relya_on_delay_counter = 0;
+		} else {
+			if( dc_bus_filtered_value < 440 ) {
+				GPIO_ResetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
+				GPIO_ResetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
+				charge_relya_on_delay_counter = 0;
+				stFoc.enable = 0;
+			}
 		}
 
 		if(!stFoc.enable) {
