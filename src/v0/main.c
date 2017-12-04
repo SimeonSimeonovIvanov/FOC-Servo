@@ -24,7 +24,7 @@ int main(void)
 	float Iq_filtered_value = 0, Iq_des_filtered_value = 0;
 	float dc_bus_filtered_value = 0;
 
-	uint32_t charge_relya_on_delay = 100000, charge_relya_on_delay_counter = 0;
+	uint32_t charge_relya_on_delay = 200000, charge_relya_on_delay_counter = 0;
 	eMBErrorCode eStatus;
 	int hall, encoder;
 
@@ -69,7 +69,7 @@ int main(void)
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.001f );
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt_temp, 0.0005f );
 
-		if( dc_bus_filtered_value > 480 ) {
+		if( dc_bus_filtered_value > 1000 ) {
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
 				GPIO_SetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
 				GPIO_SetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
@@ -78,7 +78,7 @@ int main(void)
 				++charge_relya_on_delay_counter;
 			}
 		} else {
-			if( dc_bus_filtered_value < 440 ) {
+			if( dc_bus_filtered_value < 900 ) {
 				GPIO_ResetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
 				GPIO_ResetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
 				charge_relya_on_delay_counter = 0;
