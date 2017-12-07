@@ -24,7 +24,9 @@ int main(void)
 	float Iq_filtered_value = 0, Iq_des_filtered_value = 0;
 	float dc_bus_filtered_value = 0;
 
-	uint32_t charge_relya_on_delay = 200000, charge_relya_on_delay_counter = 0;
+	uint32_t charge_relya_on_delay_counter = 0, charge_relya_on_delay = 200000;
+	uint32_t foc_enable_on_delay_counter = 0, foc_enable_on_delay = 100000;
+
 	eMBErrorCode eStatus;
 	int hall, encoder;
 
@@ -73,7 +75,12 @@ int main(void)
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
 				GPIO_SetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
 				GPIO_SetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
-				stFoc.enable = 1;
+
+				if( foc_enable_on_delay_counter >= foc_enable_on_delay ) {
+					stFoc.enable = 1;
+				} else {
+					++foc_enable_on_delay_counter;
+				}
 			} else {
 				++charge_relya_on_delay_counter;
 			}
@@ -143,29 +150,6 @@ void EXTI9_5_IRQHandler(void) {
 
 		sp_counter = counter * 10;
     }
-}
-
-/*
- * http://my.execpc.com/~steidl/robotics/first_order_lag_filter
- *
- * new_filtered_value = k * raw_sensor_value + (1 - k) * old_filtered_value
- *
- * k = 1 - e^ln(1 - Frac) * Ts / Tr
- *
- * Input #1: Maximum Response Time (Tr)
- * This is the (maximum) amount of time (in seconds) between the instant the raw sensor value changes and the instant the filtered sensor value reflects that change.
- *
- * Input #2: Sampling Period (Ts)
- * This is the amount of time (in seconds) between one reading of the raw sensor value and the next.
- *
- * Input #3: Desired Fraction of Change (Frac)
- * This is the (minimum) accuracy with which a change in the raw sensor value (at time t) will be reflected in the filtered sensor value (at or before time t + Tr).
- *
- * 1 - ( e^( ln( 1 - 0.06 ) * ( 0.0006 / 0.02 ) ) ) = 0.00185454032 ( Google calc )
- */
-void FirstOrderLagFilter( float *filtered_value, float raw_sensor_value, float k )
-{
-	*filtered_value = k * raw_sensor_value + ( 1 - k ) * (*filtered_value);
 }
 
 eMBErrorCode eMBRegHoldingCB
@@ -286,9 +270,6 @@ void boardInit(void)
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
 
 	GPIO_Init( GPIOD, &GPIO_InitStructure );
-
-	//GPIO_SetBits( GPIOD, GPIO_Pin_10 );
-	//GPIO_SetBits( GPIOD, GPIO_Pin_11 );
 	///////////////////////////////////////////////////////////////////////////
 
 	///////////////////////////////////////////////////////////////////////////
