@@ -427,7 +427,6 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			dc_current = mbU16toSI(hreg[13]);
 
 			mcu_rpm = mbU32toSI(hreg[15] << 16 | hreg[14]);
-			//mcu_rpm = mbU16toSI(hreg[14]);
 
 			sprintf(szBuffer, "CA: %d", current_a);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC0), szBuffer);
@@ -441,7 +440,7 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			sprintf(szBuffer, "AI0: %d", ai0 - 2047);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC3), szBuffer);
 
-			sprintf(szBuffer, "Sref: %d", dc_current);
+			sprintf(szBuffer, "S_fb: %d", dc_current);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC4), szBuffer);
 
 			sprintf(szBuffer, "%d", 0x07 & uvw);
@@ -466,25 +465,32 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			sprintf(szBuffer, "%d", rpm_t);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_T_RAW), szBuffer);
 			///////////////////////////////////////////////////////////////////////////////////////
-			float m1 = rpm_m, m2 = rpm_t;
-			float P = 2048.0f;
-			float Ts = 0.005f;
-			float fc = 2000000.0f;
-
+			const float P = 8196.0f;
+			const float Ts = 0.0025f;
+			const float fc = 2000000.0f;
 			float f_rpm_m, f_rpm_t, f_rpm_mt;
 
-			f_rpm_m = 60 * (m1 / (P * Ts));
-			f_rpm_t = 60 * (fc / (P * m2));
+			f_rpm_m = 60.0f * ((float)rpm_m / (P * Ts));
 
-			if (f_rpm_m<0) f_rpm_t = -f_rpm_t;
+			if (rpm_t) {
+				if (rpm_m < 0) {
+					rpm_t = -rpm_t;
+				}
 
-			if (f_rpm_m + f_rpm_t) {
-				f_rpm_mt = 0.98 * ((f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t));
+				f_rpm_t = 60.0f * (fc / (0.5*P * (float)rpm_t));
+			} else {
+				f_rpm_t = 0.0f;
 			}
-			else {
+
+			if (f_rpm_m < 100 && f_rpm_m ) {
+				//f_rpm_mt = f_rpm_t;
+			} //else
+			if (f_rpm_m + f_rpm_t) {
+				f_rpm_mt = 2*0.98*(f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t);
+			} else {
 				f_rpm_mt = 0.0f;
 			}
-
+			/////////////////////////////////////////////////////////////////////////////////////////////////////
 			sprintf(szBuffer, "%4.3f", f_rpm_m);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_M), szBuffer);
 			sprintf(szBuffer, "%4.3f", f_rpm_t);
