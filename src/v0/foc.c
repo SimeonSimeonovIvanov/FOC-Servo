@@ -37,11 +37,6 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidInit_test( &pidSpeed, 4.5, .2, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 1375 );
-
-	/*pidInit( &pidSpeed, 10, 0.3, 0, 0 );
-	pidSetOutLimit( &pidSpeed, 1375, -1375 );
-	pidSetIntegralLimit( &pidSpeed, 2000 );
-	pidSetInputRange( &pidSpeed, 2000 );*/
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
@@ -225,6 +220,28 @@ void ADC_IRQHandler( void )
 		}
 
 		counter_get_speed = 0;
+	} else {
+		static uint16_t m_old = 0, uwTIM10PulseLength_old = 0;
+		int16_t m;
+
+		m = -TIM4->CNT;
+		if( ( m != m_old ) || ( uwTIM10PulseLength != uwTIM10PulseLength_old ) ) {
+			float rpm_t = (float)uwTIM10PulseLength;
+
+			if( lpFoc->f_rpm_mt < 0 ) {
+				rpm_t = -rpm_t;
+			}
+
+			if( rpm_t ) {
+				rpm_t = 60.0f * ( fc / ( P * rpm_t ) );
+			} else {
+				rpm_t = 0.0f;
+			}
+
+			lpFoc->f_rpm_mt = rpm_t;
+		}
+		uwTIM10PulseLength_old = uwTIM10PulseLength;
+		m_old = m;
 	}
 
 	pv_pos = iEncoderGetAbsPos();
@@ -258,6 +275,8 @@ void ADC_IRQHandler( void )
 		if( 8 == ++counter_pos_reg ) {
 			static volatile float arrPosSP[10] = { 0 };
 			volatile float sp_pos_temp;
+
+
 
 			sp_pos_temp = ffilter( (float)sp_pos, arrPosSP, 3 );
 

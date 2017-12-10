@@ -23,7 +23,7 @@
 </editor>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="744" selectionTopPixel="90"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="881" selectionTopPixel="409"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" partName="encoder.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/encoder.c" title="encoder.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/encoder.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/encoder.c"/>
@@ -298,12 +298,6 @@
 <item historyLabel="foc.c" index="2">
 <position info="not_deleted" x="7473" y="0"/>
 </item>
-<item historyLabel="foc.c" index="2">
-<position info="not_deleted" x="8410" y="0"/>
-</item>
-<item historyLabel="foc.c" index="2">
-<position info="not_deleted" x="7473" y="0"/>
-</item>
 <item historyLabel="main.c" index="0">
 <position info="not_deleted" x="2920" y="0"/>
 </item>
@@ -442,8 +436,14 @@
 <item historyLabel="encoder.c" index="21">
 <position info="not_deleted" x="12173" y="0"/>
 </item>
-<item active="true" historyLabel="foc.c" index="20">
+<item historyLabel="foc.c" index="20">
 <position info="not_deleted" x="154" y="0"/>
+</item>
+<item historyLabel="foc.c" index="20">
+<position info="not_deleted" x="6915" y="0"/>
+</item>
+<item active="true" historyLabel="foc.c" index="20">
+<position info="not_deleted" x="6664" y="47"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
