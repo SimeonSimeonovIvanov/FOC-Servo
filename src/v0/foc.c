@@ -184,10 +184,11 @@ void ADC_IRQHandler( void )
 		return;
 	}
 
+	enc_delta = -TIM4->CNT;
+
 	if( 40 == ++counter_get_speed ) {
 		volatile float rpm_m, rpm_t;
 
-		enc_delta = -TIM4->CNT;
 		TIM4->CNT = 0;
 
 		rpm_m = (float)enc_delta;
@@ -205,43 +206,41 @@ void ADC_IRQHandler( void )
 		}
 
 		if( lpFoc->f_rpm_m + lpFoc->f_rpm_t ) {
-			lpFoc->f_rpm_mt = 2.0f*0.98*( lpFoc->f_rpm_m * lpFoc->f_rpm_t ) / ( lpFoc->f_rpm_m + lpFoc->f_rpm_t );
+			lpFoc->f_rpm_mt = 2.0f * ( lpFoc->f_rpm_m * lpFoc->f_rpm_t ) / ( lpFoc->f_rpm_m + lpFoc->f_rpm_t );
 		} else {
 			lpFoc->f_rpm_mt = 0.0f;
 		}
 
-		if( rpm_t ) {
-			lpFoc->f_rpm_mt_temp =  ( ( 1 * 2000000 * rpm_m ) / ( 2048 * rpm_t ) );
-			if( enc_delta < 0 ) {
-				lpFoc->f_rpm_mt_temp = -lpFoc->f_rpm_mt_temp;
-			}
-		} else {
-			lpFoc->f_rpm_mt_temp = 0.0f;
-		}
-
 		counter_get_speed = 0;
+
+		/*if( lpFoc->f_rpm_mt < 10.0f && lpFoc->f_rpm_mt > -10.0f ) {
+			pidSpeed.kp = 2.5;
+		} else {
+			pidSpeed.kp = 5.5;
+		}*/
 	} else {
-		static uint16_t m_old = 0, uwTIM10PulseLength_old = 0;
-		int16_t m;
+		static int16_t enc_delta_old = 0, uwTIM10PulseLength_old = 0;
 
-		m = -TIM4->CNT;
-		if( ( m != m_old ) || ( uwTIM10PulseLength != uwTIM10PulseLength_old ) ) {
+		if( ( enc_delta != enc_delta_old ) || ( uwTIM10PulseLength != uwTIM10PulseLength_old ) ) {
 			float rpm_t = (float)uwTIM10PulseLength;
-
-			if( lpFoc->f_rpm_mt < 0 ) {
-				rpm_t = -rpm_t;
-			}
 
 			if( rpm_t ) {
 				rpm_t = 60.0f * ( fc / ( P * rpm_t ) );
+
+				if( lpFoc->f_rpm_mt < 0 ) {
+					rpm_t = -rpm_t;
+				}
 			} else {
 				rpm_t = 0.0f;
 			}
 
-			lpFoc->f_rpm_mt = rpm_t;
+			if( rpm_t > 100.0f || rpm_t < -100.0f ) {
+				lpFoc->f_rpm_mt = rpm_t;
+			}
 		}
+
 		uwTIM10PulseLength_old = uwTIM10PulseLength;
-		m_old = m;
+		enc_delta_old = enc_delta;
 	}
 
 	pv_pos = iEncoderGetAbsPos();
@@ -257,13 +256,16 @@ void ADC_IRQHandler( void )
 
 #ifdef __AI1_SET_SPEED__
 		if( 4 == ++counter_speed_reg ) {
-			sp_speed = ai0_filtered_value - 2047.0f;
+			static volatile float arrSpeedFB[10] = { 0 };
+			//volatile float fb_speed_temp;
 
+			sp_speed = ai0_filtered_value - 2047.0f;
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
 
 			pv_speed = lpFoc->f_rpm_mt;
+			//fb_speed_temp = ffilter( (float)pv_speed, arrSpeedFB, 2 );
 
 			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, pv_speed );
 
@@ -275,8 +277,6 @@ void ADC_IRQHandler( void )
 		if( 8 == ++counter_pos_reg ) {
 			static volatile float arrPosSP[10] = { 0 };
 			volatile float sp_pos_temp;
-
-
 
 			sp_pos_temp = ffilter( (float)sp_pos, arrPosSP, 3 );
 
