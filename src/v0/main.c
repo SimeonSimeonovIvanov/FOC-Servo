@@ -68,8 +68,8 @@ int main(void)
 		FirstOrderLagFilter( &stFoc.f_rpm_m_filtered_value, stFoc.f_rpm_m, 0.0005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_t_filtered_value, stFoc.f_rpm_t, 0.0005f );
 
-		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.001f );
-		//FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt_temp, 0.0005f );
+		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.002f );
+		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt, 0.00005f );
 
 		if( dc_bus_filtered_value > 1000 ) {
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
@@ -119,7 +119,7 @@ int main(void)
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[13] = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		int32_t rpm = stFoc.f_rpm_mt_filtered_value * 100;
+		int32_t rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
 		usRegHoldingBuf[14] = rpm;
 		usRegHoldingBuf[15] = rpm>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,7 +134,7 @@ void EXTI9_5_IRQHandler(void) {
 		/* Clear interrupt flag */
 		EXTI_ClearITPendingBit( EXTI_Line6 );
 
-		if( !stFoc.main_state ) {
+		if( !stFoc.main_state || !stFoc.enable ) {
 			return;
 		}
 
@@ -148,7 +148,7 @@ void EXTI9_5_IRQHandler(void) {
 			++counter;
 		}
 
-		sp_counter = counter * 10;
+		sp_counter = counter * 30;
     }
 }
 

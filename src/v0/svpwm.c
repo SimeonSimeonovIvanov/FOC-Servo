@@ -531,9 +531,9 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	}
 
 	vcom = ( vmax + vmin ) * -0.5f;
-	X = ( lpFoc->Va + vcom );// * 1.1547f;
-	Y = ( lpFoc->Vb + vcom );// * 1.1547f;
-	Z = ( lpFoc->Vc + vcom );// * 1.1547f;
+	X = ( lpFoc->Va + vcom ) * 1.1547f;
+	Y = ( lpFoc->Vb + vcom ) * 1.1547f;
+	Z = ( lpFoc->Vc + vcom ) * 1.1547f;
 
 	lpFoc->PWM1 = Tpwm - ( X * Tpwm );
 	lpFoc->PWM2 = Tpwm - ( Y * Tpwm );

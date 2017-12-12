@@ -191,11 +191,11 @@ uint16_t initSanyoWareSaveEncoder(void) // ---
 	static uint32_t map1[] = {
 			0,
 			0,
-			60*11.37f + 30*11.37f,
-			120*11.37f + 30*11.37f,
-			180*11.37f + 30*11.37f,
-			240*11.37f + 30*11.37f,
-			300*11.37f + 30*11.37f,
+			60*11.377f + 30*11.377f,
+			120*11.377f + 30*11.377f,
+			180*11.377f + 30*11.377f,
+			240*11.377f + 30*11.377f,
+			300*11.377f + 30*11.377f,
 			0
 	};
 	static uint16_t hall_map[8] = { 0, 5, 3, 4, 1, 6, 2, 0 };
@@ -238,8 +238,8 @@ void EXTI15_10_IRQHandler(void)
 uint16_t readRawEncoderWithUVW(void) // !!!
 {
 	static uint32_t hall_old = 0;
-	static uint32_t map1[] = { 0, 0, 60*11.37f, 120*11.37f, 180*11.37f, 240*11.37f, 300*11.37f, 0 };
-	static uint32_t map2[] = { 0, 60*11.37f, 120*11.37f, 180*11.37f, 240*11.37f, 300*11.37f, 360*11.37f, 0 };
+	static uint32_t map1[] = { 0, 0, 60*11.377f, 120*11.377f, 180*11.377f, 240*11.377f, 300*11.377f, 0 };
+	static uint32_t map2[] = { 0, 60*11.377f, 120*11.377f, 180*11.377f, 240*11.377f, 300*11.377f, 360*11.377f, 0 };
 
 	uint32_t hall = 0, encoder = 0, hall_angle = 0;
 
@@ -267,7 +267,7 @@ uint16_t readRawEncoderWithUVW(void) // !!!
 	encoder = TIM3->CNT;
 
 	if( !hall_old ) {
-		encoder = 11.37f * encoderAddOffset( encoder * 0.0879f, 30 );
+		encoder = 11.377f * encoderAddOffset( encoder * 0.0878906f, 30 );
 	}
 
 	hall_old = hall;
@@ -300,7 +300,7 @@ uint16_t read360uvw(void)
 			}
 		}
 
-		hall_angle = ( 1.0f / 0.0879f ) * hall_angle;
+		hall_angle = 11.377f * hall_angle;
 		TIM3->CNT = hall_angle;
 	}
 
@@ -351,9 +351,9 @@ uint16_t readRawHallInput( void )
 
 void createSinCosTable(void)
 {
-	for( int i = 0; i < 2048*2; i++ ) {
-		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * 0.0879f ) );
-		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * 0.0879f ) );
+	for( int i = 0; i < 4096; i++ ) {
+		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * 0.0878906f ) );
+		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * 0.0878906f ) );
 	}
 	return;
 
@@ -411,7 +411,7 @@ void initTim10(void)
 	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
 	// Timer counter clock = sysclock / ( TIM_Prescaler + 1 )
-	TIM_TimeBaseInitStructure.TIM_Prescaler = 83;
+	TIM_TimeBaseInitStructure.TIM_Prescaler = 83;//83;
 	// Period = ( TIM counter clock / TIM output clock ) - 1
 	TIM_TimeBaseInitStructure.TIM_Period = 0xffff;
 	TIM_TimeBaseInit( TIM10, &TIM_TimeBaseInitStructure );
@@ -426,7 +426,7 @@ void initTim10(void)
 	TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_BothEdge;
 	TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
 	TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
-	TIM_ICInitStructure.TIM_ICFilter = 0x0;
+	TIM_ICInitStructure.TIM_ICFilter = 0x0f;
 	TIM_ICInit( TIM10, &TIM_ICInitStructure );
 
 	/* TIM enable counter */

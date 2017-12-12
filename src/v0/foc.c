@@ -7,7 +7,7 @@
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
-const float fc = 4000000.0f;
+const float fc = 1*4000000.0f;
 
 extern uint32_t uwTIM10PulseLength;
 extern int32_t sp_counter;
@@ -34,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 4.5, .2, 0, 0 );
+	pidInit_test( &pidSpeed, 5.0, .2, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 1375 );
 #endif
@@ -51,23 +51,23 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __POS_AND_SPEED_CONTROL__
-	pidInit_test( &pidSpeed, 3.5f, 0.09f, 0, 0 );
+	pidInit_test( &pidSpeed, 4.0f, 0.2f, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
 	pidSetIntegralLimit_test( &pidSpeed, 1375 );
 
-	pidInit( &pidPos, 0.9f, 0.00613f, 0.0f, 1.001f );
+	pidInit( &pidPos, 1.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
-	pidSetInputRange( &pidPos, 2000 );
+	pidSetInputRange( &pidPos, 4000 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.15f, 0.0018f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.1f, 0.0009f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.2f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.15f, 0.0018f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.1f, 0.0009f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.2f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -235,7 +235,7 @@ void ADC_IRQHandler( void )
 			}
 
 			if( rpm_t > 100.0f || rpm_t < -100.0f ) {
-				lpFoc->f_rpm_mt = rpm_t;
+				//lpFoc->f_rpm_mt = rpm_t;
 			}
 		}
 
@@ -294,8 +294,11 @@ void ADC_IRQHandler( void )
 			arrSpeedSP[3] = arrSpeedSP[2];	arrSpeedSP[2] = arrSpeedSP[1];
 			arrSpeedSP[1] = arrSpeedSP[0];	arrSpeedSP[0] = sp_speed;
 
-			//sp_speed_temp = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] + arrSpeedSP[4] + arrSpeedSP[5] + arrSpeedSP[6]  + arrSpeedSP[7]  + arrSpeedSP[8] + arrSpeedSP[9] ) / 10;
-			sp_speed_temp = ( arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] ) / 4;
+			sp_speed_temp =
+			(
+					arrSpeedSP[0] + arrSpeedSP[1] + arrSpeedSP[2] + arrSpeedSP[3] + arrSpeedSP[4] +
+					arrSpeedSP[5] + arrSpeedSP[6]  + arrSpeedSP[7]  + arrSpeedSP[8] + arrSpeedSP[9]
+			)  * ( 1.0f / 10.0f );
 
 			pv_speed = lpFoc->f_rpm_mt;
 
