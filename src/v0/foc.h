@@ -49,8 +49,7 @@ typedef struct {
 	float Ia, Ib;
 	float Ialpha, Ibeta;
 
-	float Id, Iq;
-
+	float Id, Iq, Is;
 	float Id_des, Iq_des;
 
 	PID pid_d, pid_q;

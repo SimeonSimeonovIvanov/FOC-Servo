@@ -411,7 +411,7 @@ void initTim10(void)
 	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInitStructure.TIM_RepetitionCounter = 0;
 	// Timer counter clock = sysclock / ( TIM_Prescaler + 1 )
-	TIM_TimeBaseInitStructure.TIM_Prescaler = 83;//83;
+	TIM_TimeBaseInitStructure.TIM_Prescaler = ( 84 / 3 ) - 1;
 	// Period = ( TIM counter clock / TIM output clock ) - 1
 	TIM_TimeBaseInitStructure.TIM_Period = 0xffff;
 	TIM_TimeBaseInit( TIM10, &TIM_TimeBaseInitStructure );

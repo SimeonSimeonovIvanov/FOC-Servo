@@ -23,6 +23,7 @@ int main(void)
 	float enc_delta_filtered_value = 0, TIM10PulseLength_filtered_value = 0;
 	float Iq_filtered_value = 0, Iq_des_filtered_value = 0;
 	float dc_bus_filtered_value = 0;
+	int32_t rpm;
 
 	uint32_t charge_relya_on_delay_counter = 0, charge_relya_on_delay = 200000;
 	uint32_t foc_enable_on_delay_counter = 0, foc_enable_on_delay = 100000;
@@ -61,14 +62,14 @@ int main(void)
 		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
 		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
 		FirstOrderLagFilter( &dc_bus_filtered_value, stFoc.vbus_voltage, 0.0002f );
-		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.005f );
+		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.002f );
 
 		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.0005f );
 		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.0005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_m_filtered_value, stFoc.f_rpm_m, 0.0005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_t_filtered_value, stFoc.f_rpm_t, 0.0005f );
 
-		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.002f );
+		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt, 0.00005f );
 
 		if( dc_bus_filtered_value > 1000 ) {
@@ -97,6 +98,9 @@ int main(void)
 			sp_counter = iEncoderGetAbsPos();
 		}
 
+		stFoc.Is = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
+		rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
+
 		hall = readHallMap();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[0] = (int)stFoc.Ia;
@@ -117,9 +121,8 @@ int main(void)
 		usRegHoldingBuf[11] = (int16_t)enc_delta_filtered_value;
 		usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[13] = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
+		usRegHoldingBuf[13] = stFoc.Is;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		int32_t rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
 		usRegHoldingBuf[14] = rpm;
 		usRegHoldingBuf[15] = rpm>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
