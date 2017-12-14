@@ -226,7 +226,7 @@ void EXTI15_10_IRQHandler(void)
 	static uint32_t first_run = 1;
 	if( RESET != EXTI_GetITStatus( EXTI_Line15 ) ) {
 		if(first_run) {
-			TIM3->CNT = 1364;
+			//TIM3->CNT = 1364;
 			//first_run = 0;
 		}
     	EXTI_ClearITPendingBit( EXTI_Line15 );

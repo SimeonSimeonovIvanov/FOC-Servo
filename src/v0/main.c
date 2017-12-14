@@ -62,7 +62,7 @@ int main(void)
 		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
 		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
 		FirstOrderLagFilter( &dc_bus_filtered_value, stFoc.vbus_voltage, 0.0002f );
-		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.002f );
+		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.005f );
 
 		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.0005f );
 		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.0005f );
@@ -151,7 +151,7 @@ void EXTI9_5_IRQHandler(void) {
 			++counter;
 		}
 
-		sp_counter = counter * 30;
+		sp_counter = counter * 10;
     }
 }
 
