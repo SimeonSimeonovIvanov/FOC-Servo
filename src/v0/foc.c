@@ -34,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 4.5, .2, 0, 0 );
+	pidInit_test( &pidSpeed, 4.5, .22, 0.0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );
 
@@ -262,20 +262,13 @@ void ADC_IRQHandler( void )
 
 #ifdef __AI1_SET_SPEED__
 		if( 4 == ++counter_speed_reg ) {
-			static volatile float arrSpeedFB[10] = { 0 };
-			volatile float fb_speed_temp;
-
 			sp_speed = ai0_filtered_value - 2047.0f;
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
-
 			pv_speed = lpFoc->f_rpm_mt;
-			fb_speed_temp = ffilter( (float)pv_speed, arrSpeedFB, 5 );
 
-			//lpFoc->f_rpm_mt_temp_filtered_value = fb_speed_temp;
-
-			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, fb_speed_temp );
+			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, pv_speed );
 			//lpFoc->Iq_des = 1575.0f * pidTask( &pidSpeed, sp_speed, pv_speed );
 
 			counter_speed_reg = 0;
