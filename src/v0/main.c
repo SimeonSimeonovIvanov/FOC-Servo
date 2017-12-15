@@ -151,7 +151,7 @@ void EXTI9_5_IRQHandler(void) {
 			++counter;
 		}
 
-		sp_counter = counter * 10;
+		sp_counter = counter * 20;
     }
 }
 
