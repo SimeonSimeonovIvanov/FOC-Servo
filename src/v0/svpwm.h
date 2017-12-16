@@ -19,7 +19,7 @@
 #define PWM_PERIOD		( (u16) (CKTIM / (u32)(2 * PWM_FREQ *(PWM_PRSC+1))) ) // 2625
 
 #define REP_RATE		10
-#define DEADTIME		10
+#define DEADTIME		40	// DEADTIME / HCLK = x / 168 Mhz
 
 void svpwmInit(void);
 void mcFocSVPWM_ST2_TTHI(LP_MC_FOC lpFoc);

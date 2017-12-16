@@ -157,36 +157,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		float Ia, Ib, Ic;
 
-#define __PHASE_COR__
-
 		for( i = 0; i < gr_size_x; i++ ) {
 			angle = ( i / steep );
 
 			Ia = fSinAngle(angle);
 			Ib = fSinAngle(angle - 120);
-
-#ifdef __PHASE_COR__
-			//Ib = fSinAngle(angle + 120);
-#else
-			//Ib = fSinAngle(angle - 120);
-#endif
-
+			///////////////////////////////////////////////////////////////////
 			Ia = Ia * 20.0f;
 			Ib = Ib * 20.0f;
 			Ic = -Ia -Ib;
-
 			///////////////////////////////////////////////////////////////////
 			mcFocSetAngle(&stFoc, angle);
 			mcFocSetCurrent(&stFoc, Ia, Ib);
 			///////////////////////////////////////////////////////////////////
 			mcClark(&stFoc);
-
-#ifdef __PHASE_COR__
-			//stFoc.Ibeta = -stFoc.Ibeta;
-#else
-#endif
-			stFoc.Ibeta = -stFoc.Ibeta; // ???
-
 			mcPark(&stFoc);
 			///////////////////////////////////////////////////////////////////
 			/*
@@ -204,6 +188,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//mcFocSVPWM0(&stFoc);
 			//mcFocSPWM(&stFoc);
 			mcFocSVPWM_TTHI(&stFoc);
+			//mcFocSVPWM_STHI(&stFoc);
 			///////////////////////////////////////////////////////////////////
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;

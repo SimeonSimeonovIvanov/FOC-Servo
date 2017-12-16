@@ -504,10 +504,37 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 		}
 	}
 
-	vcom = (vmax + vmin) * -0.5f;
-	X = (lpFoc->Va + vcom) * 1.1547f;
-	Y = (lpFoc->Vb + vcom) * 1.1547f;
-	Z = (lpFoc->Vc + vcom) * 1.1547f;
+	vcom = (vmax + vmin) * 0.5f;
+	X = (lpFoc->Va - vcom) * 1.1547f;
+	Y = (lpFoc->Vb - vcom) * 1.1547f;
+	Z = (lpFoc->Vc - vcom) * 1.1547f;
+
+	lpFoc->PWM1 = Tpwm - (X * Tpwm);
+	lpFoc->PWM2 = Tpwm - (Y * Tpwm);
+	lpFoc->PWM3 = Tpwm - (Z * Tpwm);
+
+	static int index = 0, sector_old = 0;
+	if (sector_old != lpFoc->sector) {
+		lpFoc->arrSector[index++] = lpFoc->sector;
+		sector_old = lpFoc->sector;
+	}
+}
+
+void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // ---  ???
+{
+	float Tpwm = 100.0f / 2.0f;
+	float Vref, V, X, Y, Z;
+	
+	V = sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd) * (1.0f / 1.5f);
+	Vref = -V * (1.0f / 6.0f) *
+	(
+		3.0 * sinf(lpFoc->angle) -
+		4.0 * ( ( 3.0f * sinf(lpFoc->angle ) - sinf( 3 * lpFoc->angle) ) / 4 )
+	);
+
+	X = (lpFoc->Va + Vref) * 1.1547f;
+	Y = (lpFoc->Vb + Vref) * 1.1547f;
+	Z = (lpFoc->Vc + Vref) * 1.1547f;
 
 	lpFoc->PWM1 = Tpwm - (X * Tpwm);
 	lpFoc->PWM2 = Tpwm - (Y * Tpwm);
