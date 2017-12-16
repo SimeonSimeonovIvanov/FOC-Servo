@@ -70,7 +70,7 @@ int main(void)
 		FirstOrderLagFilter( &stFoc.f_rpm_t_filtered_value, stFoc.f_rpm_t, 0.0005f );
 
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt*1.02f, 0.005f );
-		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt*1.02f, 0.00005f );
+		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt*1.02f, 0.0001f );
 
 		if( dc_bus_filtered_value > 1000 ) {
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {

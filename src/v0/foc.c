@@ -370,9 +370,9 @@ void ADC_IRQHandler( void )
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
 	TIM_SetCompare3( TIM1, lpFoc->PWM3 );
 	///////////////////////////////////////////////////////////////////////////
-	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed + 2047, lpFoc->f_rpm_mt_temp_filtered_value + 2047 );
-	DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed + 2047, lpFoc->f_rpm_mt_filtered_value*0.5 + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Ia + 2047, fb_speed_filter*0.5 + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed*0.5 + 2047, lpFoc->f_rpm_mt_temp_filtered_value*0.5 + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed*0.5 + 2047, lpFoc->f_rpm_mt_filtered_value*0.5 + 2047 );
+	DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Ia + 2047, fb_speed_filter*0.5 + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed + 2047, ( sp_pos - pv_pos ) + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed + 2047, lpFoc->f_rpm_mt + 2047 );
