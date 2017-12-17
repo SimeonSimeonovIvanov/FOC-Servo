@@ -187,8 +187,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//mcFocSVPWM_ST1(&stFoc);
 			//mcFocSVPWM0(&stFoc);
 			//mcFocSPWM(&stFoc);
-			mcFocSVPWM_TTHI(&stFoc);
-			//mcFocSVPWM_STHI(&stFoc);
+			//mcFocSVPWM_TTHI(&stFoc);
+			mcFocSVPWM_STHI(&stFoc);
 			///////////////////////////////////////////////////////////////////
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;

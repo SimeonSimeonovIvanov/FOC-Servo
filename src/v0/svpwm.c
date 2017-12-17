@@ -506,7 +506,7 @@ void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
 }
 
 /*
- *	Triangular Third Harmonic Injection  ( TTHI )
+ *	Triangular Third Harmonic Injection ( TTHI )
  *	http://www.cnblogs.com/nixianmin/p/4791428.html
  */
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++

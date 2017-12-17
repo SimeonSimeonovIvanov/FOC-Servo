@@ -478,13 +478,13 @@ void mcFocSPWM(LP_MC_FOC lpFoc) // ???
 }
 
 /*
-*	Triangular Third Harmonic Injection  ( TTHI )
+*	Triangular Third Harmonic Injection ( TTHI )
 *	http://www.cnblogs.com/nixianmin/p/4791428.html
 */
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
 	float Tpwm = 100.0f / 2.0f;
-	float vmin, vmax, vcom, X, Y, Z;
+	float vmin, vmax, Vref, X, Y, Z;
 
 	if (lpFoc->Va > lpFoc->Vb) {
 		vmax = lpFoc->Va;
@@ -504,10 +504,10 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 		}
 	}
 
-	vcom = (vmax + vmin) * 0.5f;
-	X = (lpFoc->Va - vcom) * 1.1547f;
-	Y = (lpFoc->Vb - vcom) * 1.1547f;
-	Z = (lpFoc->Vc - vcom) * 1.1547f;
+	Vref = (vmax + vmin) * -0.5f;
+	X = (lpFoc->Va + Vref) * 1.1547f;
+	Y = (lpFoc->Vb + Vref) * 1.1547f;
+	Z = (lpFoc->Vc + Vref) * 1.1547f;
 
 	lpFoc->PWM1 = Tpwm - (X * Tpwm);
 	lpFoc->PWM2 = Tpwm - (Y * Tpwm);
@@ -520,21 +520,20 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	}
 }
 
-void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // ---  ???
+/*
+*	Sinusoidal Third Harmonic Injection ( STHI )
+*/
+void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // +++  ???
 {
 	float Tpwm = 100.0f / 2.0f;
-	float Vref, V, X, Y, Z;
+	float V, Vref, X, Y, Z;
 	
-	V = sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd) * (1.0f / 1.5f);
-	Vref = -V * (1.0f / 6.0f) *
-	(
-		3.0 * sinf(lpFoc->angle) -
-		4.0 * ( ( 3.0f * sinf(lpFoc->angle ) - sinf( 3 * lpFoc->angle) ) / 4 )
-	);
+	V = ( 1.0f / 6.0f ) * sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd);
+	Vref = V * sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));
 
-	X = (lpFoc->Va + Vref) * 1.1547f;
-	Y = (lpFoc->Vb + Vref) * 1.1547f;
-	Z = (lpFoc->Vc + Vref) * 1.1547f;
+	X = (lpFoc->Va + Vref);// *1.1547f;
+	Y = (lpFoc->Vb + Vref);// *1.1547f;
+	Z = (lpFoc->Vc + Vref);// *1.1547f;
 
 	lpFoc->PWM1 = Tpwm - (X * Tpwm);
 	lpFoc->PWM2 = Tpwm - (Y * Tpwm);
