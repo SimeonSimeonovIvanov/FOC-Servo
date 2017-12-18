@@ -153,6 +153,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int i, angle = 0;
 		float scale = 2.5f;
 		
+		svpwmInitSinTable();
 		mcFocInitStruct(&stFoc);
 
 		float Ia, Ib, Ic;

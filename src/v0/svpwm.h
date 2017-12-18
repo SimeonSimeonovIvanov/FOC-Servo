@@ -22,6 +22,7 @@
 #define DEADTIME		40	// DEADTIME / HCLK = x / 168 Mhz
 
 void svpwmInit(void);
+void svpwmInitSinTable(void);
 void mcFocSVPWM_ST2_TTHI(LP_MC_FOC lpFoc);
 void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc);
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc);

@@ -364,7 +364,8 @@ void ADC_IRQHandler( void )
 	///////////////////////////////////////////////////////////////////////////
 	//mcFocSVPWM_ST2_TTHI( lpFoc );
 	//mcFocSVPWM0_TTHI( lpFoc );
-	mcFocSVPWM_TTHI(lpFoc);
+	mcFocSVPWM_TTHI( lpFoc );
+	//mcFocSVPWM_STHI( lpFoc );
 	///////////////////////////////////////////////////////////////////////////
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );

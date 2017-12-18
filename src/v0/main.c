@@ -72,7 +72,7 @@ int main(void)
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt*1.02f, 0.005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt*1.02f, 0.0001f );
 
-		if( dc_bus_filtered_value > 1000 ) {
+		if( 0 || dc_bus_filtered_value > 1000 ) {
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
 				GPIO_SetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
 				GPIO_SetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE

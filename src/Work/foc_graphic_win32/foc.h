@@ -47,5 +47,6 @@ void mcFocSVPWM_STHI(LP_MC_FOC lpFoc);
 
 float fSinAngle(int angle);
 float fCosAngle(int angle);
+void svpwmInitSinTable(void);
 
 #endif

@@ -520,6 +520,16 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	}
 }
 
+float svpwm_sin_table[4096];
+
+void svpwmInitSinTable(void)
+{
+	int angle;
+	for (angle = 0; angle < 4096; angle++) {
+		svpwm_sin_table[(int)angle] = sinf(foc_deg_to_rad(3 *angle*(360.0f/4096.0f)) - foc_deg_to_rad(90));
+	}
+}
+
 /*
 *	Sinusoidal Third Harmonic Injection ( STHI )
 */
@@ -529,7 +539,8 @@ void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // +++  ???
 	float V, Vref, X, Y, Z;
 	
 	V = ( 1.0f / 6.0f ) * sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd);
-	Vref = V * sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));
+	//Vref = V * sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));
+	Vref = V * svpwm_sin_table[(int)(lpFoc->angle*(4096.0f / 360.0f))];
 
 	X = (lpFoc->Va + Vref);// *1.1547f;
 	Y = (lpFoc->Vb + Vref);// *1.1547f;

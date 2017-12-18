@@ -2,6 +2,8 @@
 
 extern volatile uint16_t ADC_values[ARRAYSIZE];
 
+static float svpwm_sin_table[4096];
+
 void svpwmInit(void)
 {
 	svpwmInitTIM();
@@ -16,6 +18,8 @@ void svpwmInitTIM( void )
 	//NVIC_InitTypeDef		NVIC_InitStructure;
 
 	svpwmInitGPIO();
+
+	svpwmInitSinTable();
 
 	RCC_APB2PeriphClockCmd( RCC_APB2Periph_TIM1, ENABLE );
 
@@ -512,7 +516,7 @@ void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
 	float Tpwm = (float)PWM_PERIOD * 0.5f;
-	float vmin, vmax, vcom, X, Y, Z;
+	float vmin, vmax, Vref, X, Y, Z;
 
 	if( lpFoc->Va > lpFoc->Vb ) {
 		vmax = lpFoc->Va;
@@ -530,10 +534,10 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 		}
 	}
 
-	vcom = ( vmax + vmin ) * -0.5f;
-	X = ( lpFoc->Va + vcom ) * 1.1547f;
-	Y = ( lpFoc->Vb + vcom ) * 1.1547f;
-	Z = ( lpFoc->Vc + vcom ) * 1.1547f;
+	Vref = ( vmax + vmin ) * -0.5f;
+	X = ( lpFoc->Va + Vref ) * 1.1547f;
+	Y = ( lpFoc->Vb + Vref ) * 1.1547f;
+	Z = ( lpFoc->Vc + Vref ) * 1.1547f;
 
 	lpFoc->PWM1 = Tpwm - ( X * Tpwm );
 	lpFoc->PWM2 = Tpwm - ( Y * Tpwm );
@@ -543,6 +547,28 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 /*
  *	Sinusoidal Third Harmonic Injection ( STHI )
  */
-void mcFocSVPWM_STHI(LP_MC_FOC lpFoc)
+void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // +++ ???
 {
+	float Tpwm = (float)PWM_PERIOD * 0.5f;;
+	float V, Vref, X, Y, Z;
+
+	V = ( 1.0f / 6.0f ) * sqrtf( lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd );
+	//Vref = V * sinf( foc_deg_to_rad( lpFoc->angle * 3.0f ) - foc_deg_to_rad( 90 ) );
+	Vref = V * svpwm_sin_table[(int)lpFoc->angle];
+
+	X = ( lpFoc->Va + Vref );// *1.1547f;
+	Y = ( lpFoc->Vb + Vref );// *1.1547f;
+	Z = ( lpFoc->Vc + Vref );// *1.1547f;
+
+	lpFoc->PWM1 = Tpwm - ( X * Tpwm );
+	lpFoc->PWM2 = Tpwm - ( Y * Tpwm );
+	lpFoc->PWM3 = Tpwm - ( Z * Tpwm );
+}
+
+void svpwmInitSinTable(void)
+{
+	int angle;
+	for( angle = 0; angle < 4096; angle++ ) {
+		svpwm_sin_table[(int)angle] = sinf( foc_deg_to_rad( 3 * angle * (360.0f/4096.0f) ) - foc_deg_to_rad(90) );
+	}
 }
