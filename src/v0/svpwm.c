@@ -549,7 +549,7 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
  */
 void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // +++ ???
 {
-	float Tpwm = (float)PWM_PERIOD * 0.5f;;
+	float Tpwm = (float)PWM_PERIOD * 0.5f;
 	float V, Vref, X, Y, Z;
 
 	V = ( 1.0f / 6.0f ) * sqrtf( lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd );
@@ -567,8 +567,7 @@ void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // +++ ???
 
 void svpwmInitSinTable(void)
 {
-	int angle;
-	for( angle = 0; angle < 4096; angle++ ) {
-		svpwm_sin_table[(int)angle] = sinf( foc_deg_to_rad( 3 * angle * (360.0f/4096.0f) ) - foc_deg_to_rad(90) );
+	for( int angle = 0; angle < 4096; angle++ ) {
+		svpwm_sin_table[angle] = sinf( foc_deg_to_rad( 3.0f * ((float)angle * (360.0f/4096.0f)) ) - foc_deg_to_rad(90.0f) );
 	}
 }

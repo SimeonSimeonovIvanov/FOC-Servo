@@ -1,9 +1,9 @@
 #include <string.h>
 #include "foc.h"
 
-//#define __POS_CONTROL__
-#define __AI1_SET_SPEED__
-//#define __POS_AND_SPEED_CONTROL__
+//#define __POS_CONTROL__ ???
+#define __AI1_SET_SPEED__ // +++ ?
+//#define __POS_AND_SPEED_CONTROL__ // +++ ?
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
@@ -47,23 +47,23 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __POS_CONTROL__
-	pidInit( &pidPos, 0.8f, 0.0005f, 0.0f, 0.001f );
+	pidInit( &pidPos, 5.1f, 0.05f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 500 );
+	pidSetIntegralLimit( &pidPos, 0.5f );
+	pidSetInputRange( &pidPos, 10000 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __POS_AND_SPEED_CONTROL__
-	pidInit_test( &pidSpeed, 3.5f, 0.2f, 0, 0 );
-	pidSetOutLimit_test( &pidSpeed, 1375, -1375 );
-	pidSetIntegralLimit_test( &pidSpeed, 1375 );
+	pidInit_test( &pidSpeed, 4.5f, 0.2f, 0, 0 );
+	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
+	pidSetIntegralLimit_test( &pidSpeed, 1575 );
 
-	pidInit( &pidPos, 1.0f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidPos, 3.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
-	pidSetInputRange( &pidPos, 4000 );
+	pidSetInputRange( &pidPos, 20000 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
@@ -262,15 +262,15 @@ void ADC_IRQHandler( void )
 
 	if( lpFoc->enable ) {
 #ifdef __POS_CONTROL__
-		if( 8 == ++counter_pos_reg ) {
-			lpFoc->Iq_des = 1370.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+		if( 1 == ++counter_pos_reg ) {
+			lpFoc->Iq_des = 1575.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter_pos_reg = 0;
 		}
 #endif
 
 #ifdef __AI1_SET_SPEED__
 		if( 4 == ++counter_speed_reg ) {
-			sp_speed = 2.0f * ( ai0_filtered_value - 2047.0f );
+			sp_speed = 1.0f * ( ai0_filtered_value - 2047.0f );
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
@@ -320,7 +320,12 @@ void ADC_IRQHandler( void )
 #endif
 	} else {
 		pidTask_test( &pidSpeed, 0, 0 );
+
+#ifdef __POS_CONTROL__
+		pidTask( &pidPos, 0, 0 );
+#else
 		pidTask_test( &pidPos, 0, 0 );
+#endif
 
 		counter_speed_reg = 0;
 		counter_pos_reg = 0;
@@ -331,7 +336,7 @@ void ADC_IRQHandler( void )
 	static float freqt = 1.0f / freq;
 	static float t = 0;
 
-	float a = 0.5 * sinf( (2.0f * 3.14f * freq) * t );
+	float a = 0.05 * sinf( (2.0f * 3.14f * freq) * t );
 	t += dt;
 	if( t >= freqt ) {
 		t = 0;
