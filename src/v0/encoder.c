@@ -143,11 +143,13 @@ int32_t iEncoderGetAbsPos(void)
 	return -( (int32_t)TIM2->CNT );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 uint16_t read360(void)
 {
 	uint16_t encoder;
-	encoder = TIM3->CNT * 0.0897f;
-	return 360 - encoder;
+	encoder = (float)( TIM3->ARR - TIM3->CNT ) * 0.0878906f;
+	return encoder;
 }
 
 uint16_t read360uvwWithOffset( int16_t offset )
@@ -261,18 +263,20 @@ uint16_t readRawEncoderWithUVW(void) // !!!
 		}
 
 		TIM3->CNT = hall_angle;
+
+		hall_old = hall;
 	}
 
 	// 4000 Импулса за половин оборот (180 мех.градуса) на енкодер = 360 ел.градуса ( 4 полюсен мотор ):
-	encoder = TIM3->CNT;
+	encoder = TIM3->ARR - TIM3->CNT;
 
 	if( !hall_old ) {
 		encoder = 11.377f * encoderAddOffset( encoder * 0.0878906f, 30 );
+	} else {
+		encoder = 11.377f * encoderAddOffset( encoder * 0.0878906f, -15 );
 	}
 
-	hall_old = hall;
-
-	return TIM3->ARR - encoder;
+	return encoder;
 }
 
 uint16_t read360uvw(void)
@@ -305,7 +309,7 @@ uint16_t read360uvw(void)
 	}
 
 	// 4000 Импулса за половин оборот (180 мех.градуса) на енкодер = 360 ел.градуса ( 4 полюсен мотор ):
-	encoder = TIM3->CNT * 0.0879f;
+	encoder = TIM3->CNT * 0.0878906f;
 
 	if( !hall_old ) {
 		encoder = encoderAddOffset( encoder, 30 );
@@ -373,6 +377,7 @@ float fCosAngle(int angle)
 	return arr_cos[angle];
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 void initTim10(void)
 {

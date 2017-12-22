@@ -34,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 4.5, .20, 0.0, 0 );
+	pidInit_test( &pidSpeed, 4.0, .25, 0.0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );
 
@@ -67,12 +67,12 @@ void focInit(LP_MC_FOC lpFocExt)
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.09f, 0.0009f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.1f, 0.00091f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.25f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.09f, 0.0009f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.1f, 0.00091f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.25f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -270,7 +270,7 @@ void ADC_IRQHandler( void )
 
 #ifdef __AI1_SET_SPEED__
 		if( 4 == ++counter_speed_reg ) {
-			sp_speed = 1.0f * ( ai0_filtered_value - 2047.0f );
+			sp_speed = 3.0f * ( ai0_filtered_value - 2047.0f );
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
@@ -351,7 +351,6 @@ void ADC_IRQHandler( void )
 	angle = readRawEncoderWithUVW();
 	mcFocSetAngle( lpFoc, angle );
 	mcFocCalcCurrent( lpFoc );
-	//angle = 11.377f * encoderAddOffset( angle * 0.0878906f, 5 );
 	///////////////////////////////////////////////////////////////////////////
 	mcClark( lpFoc );
 	mcPark( lpFoc );

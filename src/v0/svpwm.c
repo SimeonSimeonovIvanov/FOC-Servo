@@ -556,9 +556,9 @@ void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // +++ ???
 	//Vref = V * sinf( foc_deg_to_rad( lpFoc->angle * 3.0f ) - foc_deg_to_rad( 90 ) );
 	Vref = V * svpwm_sin_table[(int)lpFoc->angle];
 
-	X = ( lpFoc->Va + Vref );// *1.1547f;
-	Y = ( lpFoc->Vb + Vref );// *1.1547f;
-	Z = ( lpFoc->Vc + Vref );// *1.1547f;
+	X = ( lpFoc->Va + Vref ) * 1.1547f;
+	Y = ( lpFoc->Vb + Vref ) * 1.1547f;
+	Z = ( lpFoc->Vc + Vref ) * 1.1547f;
 
 	lpFoc->PWM1 = Tpwm - ( X * Tpwm );
 	lpFoc->PWM2 = Tpwm - ( Y * Tpwm );
