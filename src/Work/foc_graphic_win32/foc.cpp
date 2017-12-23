@@ -6,6 +6,8 @@
 
 #include "foc.h"
 
+float svpwm_sin_table[4096];
+
 int run_foc()
 {
 	MC_FOC stFoc;
@@ -104,6 +106,22 @@ void mcPark(LP_MC_FOC lpFoc)
 
 void mcInvPark(LP_MC_FOC lpFoc)
 {
+	float Vsref;
+
+	Vsref = sqrtf((lpFoc->Vd * lpFoc->Vd) + (lpFoc->Vq * lpFoc->Vq));
+
+	if (Vsref > 0.99f) {
+		float temp = 0.99f / Vsref;
+		lpFoc->Vd *= temp;
+		lpFoc->Vq *= temp;
+	}
+
+	if (Vsref < -0.99f) {
+		float temp = -0.99f / Vsref;
+		lpFoc->Vd *= temp;
+		lpFoc->Vq *= temp;
+	}
+
 	lpFoc->Valpha = lpFoc->Vd * lpFoc->fCosAngle - lpFoc->Vq * lpFoc->fSinAngle;
 	lpFoc->Vbeta  = lpFoc->Vd * lpFoc->fSinAngle + lpFoc->Vq * lpFoc->fCosAngle;
 }
@@ -509,6 +527,42 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	Y = (lpFoc->Vb + Vref) * 1.1547f;
 	Z = (lpFoc->Vc + Vref) * 1.1547f;
 
+
+	Vref = (vmax + vmin) * -0.5f;
+	X = (lpFoc->Va + Vref) * 1.1547f;
+	Y = (lpFoc->Vb + Vref) * 1.1547f;
+	Z = (lpFoc->Vc + Vref) * 1.1547f;
+
+	/*if (X > 0.99f) {
+		float temp = 0.99f / X;
+		X *= temp;
+	} else {
+		if (X < -0.99f) {
+			float temp = -0.99f / X;
+			X *= temp;
+		}
+	}
+
+	if (Y > 0.99f) {
+		float temp = 0.99f / Y;
+		Y *= temp;
+	} else {
+		if (Y < -0.99f) {
+			float temp = -0.99f / Y;
+			Y *= temp;
+		}
+	}
+
+	if (Z > 0.99f) {
+		float temp = 0.99f / Z;
+		Z *= temp;
+	} else {
+		if (Z < -0.99f) {
+			float temp = -0.99f / Z;
+			Z *= temp;
+		}
+	}*/
+
 	lpFoc->PWM1 = Tpwm - (X * Tpwm);
 	lpFoc->PWM2 = Tpwm - (Y * Tpwm);
 	lpFoc->PWM3 = Tpwm - (Z * Tpwm);
@@ -520,27 +574,19 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	}
 }
 
-float svpwm_sin_table[4096];
-
-void svpwmInitSinTable(void)
-{
-	int angle;
-	for (angle = 0; angle < 4096; angle++) {
-		svpwm_sin_table[(int)angle] = sinf(foc_deg_to_rad(3 *angle*(360.0f/4096.0f)) - foc_deg_to_rad(90));
-	}
-}
-
 /*
 *	Sinusoidal Third Harmonic Injection ( STHI )
 */
-void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // +++  ???
+void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // ---  ???
 {
 	float Tpwm = 100.0f / 2.0f;
 	float V, Vref, X, Y, Z;
-	
-	V = ( 1.0f / 6.0f ) * sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd);
-	//Vref = V * sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));
-	Vref = V * svpwm_sin_table[(int)(lpFoc->angle*(4096.0f / 360.0f))];
+
+	V = (1.0f / 6.0f) * sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd);
+
+	// "sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));" -> !!! foc_deg_to_rad(90) = ? if lpFoc.Vd != 0 !!!
+	Vref = V * sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));
+	//Vref = V * svpwm_sin_table[(int)(lpFoc->angle*(4096.0f / 360.0f))];
 
 	X = (lpFoc->Va + Vref);// *1.1547f;
 	Y = (lpFoc->Vb + Vref);// *1.1547f;
@@ -554,5 +600,13 @@ void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // +++  ???
 	if (sector_old != lpFoc->sector) {
 		lpFoc->arrSector[index++] = lpFoc->sector;
 		sector_old = lpFoc->sector;
+	}
+}
+
+void svpwmInitSinTable(void)
+{
+	int angle;
+	for (angle = 0; angle < 4096; angle++) {
+		svpwm_sin_table[(int)angle] = sinf(foc_deg_to_rad(3 * angle*(360.0f / 4096.0f)) - foc_deg_to_rad(90));
 	}
 }

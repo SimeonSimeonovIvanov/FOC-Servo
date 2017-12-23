@@ -133,6 +133,22 @@ void mcPark(LP_MC_FOC lpFoc)
 
 void mcInvPark(LP_MC_FOC lpFoc)
 {
+	float Vsref;
+
+	Vsref = sqrtf((lpFoc->Vd * lpFoc->Vd) + (lpFoc->Vq * lpFoc->Vq));
+
+	if (Vsref > 0.99f) {
+		float temp = 0.99f / Vsref;
+		lpFoc->Vd *= temp;
+		lpFoc->Vq *= temp;
+	}
+
+	if (Vsref < -0.99f) {
+		float temp = -0.99f / Vsref;
+		lpFoc->Vd *= temp;
+		lpFoc->Vq *= temp;
+	}
+
 	lpFoc->Valpha = lpFoc->Vd * lpFoc->fCosAngle - lpFoc->Vq * lpFoc->fSinAngle;
 	lpFoc->Vbeta  = lpFoc->Vd * lpFoc->fSinAngle + lpFoc->Vq * lpFoc->fCosAngle;
 }

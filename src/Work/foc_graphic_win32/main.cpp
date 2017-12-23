@@ -179,7 +179,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			stFoc.Vq = pid(   Iq_Sp, stFoc.Iq );
 			*/
 			stFoc.Vd = 0.0f;
-			stFoc.Vq = 0.9f;
+			stFoc.Vq = 1.5f;
 			///////////////////////////////////////////////////////////////////
 			mcInvPark(&stFoc);
 			mcInvClark(&stFoc);
@@ -188,8 +188,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//mcFocSVPWM_ST1(&stFoc);
 			//mcFocSVPWM0(&stFoc);
 			//mcFocSPWM(&stFoc);
-			//mcFocSVPWM_TTHI(&stFoc);
-			mcFocSVPWM_STHI(&stFoc);
+			mcFocSVPWM_TTHI(&stFoc);
+			//mcFocSVPWM_STHI(&stFoc);
 			///////////////////////////////////////////////////////////////////
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;
