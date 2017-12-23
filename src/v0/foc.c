@@ -2,8 +2,8 @@
 #include "foc.h"
 
 //#define __POS_CONTROL__ ???
-#define __AI1_SET_SPEED__ // +++ ?
-//#define __POS_AND_SPEED_CONTROL__ // +++ ?
+//#define __AI1_SET_SPEED__ // +++ ?
+#define __POS_AND_SPEED_CONTROL__ // +++ ?
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
@@ -34,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 3.0, .25, 0.0, 0 );
+	pidInit_test( &pidSpeed, 5.0, .20, 0.0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );
 
@@ -270,11 +270,11 @@ void ADC_IRQHandler( void )
 	pv_pos = iEncoderGetAbsPos();
 	sp_pos = sp_counter;
 
-	static volatile float arrSpeedSP[10], arrSpeedFB[10];
+	static volatile float arrSpeedSP[10], arrSpeedFB[20];
 	volatile float fb_speed_filter;
 
 	pv_speed = lpFoc->f_rpm_mt;
-	fb_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 4 );
+	fb_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 15 );
 
 	if( lpFoc->enable ) {
 #ifdef __POS_CONTROL__
@@ -286,7 +286,7 @@ void ADC_IRQHandler( void )
 
 #ifdef __AI1_SET_SPEED__
 		if( 4 == ++counter_speed_reg ) {
-			sp_speed = 3.0f * ( ai0_filtered_value - 2047.0f );
+			sp_speed = 2.0f * ( ai0_filtered_value - 2047.0f );
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
@@ -299,25 +299,20 @@ void ADC_IRQHandler( void )
 #endif
 
 #ifdef __POS_AND_SPEED_CONTROL__
-		/*static uint16_t counter01 = 0, counter02 = 0;
+		static int32_t counter01 = 0, counter02 = 0;
 
-		if( ++counter01 == 16000 ) {
-			if( counter02 < 60 ) {
-				sp_counter = 137 * counter02;
-				counter02 += 1;
-			} else {
-				counter02 = 0;
-				sp_counter = 0;
-				TIM2->CNT = pv_pos = 0;
-			}
+		if( ++counter01 == 1 ) {
+			counter02 += ( ai0_filtered_value - 2047.0f )/100;
 			counter01 = 0;
-		}*/
+		}
+
+		//sp_pos = counter02;
 
 		if( 8 == ++counter_pos_reg ) {
 			static volatile float arrPosSP[10] = { 0 };
 			volatile float sp_pos_temp;
 
-			sp_pos_temp = sp_pos;ffilter( (float)sp_pos, arrPosSP, 3 );
+			sp_pos_temp = ffilter( (float)sp_pos, arrPosSP, 4 );
 
 			sp_speed = 3000.0f * pidTask( &pidPos, (float)sp_pos_temp, (float)pv_pos );
 			counter_pos_reg = 0;
@@ -421,9 +416,9 @@ void adc_current_filter( uint16_t *current_a, uint16_t *current_b )
 	arrIb[3] = arrIb[2];	arrIb[2] = arrIb[1];
 	arrIb[1] = arrIb[0];	arrIb[0] = *current_b;
 
-	//*current_a = ( arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] + arrIa[5] + arrIa[6]  + arrIa[7]  + arrIa[8] + arrIa[9] ) / 10;
-	//*current_b = ( arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] + arrIb[5] + arrIb[6]  + arrIb[7]  + arrIb[8] + arrIb[9] ) / 10;
+	*current_a = ( arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] + arrIa[5] + arrIa[6]  + arrIa[7]  + arrIa[8] + arrIa[9] ) / 10;
+	*current_b = ( arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] + arrIb[5] + arrIb[6]  + arrIb[7]  + arrIb[8] + arrIb[9] ) / 10;
 
-	*current_a = ( arrIa[0] + arrIa[1] + arrIa[2] ) / 3;
-	*current_b = ( arrIb[0] + arrIb[1] + arrIb[2] ) / 3;
+	//*current_a = ( arrIa[0] + arrIa[1] + arrIa[2] ) / 3;
+	//*current_b = ( arrIb[0] + arrIb[1] + arrIb[2] ) / 3;
 }
