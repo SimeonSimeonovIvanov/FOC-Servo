@@ -110,14 +110,14 @@ void mcInvPark(LP_MC_FOC lpFoc)
 
 	Vsref = sqrtf((lpFoc->Vd * lpFoc->Vd) + (lpFoc->Vq * lpFoc->Vq));
 
-	if (Vsref > 0.99f) {
-		float temp = 0.99f / Vsref;
+	if (Vsref > 0.999f) {
+		float temp = 0.999f / Vsref;
 		lpFoc->Vd *= temp;
 		lpFoc->Vq *= temp;
 	}
 
-	if (Vsref < -0.99f) {
-		float temp = -0.99f / Vsref;
+	if (Vsref < -0.999f) {
+		float temp = -0.999f / Vsref;
 		lpFoc->Vd *= temp;
 		lpFoc->Vq *= temp;
 	}
@@ -501,7 +501,7 @@ void mcFocSPWM(LP_MC_FOC lpFoc) // ???
 */
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
-	float Tpwm = 100.0f / 2.0f;
+	float Tpwm = 100.0f * 0.5f;
 	float vmin, vmax, Vref, X, Y, Z;
 
 	if (lpFoc->Va > lpFoc->Vb) {
@@ -533,35 +533,35 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	Y = (lpFoc->Vb + Vref) * 1.1547f;
 	Z = (lpFoc->Vc + Vref) * 1.1547f;
 
-	/*if (X > 0.99f) {
-		float temp = 0.99f / X;
+	if (X > 0.999f) {
+		float temp = 0.999f / X;
 		X *= temp;
 	} else {
-		if (X < -0.99f) {
-			float temp = -0.99f / X;
+		if (X < -0.999f) {
+			float temp = -0.999f / X;
 			X *= temp;
 		}
 	}
 
-	if (Y > 0.99f) {
-		float temp = 0.99f / Y;
+	if (Y > 0.999f) {
+		float temp = 0.999f / Y;
 		Y *= temp;
 	} else {
-		if (Y < -0.99f) {
-			float temp = -0.99f / Y;
+		if (Y < -0.999f) {
+			float temp = -0.999f / Y;
 			Y *= temp;
 		}
 	}
 
-	if (Z > 0.99f) {
-		float temp = 0.99f / Z;
+	if (Z > 0.999f) {
+		float temp = 0.999f / Z;
 		Z *= temp;
 	} else {
-		if (Z < -0.99f) {
-			float temp = -0.99f / Z;
+		if (Z < -0.999f) {
+			float temp = -0.999f / Z;
 			Z *= temp;
 		}
-	}*/
+	}
 
 	lpFoc->PWM1 = Tpwm - (X * Tpwm);
 	lpFoc->PWM2 = Tpwm - (Y * Tpwm);

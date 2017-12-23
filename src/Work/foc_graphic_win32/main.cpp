@@ -179,7 +179,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			stFoc.Vq = pid(   Iq_Sp, stFoc.Iq );
 			*/
 			stFoc.Vd = 0.0f;
-			stFoc.Vq = 1.5f;
+			stFoc.Vq = 0.9f;
 			///////////////////////////////////////////////////////////////////
 			mcInvPark(&stFoc);
 			mcInvClark(&stFoc);

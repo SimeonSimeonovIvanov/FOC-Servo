@@ -34,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 4.0, .25, 0.0, 0 );
+	pidInit_test( &pidSpeed, 3.0, .25, 0.0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );
 
@@ -67,12 +67,12 @@ void focInit(LP_MC_FOC lpFocExt)
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.1f, 0.00091f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.12f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.25f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.1f, 0.00091f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.12f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.25f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -133,18 +133,18 @@ void mcPark(LP_MC_FOC lpFoc)
 
 void mcInvPark(LP_MC_FOC lpFoc)
 {
-	float Vsref;
+	float Usref, temp;
 
-	Vsref = sqrtf((lpFoc->Vd * lpFoc->Vd) + (lpFoc->Vq * lpFoc->Vq));
+	Usref = sqrtf( ( lpFoc->Vd * lpFoc->Vd ) + ( lpFoc->Vq * lpFoc->Vq ) );
 
-	if (Vsref > 0.99f) {
-		float temp = 0.99f / Vsref;
+	if( Usref > 0.999f ) {
+		temp = 0.999f / Usref;
 		lpFoc->Vd *= temp;
 		lpFoc->Vq *= temp;
 	}
 
-	if (Vsref < -0.99f) {
-		float temp = -0.99f / Vsref;
+	if( Usref < -0.999f ) {
+		temp = -0.999f / Usref;
 		lpFoc->Vd *= temp;
 		lpFoc->Vq *= temp;
 	}

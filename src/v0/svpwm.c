@@ -516,7 +516,7 @@ void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
 	float Tpwm = (float)PWM_PERIOD * 0.5f;
-	volatile float vmin, vmax, Vref, X, Y, Z;
+	volatile float temp, vmin, vmax, Vref, X, Y, Z;
 
 	if( lpFoc->Va > lpFoc->Vb ) {
 		vmax = lpFoc->Va;
@@ -539,33 +539,33 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	Y = ( lpFoc->Vb + Vref ) * 1.1547f;
 	Z = ( lpFoc->Vc + Vref ) * 1.1547f;
 
-	if( X > 0.99f ) {
-		float temp = 0.99f/X;
+	if( X > 0.999f ) {
+		temp = 0.999f / X;
 		X *= temp;
 	} else {
-		if( X < -0.99f ) {
-			float temp = 0.99f/X;
-			X *= -temp;
+		if( X < -0.999f ) {
+			temp = -0.999f / X;
+			X *= temp;
 		}
 	}
 
-	if( Y > 0.99f ) {
-		float temp = 0.99f/Y;
+	if( Y > 0.999f ) {
+		temp = 0.999f / Y;
 		Y *= temp;
 	} else {
-		if( Y < -0.99f ) {
-			float temp = 0.99f/Y;
-			Y *= -temp;
+		if( Y < -0.999f ) {
+			temp = -0.999f / Y;
+			Y *= temp;
 		}
 	}
 
-	if( Z > 0.99f ) {
-		float temp = 0.99f/Z;
+	if( Z > 0.999f ) {
+		temp = 0.999f / Z;
 		Z *= temp;
 	} else {
-		if( Z < -0.99f ) {
-			float temp = 0.99f/Z;
-			Z *= -temp;
+		if( Z < -0.999f ) {
+			temp = -0.999f / Z;
+			Z *= temp;
 		}
 	}
 
