@@ -2,8 +2,8 @@
 #include "foc.h"
 
 //#define __POS_CONTROL__ ???
-#define __AI1_SET_SPEED__ // +++ ?
-//#define __POS_AND_SPEED_CONTROL__ // +++ ?
+//#define __AI1_SET_SPEED__ // +++ ?
+#define __POS_AND_SPEED_CONTROL__ // +++ ?
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
@@ -34,14 +34,14 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 6.0, .30, 0.0, 0 );
+	/*pidInit_test( &pidSpeed, 6.0, .20, 0.0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
-	pidSetIntegralLimit_test( &pidSpeed, 1575 );
+	pidSetIntegralLimit_test( &pidSpeed, 1575 );*/
 
-	/*pidInit( &pidSpeed, 12.0f, 0.5f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 15.0f, 0.3f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 1.0f );
-	pidSetInputRange( &pidSpeed, 3000 );*/
+	pidSetInputRange( &pidSpeed, 4000 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
@@ -56,11 +56,16 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __POS_AND_SPEED_CONTROL__
-	pidInit_test( &pidSpeed, 5.0f, 0.2f, 0, 0 );
+	/*pidInit_test( &pidSpeed, 5.0f, 0.2f, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
-	pidSetIntegralLimit_test( &pidSpeed, 1575 );
+	pidSetIntegralLimit_test( &pidSpeed, 1575 );*/
 
-	pidInit( &pidPos, 4.0f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 15.0f, 0.3f, 0.0f, 1.001f );
+	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
+	pidSetIntegralLimit( &pidSpeed, 1.0f );
+	pidSetInputRange( &pidSpeed, 4000 );
+
+	pidInit( &pidPos, 2.7f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 20000 );
@@ -274,7 +279,7 @@ void ADC_IRQHandler( void )
 	volatile float fb_speed_filter;
 
 	pv_speed = lpFoc->f_rpm_mt;
-	fb_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 15 );
+	fb_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 10 );
 
 	if( lpFoc->enable ) {
 #ifdef __POS_CONTROL__
@@ -297,11 +302,8 @@ void ADC_IRQHandler( void )
 			d_sp_speed = sp_speed - old_sp_speed;
 			old_sp_speed = sp_speed;
 
-			lpFoc->Iq_des = (20.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, fb_speed_filter );
-			if(lpFoc->Iq_des>1575) lpFoc->Iq_des = 1575;
-			if(lpFoc->Iq_des<-1575) lpFoc->Iq_des = -1575;
-
-			//lpFoc->Iq_des = 1575.0f * pidTask( &pidSpeed, sp_speed, pv_speed );
+			//lpFoc->Iq_des = (50.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, fb_speed_filter );
+			lpFoc->Iq_des = 1575.0f * ( ( 0.01 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed ) );
 
 			counter_speed_reg = 0;
 		}
@@ -321,7 +323,7 @@ void ADC_IRQHandler( void )
 			static volatile float arrPosSP[10] = { 0 };
 			volatile float sp_pos_temp;
 
-			sp_pos_temp = ffilter( (float)sp_pos, arrPosSP, 4 );
+			sp_pos_temp = ffilter( (float)sp_pos, arrPosSP, 10 );
 
 			sp_speed = 3000.0f * pidTask( &pidPos, (float)sp_pos_temp, (float)pv_pos );
 			counter_pos_reg = 0;
@@ -332,12 +334,13 @@ void ADC_IRQHandler( void )
 			float sp_speed_filter, d_sp_speed;
 
 			sp_speed_filter = sp_speed;
-			//sp_speed_filter = ffilter( (float)sp_speed, arrSpeedSP, 4 );
+			sp_speed_filter = ffilter( (float)sp_speed, arrSpeedSP, 2 );
 
 			d_sp_speed = sp_speed_filter - old_sp_speed;
 			old_sp_speed = sp_speed_filter;
 
-			lpFoc->Iq_des = (0.5*d_sp_speed) + pidTask_test( &pidSpeed, sp_speed_filter, fb_speed_filter );
+			//lpFoc->Iq_des = (0.5*d_sp_speed) + pidTask_test( &pidSpeed, sp_speed_filter, fb_speed_filter );
+			lpFoc->Iq_des = 1575.0f * ( (0.01*d_sp_speed) + pidTask( &pidSpeed, sp_speed_filter, fb_speed_filter ) );
 
 			counter_speed_reg = 0;
 		}
@@ -383,6 +386,9 @@ void ADC_IRQHandler( void )
 		lpFoc->Id_des = 0; lpFoc->Id = 0;
 		lpFoc->Iq_des = 0; lpFoc->Iq = 0;
 	}
+	///////////////////////////////////////////////////////////////////////////
+	if(lpFoc->Iq_des>1575.0f) lpFoc->Iq_des = 1575.0f;
+	if(lpFoc->Iq_des<-1575.0f) lpFoc->Iq_des = -1575.0f;
 	///////////////////////////////////////////////////////////////////////////
 	lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
 	lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
