@@ -2,8 +2,8 @@
 #include "foc.h"
 
 //#define __POS_CONTROL__ ???
-//#define __AI1_SET_SPEED__ // +++ ?
-#define __POS_AND_SPEED_CONTROL__ // +++ ?
+#define __AI1_SET_SPEED__ // +++ ?
+//#define __POS_AND_SPEED_CONTROL__ // +++ ?
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
@@ -34,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit_test( &pidSpeed, 5.0, .20, 0.0, 0 );
+	pidInit_test( &pidSpeed, 6.0, .30, 0.0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );
 
@@ -286,12 +286,21 @@ void ADC_IRQHandler( void )
 
 #ifdef __AI1_SET_SPEED__
 		if( 4 == ++counter_speed_reg ) {
+			static float old_sp_speed = 0;
+			float d_sp_speed;
+
 			sp_speed = 2.0f * ( ai0_filtered_value - 2047.0f );
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
 
-			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed, fb_speed_filter );
+			d_sp_speed = sp_speed - old_sp_speed;
+			old_sp_speed = sp_speed;
+
+			lpFoc->Iq_des = (20.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, fb_speed_filter );
+			if(lpFoc->Iq_des>1575) lpFoc->Iq_des = 1575;
+			if(lpFoc->Iq_des<-1575) lpFoc->Iq_des = -1575;
+
 			//lpFoc->Iq_des = 1575.0f * pidTask( &pidSpeed, sp_speed, pv_speed );
 
 			counter_speed_reg = 0;
@@ -319,12 +328,16 @@ void ADC_IRQHandler( void )
 		}
 
 		if( 4 == ++counter_speed_reg ) {
-			float sp_speed_filter;
+			static float old_sp_speed = 0;
+			float sp_speed_filter, d_sp_speed;
 
 			sp_speed_filter = sp_speed;
-			//sp_speed_filter = ffilter( (float)sp_speed, arrSpeedSP, 2 );
+			//sp_speed_filter = ffilter( (float)sp_speed, arrSpeedSP, 4 );
 
-			lpFoc->Iq_des = pidTask_test( &pidSpeed, sp_speed_filter, fb_speed_filter );
+			d_sp_speed = sp_speed_filter - old_sp_speed;
+			old_sp_speed = sp_speed_filter;
+
+			lpFoc->Iq_des = (0.5*d_sp_speed) + pidTask_test( &pidSpeed, sp_speed_filter, fb_speed_filter );
 
 			counter_speed_reg = 0;
 		}
