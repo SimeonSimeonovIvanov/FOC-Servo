@@ -106,18 +106,18 @@ void mcPark(LP_MC_FOC lpFoc)
 
 void mcInvPark(LP_MC_FOC lpFoc)
 {
-	float Vsref;
+	float Vsref, temp;
 
 	Vsref = sqrtf((lpFoc->Vd * lpFoc->Vd) + (lpFoc->Vq * lpFoc->Vq));
 
 	if (Vsref > 0.999f) {
-		float temp = 0.999f / Vsref;
+		temp = 0.999f / Vsref;
 		lpFoc->Vd *= temp;
 		lpFoc->Vq *= temp;
 	}
 
 	if (Vsref < -0.999f) {
-		float temp = -0.999f / Vsref;
+		temp = -0.999f / Vsref;
 		lpFoc->Vd *= temp;
 		lpFoc->Vq *= temp;
 	}
@@ -502,7 +502,7 @@ void mcFocSPWM(LP_MC_FOC lpFoc) // ???
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
 	float Tpwm = 100.0f * 0.5f;
-	float vmin, vmax, Vref, X, Y, Z;
+	float vmin, vmax, Vref, X, Y, Z, temp;
 
 	if (lpFoc->Va > lpFoc->Vb) {
 		vmax = lpFoc->Va;
@@ -534,31 +534,31 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	Z = (lpFoc->Vc + Vref) * 1.1547f;
 
 	if (X > 0.999f) {
-		float temp = 0.999f / X;
+		temp = 0.999f / X;
 		X *= temp;
 	} else {
 		if (X < -0.999f) {
-			float temp = -0.999f / X;
+			temp = -0.999f / X;
 			X *= temp;
 		}
 	}
 
 	if (Y > 0.999f) {
-		float temp = 0.999f / Y;
+		temp = 0.999f / Y;
 		Y *= temp;
 	} else {
 		if (Y < -0.999f) {
-			float temp = -0.999f / Y;
+			temp = -0.999f / Y;
 			Y *= temp;
 		}
 	}
 
 	if (Z > 0.999f) {
-		float temp = 0.999f / Z;
+		temp = 0.999f / Z;
 		Z *= temp;
 	} else {
 		if (Z < -0.999f) {
-			float temp = -0.999f / Z;
+			temp = -0.999f / Z;
 			Z *= temp;
 		}
 	}
@@ -607,6 +607,6 @@ void svpwmInitSinTable(void)
 {
 	int angle;
 	for (angle = 0; angle < 4096; angle++) {
-		svpwm_sin_table[(int)angle] = sinf(foc_deg_to_rad(3 * angle*(360.0f / 4096.0f)) - foc_deg_to_rad(90));
+		svpwm_sin_table[angle] = sinf(foc_deg_to_rad(3.0f * (float)angle*(360.0f / 4096.0f)) - foc_deg_to_rad(90));
 	}
 }

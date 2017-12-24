@@ -56,11 +56,11 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __POS_AND_SPEED_CONTROL__
-	pidInit_test( &pidSpeed, 4.5f, 0.2f, 0, 0 );
+	pidInit_test( &pidSpeed, 5.0f, 0.2f, 0, 0 );
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );
 
-	pidInit( &pidPos, 3.0f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidPos, 4.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 20000 );
@@ -301,8 +301,8 @@ void ADC_IRQHandler( void )
 #ifdef __POS_AND_SPEED_CONTROL__
 		static int32_t counter01 = 0, counter02 = 0;
 
-		if( ++counter01 == 1 ) {
-			counter02 += ( ai0_filtered_value - 2047.0f )/100;
+		if( ++counter01 == 16000 ) {
+			counter02 += 8196;( ai0_filtered_value - 2047.0f )/100;
 			counter01 = 0;
 		}
 
