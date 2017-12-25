@@ -80,6 +80,7 @@ void mcClark(LP_MC_FOC lpFoc);
 void mcPark(LP_MC_FOC lpFoc);
 void mcInvPark(LP_MC_FOC lpFoc);
 void mcInvClark(LP_MC_FOC lpFoc);
+void mcUsrefLimit(LP_MC_FOC lpFoc);
 
 void initDAC(void);
 void ADC1_2_IRQHandler(void);

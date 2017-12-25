@@ -138,22 +138,6 @@ void mcPark(LP_MC_FOC lpFoc)
 
 void mcInvPark(LP_MC_FOC lpFoc)
 {
-	float Usref, temp;
-
-	Usref = sqrtf( ( lpFoc->Vd * lpFoc->Vd ) + ( lpFoc->Vq * lpFoc->Vq ) );
-
-	if( Usref > 0.999f ) {
-		temp = 0.999f / Usref;
-		lpFoc->Vd *= temp;
-		lpFoc->Vq *= temp;
-	}
-
-	if( Usref < -0.999f ) {
-		temp = -0.999f / Usref;
-		lpFoc->Vd *= temp;
-		lpFoc->Vq *= temp;
-	}
-
 	lpFoc->Valpha = lpFoc->Vd * lpFoc->fCosAngle - lpFoc->Vq * lpFoc->fSinAngle;
 	lpFoc->Vbeta  = lpFoc->Vd * lpFoc->fSinAngle + lpFoc->Vq * lpFoc->fCosAngle;
 }
@@ -163,6 +147,25 @@ void mcInvClark(LP_MC_FOC lpFoc)
 	lpFoc->Vb = lpFoc->Vbeta;
 	lpFoc->Va = ( -lpFoc->Vbeta + ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
 	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
+}
+
+void mcUsrefLimit(LP_MC_FOC lpFoc)
+{
+	float Usref, temp;
+
+	Usref = sqrtf( ( lpFoc->Vd * lpFoc->Vd ) + ( lpFoc->Vq * lpFoc->Vq ) );
+
+	if( Usref > 0.999f ) {
+		temp = 0.999f / Usref;
+		lpFoc->Vd *= temp;
+		lpFoc->Vq *= temp;
+	} else {
+		if( Usref < -0.999f ) {
+			temp = -0.999f / Usref;
+			lpFoc->Vd *= temp;
+			lpFoc->Vq *= temp;
+		}
+	}
 }
 
 void ADC_IRQHandler( void )
@@ -384,14 +387,15 @@ void ADC_IRQHandler( void )
 	///////////////////////////////////////////////////////////////////////////
 	if( !lpFoc->enable ) {
 		lpFoc->Id_des = 0; lpFoc->Id = 0;
-		lpFoc->Iq_des = 0; lpFoc->Iq = 0;
+	} else {
+		if(lpFoc->Iq_des>1575.0f) lpFoc->Iq_des = 1575.0f;
+		if(lpFoc->Iq_des<-1575.0f) lpFoc->Iq_des = -1575.0f;
 	}
-	///////////////////////////////////////////////////////////////////////////
-	if(lpFoc->Iq_des>1575.0f) lpFoc->Iq_des = 1575.0f;
-	if(lpFoc->Iq_des<-1575.0f) lpFoc->Iq_des = -1575.0f;
 	///////////////////////////////////////////////////////////////////////////
 	lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
 	lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
+	///////////////////////////////////////////////////////////////////////////
+	mcUsrefLimit(lpFoc);
 	///////////////////////////////////////////////////////////////////////////
 	mcInvPark( lpFoc );
 	mcInvClark( lpFoc );
