@@ -18,7 +18,7 @@
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="10668" selectionTopPixel="5419"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="10202" selectionTopPixel="5419"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="pid.c" partName="pid.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/pid/pid.c" title="pid.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/pid/pid.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/pid/pid.c"/>
