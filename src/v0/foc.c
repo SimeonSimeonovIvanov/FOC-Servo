@@ -2,8 +2,8 @@
 #include "foc.h"
 
 //#define __POS_CONTROL__ ???
-//#define __AI1_SET_SPEED__ // +++ ?
-#define __POS_AND_SPEED_CONTROL__ // +++ ?
+#define __AI1_SET_SPEED__ // +++ ?
+//#define __POS_AND_SPEED_CONTROL__ // +++ ?
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
@@ -38,19 +38,19 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );*/
 
-	pidInit( &pidSpeed, 15.0f, 0.3f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 10.0f, 0.9f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 1.0f );
-	pidSetInputRange( &pidSpeed, 4000 );
+	pidSetInputRange( &pidSpeed, 3000 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __POS_CONTROL__
-	pidInit( &pidPos, 5.1f, 0.05f, 0.0f, 0.001f );
+	pidInit( &pidPos, 0.8f, 0.0005f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.5f );
-	pidSetInputRange( &pidPos, 10000 );
+	pidSetIntegralLimit( &pidPos, 0.2f );
+	pidSetInputRange( &pidPos, 200 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
@@ -72,12 +72,12 @@ void focInit(LP_MC_FOC lpFocExt)
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.12f, 0.001f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.12f, 0.0012f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.25f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.12f, 0.001f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.12f, 0.0012f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.25f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -278,15 +278,15 @@ void ADC_IRQHandler( void )
 	pv_pos = iEncoderGetAbsPos();
 	sp_pos = sp_counter;
 
-	static volatile float arrSpeedSP[10], arrSpeedFB[20];
+	static volatile float arrSpeedSP[10], arrSpeedFB[200];
 	volatile float fb_speed_filter;
 
 	pv_speed = lpFoc->f_rpm_mt;
-	fb_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 10 );
+	fb_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 80 );
 
 	if( lpFoc->enable ) {
 #ifdef __POS_CONTROL__
-		if( 1 == ++counter_pos_reg ) {
+		if( 16 == ++counter_pos_reg ) {
 			lpFoc->Iq_des = 1575.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter_pos_reg = 0;
 		}
@@ -306,7 +306,7 @@ void ADC_IRQHandler( void )
 			old_sp_speed = sp_speed;
 
 			//lpFoc->Iq_des = (50.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, fb_speed_filter );
-			lpFoc->Iq_des = 1575.0f * ( ( 0.01 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed ) );
+			lpFoc->Iq_des = 1575.0f * ( ( 0.005 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed ) );
 
 			counter_speed_reg = 0;
 		}
@@ -425,22 +425,36 @@ void ADC_IRQHandler( void )
 
 void adc_current_filter( uint16_t *current_a, uint16_t *current_b )
 {
-	static int arrIa[10]={0}, arrIb[10]={0};
+	static int32_t arrIa[30]={0}, arrIb[30]={0};
 
+	arrIa[15] = arrIa[14];	arrIa[14] = arrIa[13];
+	arrIa[13] = arrIa[12];	arrIa[12] = arrIa[11];
+	arrIa[11] = arrIa[10];	arrIa[10] = arrIa[9];
 	arrIa[9] = arrIa[8];	arrIa[8] = arrIa[7];
 	arrIa[7] = arrIa[6];	arrIa[6] = arrIa[5];
 	arrIa[5] = arrIa[4];	arrIa[4] = arrIa[3];
 	arrIa[3] = arrIa[2];	arrIa[2] = arrIa[1];
 	arrIa[1] = arrIa[0];	arrIa[0] = *current_a;
 
+	arrIb[15] = arrIb[14];	arrIb[14] = arrIb[13];
+	arrIb[13] = arrIb[12];	arrIb[12] = arrIb[11];
+	arrIb[11] = arrIb[10];	arrIb[10] = arrIb[9];
 	arrIb[9] = arrIb[8];	arrIb[8] = arrIb[7];
 	arrIb[7] = arrIb[6];	arrIb[6] = arrIb[5];
 	arrIb[5] = arrIb[4];	arrIb[4] = arrIb[3];
 	arrIb[3] = arrIb[2];	arrIb[2] = arrIb[1];
 	arrIb[1] = arrIb[0];	arrIb[0] = *current_b;
 
-	*current_a = ( arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] + arrIa[5] + arrIa[6]  + arrIa[7]  + arrIa[8] + arrIa[9] ) / 10;
-	*current_b = ( arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] + arrIb[5] + arrIb[6]  + arrIb[7]  + arrIb[8] + arrIb[9] ) / 10;
+	*current_a = (int32_t)(
+		arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] +
+		arrIa[5] + arrIa[6] + arrIa[7]  + arrIa[8] + arrIa[9] +
+		arrIa[10]  + arrIa[11] + arrIa[12] + arrIa[13] + arrIa[14] + arrIa[15]
+	) / 16;
+	*current_b = (int32_t)(
+		arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] +
+		arrIb[5] + arrIb[6]  + arrIb[7] + arrIb[8] + arrIb[9] +
+		arrIb[10] + arrIb[11]  + arrIb[12] + arrIb[13] + arrIb[14] + arrIb[15]
+	) / 16;
 
 	//*current_a = ( arrIa[0] + arrIa[1] + arrIa[2] ) / 3;
 	//*current_b = ( arrIb[0] + arrIb[1] + arrIb[2] ) / 3;
