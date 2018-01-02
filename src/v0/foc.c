@@ -307,10 +307,6 @@ void ADC_IRQHandler( void )
 
 			//lpFoc->Iq_des = (50.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, fb_speed_filter );
 			lpFoc->Iq_des = 1575.0f * ( ( 0.005 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed ) );
-
-			static volatile float arrIqSP[10] = { 0 };
-			lpFoc->Id_des = ffilter( lpFoc->Id_des, arrIqSP, 4 );
-
 			counter_speed_reg = 0;
 		}
 #endif
@@ -391,6 +387,10 @@ void ADC_IRQHandler( void )
 	if( !lpFoc->enable ) {
 		lpFoc->Id_des = 0; lpFoc->Id = 0;
 	} else {
+		static float temp = 0;
+		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.899 );
+		lpFoc->Iq_des = temp;
+
 		if(lpFoc->Iq_des>1575.0f) lpFoc->Iq_des = 1575.0f;
 		if(lpFoc->Iq_des<-1575.0f) lpFoc->Iq_des = -1575.0f;
 	}
