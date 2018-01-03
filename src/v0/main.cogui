@@ -11,13 +11,18 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="1"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7580" selectionTopPixel="3429"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8517" selectionTopPixel="4203"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/main.c" title="main.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/main.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/main.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2813" selectionTopPixel="450"/>
 </editor>
 </editors>
 <views>
@@ -267,8 +272,6 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/main.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/filter.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/main.c"/>
@@ -278,38 +281,21 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/main.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/pid/pid.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/main.c"/>
 </editors>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="4517" y="0"/>
-</item>
-<item historyLabel="foc.c" index="0">
-<position info="not_deleted" x="13104" y="0"/>
-</item>
-<item historyLabel="encoder.c" index="1">
-<position info="not_deleted" x="7672" y="0"/>
-</item>
-<item historyLabel="foc.c" index="0">
-<position info="not_deleted" x="13104" y="0"/>
-</item>
-<item historyLabel="filter.c" index="3">
-<position/>
-</item>
-<item historyLabel="foc.c" index="0">
-<position info="not_deleted" x="8753" y="0"/>
-</item>
-<item historyLabel="filter.c" index="3">
+<item historyLabel="filter.c" index="1">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position/>
 </item>
-<item historyLabel="filter.c" index="3">
+<item historyLabel="filter.c" index="1">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="13109" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="4">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="7672" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
@@ -318,49 +304,49 @@
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="11072" y="0"/>
 </item>
-<item historyLabel="filter.c" index="3">
+<item historyLabel="filter.c" index="1">
 <position info="not_deleted" x="912" y="14"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="11117" y="0"/>
 </item>
-<item historyLabel="main.c" index="5">
+<item historyLabel="main.c" index="3">
 <position info="not_deleted" x="512" y="0"/>
 </item>
-<item historyLabel="portevent.c" index="6">
+<item historyLabel="portevent.c" index="4">
 <position info="not_deleted" x="1603" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="11117" y="0"/>
 </item>
-<item historyLabel="svpwm.c" index="7">
+<item historyLabel="svpwm.c" index="5">
 <position info="not_deleted" x="0" y="0"/>
 </item>
-<item historyLabel="svpwm.h" index="8">
+<item historyLabel="svpwm.h" index="6">
 <position info="not_deleted" x="494" y="0"/>
 </item>
-<item historyLabel="svpwm.c" index="7">
+<item historyLabel="svpwm.c" index="5">
 <position info="not_deleted" x="0" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="1064" y="0"/>
 </item>
-<item historyLabel="main.c" index="9">
+<item historyLabel="main.c" index="7">
 <position/>
 </item>
-<item historyLabel="main.c" index="9">
+<item historyLabel="main.c" index="7">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="8388" y="0"/>
 </item>
-<item historyLabel="pid.c" index="10">
+<item historyLabel="pid.c" index="8">
 <position info="not_deleted" x="1098" y="0"/>
 </item>
-<item historyLabel="main.c" index="9">
+<item historyLabel="main.c" index="7">
 <position/>
 </item>
-<item historyLabel="pid.c" index="10">
+<item historyLabel="pid.c" index="8">
 <position info="not_deleted" x="1098" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
@@ -372,62 +358,80 @@
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="1796" y="0"/>
 </item>
-<item historyLabel="main.c" index="9">
+<item historyLabel="main.c" index="7">
 <position info="not_deleted" x="4523" y="0"/>
 </item>
-<item historyLabel="pid.c" index="10">
+<item historyLabel="pid.c" index="8">
 <position info="not_deleted" x="1098" y="0"/>
 </item>
-<item historyLabel="main.c" index="9">
+<item historyLabel="main.c" index="7">
 <position info="not_deleted" x="4523" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position/>
 </item>
-<item historyLabel="main.c" index="9">
+<item historyLabel="main.c" index="7">
 <position info="not_deleted" x="4523" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="1009" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="11">
+<item historyLabel="encoder.c" index="9">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="8278" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="11">
+<item historyLabel="encoder.c" index="9">
 <position/>
 </item>
-<item historyLabel="main.c" index="9">
+<item historyLabel="main.c" index="7">
 <position info="not_deleted" x="4523" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="8278" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="11">
+<item historyLabel="encoder.c" index="9">
 <position/>
 </item>
-<item historyLabel="main.c" index="9">
+<item historyLabel="main.c" index="7">
 <position info="not_deleted" x="4523" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="11">
+<item historyLabel="encoder.c" index="9">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="10654" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="11">
+<item historyLabel="encoder.c" index="9">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="1051" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="11">
+<item historyLabel="encoder.c" index="9">
 <position info="not_deleted" x="7670" y="0"/>
 </item>
-<item active="true" historyLabel="foc.c" index="0">
+<item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="1051" y="0"/>
+</item>
+<item historyLabel="main.c" index="10">
+<position info="not_deleted" x="1894" y="0"/>
+</item>
+<item historyLabel="foc.c" index="0">
+<position info="not_deleted" x="2208" y="0"/>
+</item>
+<item historyLabel="main.c" index="10">
+<position info="not_deleted" x="1893" y="0"/>
+</item>
+<item historyLabel="foc.c" index="0">
+<position info="not_deleted" x="2609" y="0"/>
+</item>
+<item historyLabel="main.c" index="10">
+<position info="not_deleted" x="2813" y="0"/>
+</item>
+<item active="true" historyLabel="foc.c" index="0">
+<position info="not_deleted" x="2609" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -436,11 +440,11 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" tooltip="main/foc/source/encoder.c">
-<persistable path="/main/foc/source/encoder.c"/>
-</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="main/main.c">
 <persistable path="/main/main.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" tooltip="main/foc/source/encoder.c">
+<persistable path="/main/foc/source/encoder.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="pid.c" tooltip="main/foc/source/pid/pid.c">
 <persistable path="/main/foc/source/pid/pid.c"/>

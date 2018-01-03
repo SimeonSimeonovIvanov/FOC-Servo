@@ -2,8 +2,8 @@
 #include "foc.h"
 
 //#define __POS_CONTROL__ ???
-#define __AI1_SET_SPEED__ // +++ ?
-//#define __POS_AND_SPEED_CONTROL__ // +++ ?
+//#define __AI1_SET_SPEED__ // +++ ?
+#define __POS_AND_SPEED_CONTROL__ // +++ ?
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
@@ -34,9 +34,9 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit( &pidSpeed, 0.45f, 0.02f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 0.4f, 0.02f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidSpeed, 1.0f );
+	pidSetIntegralLimit( &pidSpeed, 0.7f );
 	pidSetInputRange( &pidSpeed, 100 );
 #endif
 
@@ -56,10 +56,10 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );*/
 
-	pidInit( &pidSpeed, 10.0f, 0.9f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 0.4f, 0.02f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidSpeed, 1.0f );
-	pidSetInputRange( &pidSpeed, 4000 );
+	pidSetIntegralLimit( &pidSpeed, 0.7f );
+	pidSetInputRange( &pidSpeed, 100 );
 
 	pidInit( &pidPos, 2.7f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
@@ -68,12 +68,12 @@ void focInit(LP_MC_FOC lpFocExt)
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.12f, 0.0012f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.12f, 0.0009f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.25f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.12f, 0.0012f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.12f, 0.0009f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.25f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -267,7 +267,7 @@ void ADC_IRQHandler( void )
 	volatile float pv_speed_filter;
 
 	pv_speed = lpFoc->f_rpm_mt;
-	pv_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 16 );
+	pv_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 10 );
 
 	if( lpFoc->enable ) {
 #ifdef __POS_CONTROL__
@@ -299,12 +299,12 @@ void ADC_IRQHandler( void )
 #ifdef __POS_AND_SPEED_CONTROL__
 		static int32_t counter01 = 0, counter02 = 0;
 
-		if( ++counter01 == 1600 ) {
-			counter02 += 1;( ai0_filtered_value - 2047.0f )/100;
+		if( ++counter01 == 1 ) {
+			counter02 += 2;( ai0_filtered_value - 2047.0f )/100;
 			counter01 = 0;
 		}
 
-		//sp_pos = counter02;
+		sp_pos = counter02;
 
 		if( 8 == ++counter_pos_reg ) {
 			static volatile float arrPosSP[10] = { 0 };
@@ -373,8 +373,8 @@ void ADC_IRQHandler( void )
 		lpFoc->Id_des = 0; lpFoc->Id = 0;
 	} else {
 		static volatile float temp = 0;
-		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.9 );
-		//lpFoc->Iq_des = temp;
+		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.89 );
+		lpFoc->Iq_des = temp;
 
 		if( lpFoc->Iq_des >  1575.0f ) lpFoc->Iq_des =  1575.0f;
 		if( lpFoc->Iq_des < -1575.0f ) lpFoc->Iq_des = -1575.0f;
