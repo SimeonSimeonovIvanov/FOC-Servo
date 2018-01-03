@@ -121,7 +121,7 @@ int main(void)
 		usRegHoldingBuf[11] = (int16_t)enc_delta_filtered_value;
 		usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[13] = stFoc.Is;
+		usRegHoldingBuf[13] = (int)stFoc.Iq_des;//Is;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[14] = rpm;
 		usRegHoldingBuf[15] = rpm>>16;

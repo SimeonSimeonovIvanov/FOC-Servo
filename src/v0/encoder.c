@@ -273,7 +273,7 @@ uint16_t readRawEncoderWithUVW(void) // !!!
 	if( !hall_old ) {
 		encoder = 11.377f * encoderAddOffset( encoder * 0.0878906f, 30 );
 	} else {
-		//encoder = 11.377f * encoderAddOffset( encoder * 0.0878906f, -15 );
+		encoder = 11.377f * encoderAddOffset( encoder * 0.0878906f, -15 );
 	}
 
 	return encoder;
