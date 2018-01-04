@@ -2,8 +2,8 @@
 #include "foc.h"
 
 //#define __POS_CONTROL__ ???
-//#define __AI1_SET_SPEED__ // +++ ?
-#define __POS_AND_SPEED_CONTROL__ // +++ ?
+#define __AI1_SET_SPEED__ // +++ ?
+//#define __POS_AND_SPEED_CONTROL__ // +++ ?
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
