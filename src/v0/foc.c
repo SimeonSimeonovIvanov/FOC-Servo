@@ -2,8 +2,8 @@
 #include "foc.h"
 
 //#define __POS_CONTROL__ ???
-#define __AI1_SET_SPEED__ // +++ ?
-//#define __POS_AND_SPEED_CONTROL__ // +++ ?
+//#define __AI1_SET_SPEED__ // +++ ?
+#define __POS_AND_SPEED_CONTROL__ // +++ ?
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
@@ -34,7 +34,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #ifdef __AI1_SET_SPEED__
-	pidInit( &pidSpeed, 0.4f, 0.02f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 0.45f, 0.02f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.7f );
 	pidSetInputRange( &pidSpeed, 100 );
@@ -56,24 +56,24 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
 	pidSetIntegralLimit_test( &pidSpeed, 1575 );*/
 
-	pidInit( &pidSpeed, 0.4f, 0.02f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 0.4f, 0.015f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.7f );
 	pidSetInputRange( &pidSpeed, 100 );
 
-	pidInit( &pidPos, 2.7f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidPos, 2.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 20000 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.12f, 0.0009f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.12f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.25f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.12f, 0.0009f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.12f, 0.001f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.25f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -286,12 +286,15 @@ void ADC_IRQHandler( void )
 			if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 				sp_speed = -sp_speed;
 			}
+			if( sp_speed >  4000.0f ) sp_speed =  4000.0f;
+			if( sp_speed < -4000.0f ) sp_speed = -4000.0f;
 
 			d_sp_speed = sp_speed - old_sp_speed;
 			old_sp_speed = sp_speed;
 
 			//lpFoc->Iq_des = ( 50.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, pv_speed_filter );
 			lpFoc->Iq_des = 1575.0f * ( ( 0.01 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed_filter ) );
+
 			counter_speed_reg = 0;
 		}
 #endif
@@ -299,18 +302,18 @@ void ADC_IRQHandler( void )
 #ifdef __POS_AND_SPEED_CONTROL__
 		static int32_t counter01 = 0, counter02 = 0;
 
-		if( ++counter01 == 1 ) {
-			counter02 += 2;( ai0_filtered_value - 2047.0f )/100;
+		if( ++counter01 == 16 ) {
+			counter02 += 15;( ai0_filtered_value - 2047.0f ) * ( 1.0f / 10.0f );
 			counter01 = 0;
 		}
 
-		sp_pos = counter02;
+		//sp_pos = counter02;
 
 		if( 8 == ++counter_pos_reg ) {
 			static volatile float arrPosSP[10] = { 0 };
 			volatile float sp_pos_temp;
 
-			sp_pos_temp = sp_pos;//ffilter( (float)sp_pos, arrPosSP, 2 );
+			sp_pos_temp = sp_pos;ffilter( (float)sp_pos, arrPosSP, 2 );
 
 			sp_speed = 3000.0f * pidTask( &pidPos, (float)sp_pos_temp, (float)pv_pos );
 			counter_pos_reg = 0;
@@ -373,8 +376,10 @@ void ADC_IRQHandler( void )
 		lpFoc->Id_des = 0; lpFoc->Id = 0;
 	} else {
 		static volatile float temp = 0;
-		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.89 );
+
+		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.99 );
 		lpFoc->Iq_des = temp;
+		//if( lpFoc->Iq_des < 50.0f && lpFoc->Iq_des > -50.0f ) lpFoc->Iq_des =  0.0f;
 
 		if( lpFoc->Iq_des >  1575.0f ) lpFoc->Iq_des =  1575.0f;
 		if( lpFoc->Iq_des < -1575.0f ) lpFoc->Iq_des = -1575.0f;
@@ -401,7 +406,8 @@ void ADC_IRQHandler( void )
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed*0.5 + 2047, lpFoc->f_rpm_mt_filtered_value*0.5 + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Ia + 2047, pv_speed_filter*0.5 + 2047 );
-	DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq*0.5f + 2047, pv_speed_filter*0.5 + 2047 );
+	DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq + 2047, pv_speed_filter*0.5 + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq + 2047, sp_speed*0.5 + 2047);
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed + 2047, ( sp_pos - pv_pos ) + 2047 );
 
@@ -420,35 +426,32 @@ void adc_current_filter( uint16_t *current_a, uint16_t *current_b )
 {
 	static int32_t arrIa[30]={0}, arrIb[30]={0};
 
-	arrIa[15] = arrIa[14];	arrIa[14] = arrIa[13];
+	/*arrIa[15] = arrIa[14];	arrIa[14] = arrIa[13];
 	arrIa[13] = arrIa[12];	arrIa[12] = arrIa[11];
 	arrIa[11] = arrIa[10];	arrIa[10] = arrIa[9];
 	arrIa[9] = arrIa[8];	arrIa[8] = arrIa[7];
-	arrIa[7] = arrIa[6];	arrIa[6] = arrIa[5];
+	arrIa[7] = arrIa[6];	arrIa[6] = arrIa[5];*/
 	arrIa[5] = arrIa[4];	arrIa[4] = arrIa[3];
 	arrIa[3] = arrIa[2];	arrIa[2] = arrIa[1];
 	arrIa[1] = arrIa[0];	arrIa[0] = *current_a;
 
-	arrIb[15] = arrIb[14];	arrIb[14] = arrIb[13];
+	/*arrIb[15] = arrIb[14];	arrIb[14] = arrIb[13];
 	arrIb[13] = arrIb[12];	arrIb[12] = arrIb[11];
 	arrIb[11] = arrIb[10];	arrIb[10] = arrIb[9];
 	arrIb[9] = arrIb[8];	arrIb[8] = arrIb[7];
-	arrIb[7] = arrIb[6];	arrIb[6] = arrIb[5];
+	arrIb[7] = arrIb[6];	arrIb[6] = arrIb[5];*/
 	arrIb[5] = arrIb[4];	arrIb[4] = arrIb[3];
 	arrIb[3] = arrIb[2];	arrIb[2] = arrIb[1];
 	arrIb[1] = arrIb[0];	arrIb[0] = *current_b;
 
 	*current_a = (int32_t)(
-		arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4] +
-		arrIa[5] + arrIa[6] + arrIa[7]  + arrIa[8] + arrIa[9] +
-		arrIa[10]  + arrIa[11] + arrIa[12] + arrIa[13] + arrIa[14] + arrIa[15]
-	) / 16;
+		arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3]// + arrIa[4]// +
+		//arrIa[5] + arrIa[6] + arrIa[7]  + arrIa[8] + arrIa[9]// +
+		//arrIa[10]  + arrIa[11] + arrIa[12] + arrIa[13] + arrIa[14] + arrIa[15]
+	) * ( 1.0f / 4.0f );
 	*current_b = (int32_t)(
-		arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4] +
-		arrIb[5] + arrIb[6]  + arrIb[7] + arrIb[8] + arrIb[9] +
-		arrIb[10] + arrIb[11]  + arrIb[12] + arrIb[13] + arrIb[14] + arrIb[15]
-	) / 16;
-
-	//*current_a = ( arrIa[0] + arrIa[1] + arrIa[2] ) / 3;
-	//*current_b = ( arrIb[0] + arrIb[1] + arrIb[2] ) / 3;
+		arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3]// + arrIb[4]// +
+		//arrIb[5] + arrIb[6]  + arrIb[7] + arrIb[8] + arrIb[9]// +
+		//arrIb[10] + arrIb[11]  + arrIb[12] + arrIb[13] + arrIb[14] + arrIb[15]
+	) * ( 1.0f / 4.0f );
 }
