@@ -307,7 +307,7 @@ void ADC_IRQHandler( void )
 			counter01 = 0;
 		}
 
-		//sp_pos = counter02;
+		sp_pos = ai0_filtered_value*4;counter02;
 
 		if( 8 == ++counter_pos_reg ) {
 			static volatile float arrPosSP[10] = { 0 };
