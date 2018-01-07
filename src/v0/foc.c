@@ -61,7 +61,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetIntegralLimit( &pidSpeed, 0.7f );
 	pidSetInputRange( &pidSpeed, 100 );
 
-	pidInit( &pidPos, 2.0f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidPos, 3.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 20000 );
