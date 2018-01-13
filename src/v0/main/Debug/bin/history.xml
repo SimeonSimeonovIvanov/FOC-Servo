@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
    <processor signature="6.3.1 -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wall -g -Map=main.map -Os --gc-sections -lm -lgcc -lc -LC:\CooCox\CoIDE\configuration\ProgramData\main -TC:\CooCox\CoIDE\configuration\ProgramData\main/link.ld -g">
-      <target file="main.elf" lastModified="160f121df91">
+      <target file="main.elf" lastModified="160f134ac8a">
          <source file="..\obj\stm32f4xx_syscfg.o" lastModified="160efeb2857"/>
          <source file="..\obj\mb.o" lastModified="160efeb28b6"/>
          <source file="..\obj\mbfuncdisc.o" lastModified="160efeb28f8"/>
@@ -19,7 +19,7 @@
          <source file="..\obj\foc.o" lastModified="160f11e9984"/>
          <source file="..\obj\stm32f4xx_adc.o" lastModified="160efeb3061"/>
          <source file="..\obj\mbfuncinput.o" lastModified="160efeb30a8"/>
-         <source file="..\obj\encoder.o" lastModified="160f121ddc4"/>
+         <source file="..\obj\encoder.o" lastModified="160f134aaa6"/>
          <source file="..\obj\mbfuncdiag.o" lastModified="160efeb32b5"/>
          <source file="..\obj\stm32f4xx_gpio.o" lastModified="160efeb3306"/>
          <source file="..\obj\porttimer.o" lastModified="160efeb3346"/>

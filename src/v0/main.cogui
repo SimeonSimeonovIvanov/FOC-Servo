@@ -11,13 +11,18 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="1"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="9655" selectionTopPixel="5100"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" partName="encoder.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/encoder.c" title="encoder.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/encoder.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/encoder.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3965" selectionTopPixel="870"/>
 </editor>
 </editors>
 <views>
@@ -42,7 +47,7 @@
 <element path="/main/syscalls"/>
 </expanded>
 <selection>
-<element path="/main/foc/source/foc.c"/>
+<element path="/main/foc/source/encoder.c"/>
 </selection>
 </viewState>
 </view>
@@ -277,10 +282,8 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/main.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/cmsis_lib/source/stm32f4xx_gpio.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/cmsis_lib/source/stm32f4xx_tim.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
 </editors>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="11555" y="0"/>
-</item>
 <item historyLabel="encoder.c" index="0">
 <position info="not_deleted" x="14696" y="0"/>
 </item>
@@ -425,8 +428,11 @@
 <item historyLabel="encoder.c" index="3">
 <position info="not_deleted" x="14724" y="0"/>
 </item>
-<item active="true" historyLabel="foc.c" index="1">
+<item historyLabel="foc.c" index="1">
 <position info="not_deleted" x="9655" y="0"/>
+</item>
+<item active="true" historyLabel="encoder.c" index="7">
+<position info="not_deleted" x="0" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>

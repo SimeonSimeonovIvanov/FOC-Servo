@@ -50,7 +50,7 @@ void initEncoder(void)
 	GPIO_PinAFConfig( GPIOC, GPIO_PinSource6, GPIO_AF_TIM8 );
 	GPIO_PinAFConfig( GPIOC, GPIO_PinSource7, GPIO_AF_TIM8 );
 
-	TIM_TimeBaseStructure.TIM_Prescaler = 0x01;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0x00;
 	TIM_TimeBaseStructure.TIM_Period = 0xffffffff;
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -61,16 +61,17 @@ void initEncoder(void)
 
 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
 	TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
+
+	TIM_TimeBaseStructure.TIM_Prescaler = 0x01;
 	TIM_TimeBaseInit( TIM8, &TIM_TimeBaseStructure );
 
 	TIM_EncoderInterfaceConfig( TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
-
 	TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_BothEdge );
 
-	TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
 	TIM_ICInitStruct.TIM_ICFilter = 0x0F;
+	TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
 	TIM_ICInitStruct.TIM_ICPrescaler = TIM_ICPSC_DIV1;
 	TIM_ICInit( TIM2, &TIM_ICInitStruct );
 	TIM_ICInit( TIM3, &TIM_ICInitStruct );
@@ -84,7 +85,6 @@ void initEncoder(void)
 
 	TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;
 	TIM_ICInit( TIM8, &TIM_ICInitStruct );
-	TIM8->EGR = 1;
 
 	/* 32 bits. Abs. Pos Timer2 */
 	TIM_Cmd( TIM2, ENABLE );
@@ -96,7 +96,7 @@ void initEncoder(void)
 	TIM2->CNT = 0; // Abs. Pos Timer2 ( 32 bits. )
 	TIM3->CNT = 0; // Rotor Abs. Pos ( 16 bits. )
 	TIM4->CNT = 0; // Speed counter ( 16 bits. )
-	TIM8->CNT = 0;
+	TIM8->CNT = 0; // Step / Dir Interface ( 16 bits. + Soft Ext. to 32 bits. )
 
 	encoderInitZ();
 
