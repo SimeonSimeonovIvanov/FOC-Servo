@@ -50,13 +50,13 @@ void initEncoder(void)
 	GPIO_PinAFConfig( GPIOC, GPIO_PinSource6, GPIO_AF_TIM8 );
 	GPIO_PinAFConfig( GPIOC, GPIO_PinSource7, GPIO_AF_TIM8 );
 
-	TIM_TimeBaseStructure.TIM_Prescaler = 0x00;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0x01;
 	TIM_TimeBaseStructure.TIM_Period = 0xffffffff;
 	TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
 
-	TIM_TimeBaseStructure.TIM_Period = ( 2048 * 2 ) - 1;
+	TIM_TimeBaseStructure.TIM_Period = ( 4096 - 1 );
 	TIM_TimeBaseInit( TIM3, &TIM_TimeBaseStructure );
 
 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
@@ -65,10 +65,9 @@ void initEncoder(void)
 
 	TIM_EncoderInterfaceConfig( TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
-	TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
+	TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 
-	TIM_CounterModeConfig( TIM8, TIM_CounterMode_Down);
-	TIM_TIxExternalClockConfig( TIM8, TIM_TIxExternalCLK1Source_TI1, TIM_ICPolarity_Falling, 0x00);
+	TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_BothEdge );
 
 	TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
 	TIM_ICInitStruct.TIM_ICFilter = 0x0F;
@@ -85,6 +84,7 @@ void initEncoder(void)
 
 	TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;
 	TIM_ICInit( TIM8, &TIM_ICInitStruct );
+	TIM8->EGR = 1;
 
 	/* 32 bits. Abs. Pos Timer2 */
 	TIM_Cmd( TIM2, ENABLE );

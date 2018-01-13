@@ -177,16 +177,6 @@ void ADC_IRQHandler( void )
 
 	GPIO_SetBits( GPIOB, GPIO_Pin_2 );
 
-	portc = GPIO_ReadInputData( GPIOC );
-
-	if( !( GPIO_Pin_7 & portc ) && ( TIM8->CR1 & TIM_CR1_DIR ) ) {
-		TIM_CounterModeConfig( TIM8, TIM_CounterMode_Up);
-	} else {
-		if( ( GPIO_Pin_7 & portc ) && !( TIM8->CR1 & TIM_CR1_DIR ) ) {
-			TIM_CounterModeConfig( TIM8, TIM_CounterMode_Down);
-		}
-	}
-
 	if( ADC_FLAG_JEOC & ADC1->SR ) {
 #ifdef FOC_ADC_Mode_Independent
 		lpFoc->current_a = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_1 );
@@ -356,26 +346,21 @@ void ADC_IRQHandler( void )
 		}
 #endif
 	} else {
-		pidTask_test( &pidSpeed, 0, 0 );
-
-#if ( __CONTROL_MODE__ == __POS_CONTROL__ )
-		pidTask( &pidPos, 0, 0 );
-#else
-		pidTask_test( &pidPos, 0, 0 );
-#endif
-
-		TIM8->CNT = 0;
-		sp_pos = 0;
 		tim8_overflow = 0;
+		TIM8->CNT = 0;
 
 		counter_speed_reg = 0;
 		counter_pos_reg = 0;
+		sp_speed = 0;
+		sp_pos = 0;
 
 		lpFoc->Id_des = lpFoc->Id = 0;
 		lpFoc->Vd = lpFoc->Vq = 0.0f;
 
 		lpFoc->pid_d.sumError = 0.0f;
 		lpFoc->pid_q.sumError = 0.0f;
+		pidSpeed.sumError = 0.0f;
+		pidPos.sumError = 0.0f;
 	}
 
 	/*static float dt = 1.0f/16000.0f;

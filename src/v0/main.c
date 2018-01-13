@@ -100,7 +100,7 @@ int main(void)
 
 		stFoc.Is = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 
-		rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
+		rpm = TIM8->CNT*100;stFoc.f_rpm_mt_temp_filtered_value * 100;
 
 		hall = readHallMap();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -129,38 +129,6 @@ int main(void)
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	}
-}
-
-void EXTI9_5_IRQHandler(void) {
-	if( SET == EXTI_GetITStatus( EXTI_Line6 ) ) {
-		EXTI_ClearITPendingBit( EXTI_Line6 );
-
-		/*if( !stFoc.main_state || !stFoc.enable ) {
-			return;
-		}
-
-		uint16_t pinb = GPIO_ReadInputData( GPIOB );
-		uint8_t dir = ( pinb & GPIO_Pin_13 ) ? 1 : 0;
-		static int32_t counter = 0;
-
-		if( dir ) {
-			--counter;
-		} else {
-			++counter;
-		}
-
-		sp_counter = counter * 20;*/
-    }
-
-	if( SET == EXTI_GetITStatus( EXTI_Line7 ) ) {
-		EXTI_ClearITPendingBit( EXTI_Line7 );
-
-		if( !( GPIO_Pin_7 & GPIO_ReadInputData( GPIOB ) ) ) {
-			//TIM_CounterModeConfig( TIM8, TIM_CounterMode_Up);
-		} else {
-			//TIM_CounterModeConfig( TIM8, TIM_CounterMode_Down);
-		}
 	}
 }
 
@@ -288,100 +256,4 @@ void boardInit(void)
 	///////////////////////////////////////////////////////////////////////////
 
 	///////////////////////////////////////////////////////////////////////////
-}
-
-/* Configure pins to be interrupts */
-void Configure_PC6(void)
-{
-    /* Set variables used */
-    GPIO_InitTypeDef GPIO_InitStruct;
-    EXTI_InitTypeDef EXTI_InitStruct;
-    NVIC_InitTypeDef NVIC_InitStruct;
-
-    /* Enable clock for GPIOD */
-    RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOC, ENABLE );
-    /* Enable clock for SYSCFG */
-    RCC_APB2PeriphClockCmd( RCC_APB2Periph_SYSCFG, ENABLE );
-
-    /* Set pin as input */
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6;
-    GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_Init( GPIOC, &GPIO_InitStruct );
-
-    /* Tell system that you will use PC6 for EXTI_Line6 */
-    SYSCFG_EXTILineConfig( EXTI_PortSourceGPIOC, EXTI_PinSource6 );
-
-    /* PC6 is connected to EXTI_Line6 */
-    EXTI_InitStruct.EXTI_Line = EXTI_Line6;
-    /* Enable interrupt */
-    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
-    /* Interrupt mode */
-    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
-    /* Triggers on rising and falling edge */
-    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising;
-    /* Add to EXTI */
-    EXTI_Init( &EXTI_InitStruct );
-
-    /* Add IRQ vector to NVIC */
-    /* PC6 is connected to EXTI_Line6, which has EXTI9_5_IRQn vector */
-    NVIC_InitStruct.NVIC_IRQChannel = EXTI9_5_IRQn;
-    /* Set priority */
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x00;
-    /* Set sub priority */
-    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0x00;
-    /* Enable interrupt */
-    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-    /* Add to NVIC */
-    NVIC_Init( &NVIC_InitStruct );
-}
-
-void Configure_PC7(void)
-{
-    /* Set variables used */
-    GPIO_InitTypeDef GPIO_InitStruct;
-    EXTI_InitTypeDef EXTI_InitStruct;
-    NVIC_InitTypeDef NVIC_InitStruct;
-
-    /* Enable clock for GPIOD */
-    RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOC, ENABLE );
-    /* Enable clock for SYSCFG */
-    RCC_APB2PeriphClockCmd( RCC_APB2Periph_SYSCFG, ENABLE );
-
-    /* Set pin as input */
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
-    GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
-    GPIO_Init( GPIOC, &GPIO_InitStruct );
-    return;
-
-    /* Tell system that you will use PC7 for EXTI_Line7 */
-    SYSCFG_EXTILineConfig( EXTI_PortSourceGPIOC, EXTI_PinSource7 );
-
-    /* PC7 is connected to EXTI_Line7 */
-    EXTI_InitStruct.EXTI_Line = EXTI_Line7;
-    /* Enable interrupt */
-    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
-    /* Interrupt mode */
-    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
-    /* Triggers on rising and falling edge */
-    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
-    /* Add to EXTI */
-    EXTI_Init( &EXTI_InitStruct );
-
-    /* Add IRQ vector to NVIC */
-    /* PC6 is connected to EXTI_Line7, which has EXTI9_5_IRQn vector */
-    NVIC_InitStruct.NVIC_IRQChannel = EXTI9_5_IRQn;
-    /* Set priority */
-    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x00;
-    /* Set sub priority */
-    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0x00;
-    /* Enable interrupt */
-    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-    /* Add to NVIC */
-    NVIC_Init( &NVIC_InitStruct );
 }
