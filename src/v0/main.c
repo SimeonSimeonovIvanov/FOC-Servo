@@ -3,21 +3,22 @@
 #define REG_HOLDING_START   40001
 #define REG_HOLDING_NREGS   20
 
-extern volatile float sp_speed, pv_speed;
+extern float sp_speed, pv_speed;
 extern float ai0_filtered_value;
+extern int32_t sp_pos, pv_pos;
+extern uint16_t ai0, ai1;
 
-extern volatile uint16_t ai0, ai1;
 extern uint32_t uwTIM10PulseLength;
-extern int16_t enc_delta;
-extern PID pidPos;
+extern int16_t tim8_overflow;
 extern uint16_t sanyo_uvw;
+extern int16_t enc_delta;
 
 static USHORT usRegHoldingStart = REG_HOLDING_START;
 static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ] = { 0 };
 
 volatile int32_t sp_counter = 0;
 volatile MC_FOC stFoc;
-extern int16_t tim8_overflow;
+
 int main(void)
 {
 	float enc_delta_filtered_value = 0, TIM10PulseLength_filtered_value = 0;
@@ -99,8 +100,9 @@ int main(void)
 		}
 
 		stFoc.Is = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
-
-		rpm = TIM8->CNT*100;stFoc.f_rpm_mt_temp_filtered_value * 100;
+		rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
+		//rpm = ( sp_pos - pv_pos ) * 100;
+		//rpm = sp_pos * 100;
 
 		hall = readHallMap();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

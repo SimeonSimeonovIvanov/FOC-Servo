@@ -406,7 +406,7 @@ void initTim10(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
-	TIM_ICInitTypeDef  TIM_ICInitStructure;
+	TIM_ICInitTypeDef TIM_ICInitStructure;
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 
 	/* TIM10 clock enable */
@@ -467,10 +467,9 @@ void initTim10(void)
 void TIM1_UP_TIM10_IRQHandler(void)
 {
 	if( SET == TIM_GetITStatus( TIM10, TIM_IT_CC1 ) ) {
-		TIM_ClearITPendingBit(TIM10, TIM_IT_CC1);
-
-		TIM10->CNT = 0;
+		TIM_ClearITPendingBit( TIM10, TIM_IT_CC1 );
 		uwTIM10PulseLength = TIM_GetCapture1( TIM10 );
+		TIM10->CNT = 0;
 	}
 }
 
@@ -478,30 +477,22 @@ void TIM1_UP_TIM10_IRQHandler(void)
 
 void initTim8_IRQ(void)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
-	TIM_ICInitTypeDef  TIM_ICInitStructure;
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 
-	/* TIM8 clock enable */
-	//RCC_APB2PeriphClockCmd( RCC_APB2Periph_TIM8, ENABLE );
-
-	/* Enable the TIM10 global Interrupt */
 	NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init( &NVIC_InitStructure );
 
-	TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
-	TIM_SetCounter (TIM8, 0);
+	TIM_ClearITPendingBit( TIM8, TIM_IT_Update );
 	TIM_ITConfig( TIM8, TIM_IT_Update, ENABLE );
 }
 
 void TIM8_UP_TIM13_IRQHandler(void)
 {
 	if( SET == TIM_GetITStatus( TIM8, TIM_IT_Update ) ) {
-		TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
+		TIM_ClearITPendingBit( TIM8, TIM_IT_Update );
 
 		if( !( TIM8->CR1 & TIM_CR1_DIR ) ) {
 			tim8_overflow++;

@@ -13,12 +13,13 @@ const float Ts = 0.0025f;
 const float fc = 3*4000000.0f;
 
 extern uint32_t uwTIM10PulseLength;
+extern int16_t tim8_overflow;
 extern int32_t sp_counter;
 
-static volatile int32_t sp_pos, sp_update_counter = 0;
 static volatile int32_t arrSpPos[10];
-static volatile int32_t pv_pos = 0;
 static volatile LP_MC_FOC lpFoc;
+
+volatile int32_t pv_pos = 0, sp_pos = 0, sp_update_counter = 0;
 
 volatile float sp_speed, pv_speed;
 volatile int16_t enc_delta;
@@ -55,16 +56,12 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
-	/*pidInit_test( &pidSpeed, 5.0f, 0.2f, 0, 0 );
-	pidSetOutLimit_test( &pidSpeed, 1575, -1575 );
-	pidSetIntegralLimit_test( &pidSpeed, 1575 );*/
-
-	pidInit( &pidSpeed, 0.4f, 0.015f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 0.45f, 0.015f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.7f );
 	pidSetInputRange( &pidSpeed, 100 );
 
-	pidInit( &pidPos, 2.0f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidPos, 4.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 20000 );
@@ -167,8 +164,6 @@ void mcUsrefLimit(LP_MC_FOC lpFoc)
 	}
 }
 
-extern int16_t tim8_overflow;
-
 void ADC_IRQHandler( void )
 {
 	volatile static int32_t counter_pos_reg = 0, counter_get_speed = 0, counter_speed_reg = 0;
@@ -267,14 +262,16 @@ void ADC_IRQHandler( void )
 		enc_delta_old = enc_delta;
 	}
 
-	pv_pos = iEncoderGetAbsPos();
-	sp_pos = sp_counter;
-
 	static volatile float arrSpeedSP[10], arrSpeedFB[300];
 	volatile float pv_speed_filter;
 
 	pv_speed = lpFoc->f_rpm_mt;
 	pv_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 5 );
+
+	sp_counter = ( (65535 * tim8_overflow) + TIM8->CNT  ) * 20;
+
+	pv_pos = iEncoderGetAbsPos();
+	sp_pos = sp_counter;
 
 #if ( __CONTROL_MODE__ == __AI1_SET_SPEED__ )
 	sp_speed = 2.0f * ( ai0_filtered_value - 2047.0f );
@@ -299,7 +296,6 @@ void ADC_IRQHandler( void )
 			counter01 = 0;
 		}
 
-		sp_pos = ( (65535 * tim8_overflow) + TIM8->CNT  ) * 20;
 		//sp_pos = ai0_filtered_value*4;
 		//sp_pos = counter02;
 
@@ -333,8 +329,8 @@ void ADC_IRQHandler( void )
 			if( sp_speed >  4000.0f ) sp_speed =  4000.0f;
 			if( sp_speed < -4000.0f ) sp_speed = -4000.0f;
 
-			if( pv_speed < 15.0f && pv_speed > -15.0f ) pidSpeed.kp = 0.40f;
-			else pidSpeed.kp = 0.55f;
+			if( pv_speed < 15.0f && pv_speed > -15.0f ) pidSpeed.kp = 0.30f;
+			else pidSpeed.kp = 0.45f;
 
 			d_sp_speed = sp_speed - old_sp_speed;
 			old_sp_speed = sp_speed;
