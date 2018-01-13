@@ -17,7 +17,7 @@ static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ] = { 0 };
 
 volatile int32_t sp_counter = 0;
 volatile MC_FOC stFoc;
-
+extern int16_t tim8_overflow;
 int main(void)
 {
 	float enc_delta_filtered_value = 0, TIM10PulseLength_filtered_value = 0;
@@ -99,6 +99,7 @@ int main(void)
 		}
 
 		stFoc.Is = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
+
 		rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
 
 		hall = readHallMap();
@@ -121,7 +122,7 @@ int main(void)
 		usRegHoldingBuf[11] = (int16_t)enc_delta_filtered_value;
 		usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[13] = (int)stFoc.Iq_des;//Is;
+		usRegHoldingBuf[13] = (int)stFoc.Is;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[14] = rpm;
 		usRegHoldingBuf[15] = rpm>>16;
@@ -132,12 +133,10 @@ int main(void)
 }
 
 void EXTI9_5_IRQHandler(void) {
-	/* Make sure that interrupt flag is set */
 	if( SET == EXTI_GetITStatus( EXTI_Line6 ) ) {
-		/* Clear interrupt flag */
 		EXTI_ClearITPendingBit( EXTI_Line6 );
 
-		if( !stFoc.main_state || !stFoc.enable ) {
+		/*if( !stFoc.main_state || !stFoc.enable ) {
 			return;
 		}
 
@@ -151,8 +150,18 @@ void EXTI9_5_IRQHandler(void) {
 			++counter;
 		}
 
-		sp_counter = counter * 20;
+		sp_counter = counter * 20;*/
     }
+
+	if( SET == EXTI_GetITStatus( EXTI_Line7 ) ) {
+		EXTI_ClearITPendingBit( EXTI_Line7 );
+
+		if( !( GPIO_Pin_7 & GPIO_ReadInputData( GPIOB ) ) ) {
+			//TIM_CounterModeConfig( TIM8, TIM_CounterMode_Up);
+		} else {
+			//TIM_CounterModeConfig( TIM8, TIM_CounterMode_Down);
+		}
+	}
 }
 
 eMBErrorCode eMBRegHoldingCB
@@ -255,7 +264,8 @@ void boardInit(void)
 	GPIO_ResetBits( GPIOB, GPIO_Pin_15 | GPIO_Pin_12 );
 
 	///////////////////////////////////////////////////////////////////////////
-	Configure_PC6();
+	//Configure_PC6();
+	//Configure_PC7();
 
 	///////////////////////////////////////////////////////////////////////////
 	RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOD, ENABLE );
@@ -317,6 +327,54 @@ void Configure_PC6(void)
 
     /* Add IRQ vector to NVIC */
     /* PC6 is connected to EXTI_Line6, which has EXTI9_5_IRQn vector */
+    NVIC_InitStruct.NVIC_IRQChannel = EXTI9_5_IRQn;
+    /* Set priority */
+    NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x00;
+    /* Set sub priority */
+    NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0x00;
+    /* Enable interrupt */
+    NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
+    /* Add to NVIC */
+    NVIC_Init( &NVIC_InitStruct );
+}
+
+void Configure_PC7(void)
+{
+    /* Set variables used */
+    GPIO_InitTypeDef GPIO_InitStruct;
+    EXTI_InitTypeDef EXTI_InitStruct;
+    NVIC_InitTypeDef NVIC_InitStruct;
+
+    /* Enable clock for GPIOD */
+    RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOC, ENABLE );
+    /* Enable clock for SYSCFG */
+    RCC_APB2PeriphClockCmd( RCC_APB2Periph_SYSCFG, ENABLE );
+
+    /* Set pin as input */
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
+    GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_7;
+    GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_Init( GPIOC, &GPIO_InitStruct );
+    return;
+
+    /* Tell system that you will use PC7 for EXTI_Line7 */
+    SYSCFG_EXTILineConfig( EXTI_PortSourceGPIOC, EXTI_PinSource7 );
+
+    /* PC7 is connected to EXTI_Line7 */
+    EXTI_InitStruct.EXTI_Line = EXTI_Line7;
+    /* Enable interrupt */
+    EXTI_InitStruct.EXTI_LineCmd = ENABLE;
+    /* Interrupt mode */
+    EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;
+    /* Triggers on rising and falling edge */
+    EXTI_InitStruct.EXTI_Trigger = EXTI_Trigger_Rising_Falling;
+    /* Add to EXTI */
+    EXTI_Init( &EXTI_InitStruct );
+
+    /* Add IRQ vector to NVIC */
+    /* PC6 is connected to EXTI_Line7, which has EXTI9_5_IRQn vector */
     NVIC_InitStruct.NVIC_IRQChannel = EXTI9_5_IRQn;
     /* Set priority */
     NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0x00;

@@ -4,6 +4,8 @@
 static float arr_sin[4096], arr_cos[4096];
 
 uint32_t uwTIM10PulseLength = 0;
+int16_t tim8_overflow = 0;
+
 uint16_t sanyo_uvw = 0;
 
 void initEncoder(void)
@@ -18,10 +20,12 @@ void initEncoder(void)
 
 	RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOA, ENABLE );
 	RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOB, ENABLE );
+	RCC_AHB1PeriphClockCmd( RCC_AHB1Periph_GPIOC, ENABLE );
 
 	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM2, ENABLE );
 	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM3, ENABLE );
 	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM4, ENABLE );
+	RCC_APB2PeriphClockCmd( RCC_APB2Periph_TIM8, ENABLE );
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
@@ -29,6 +33,8 @@ void initEncoder(void)
 	GPIO_Init( GPIOA, &GPIO_InitStructure );
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6 | GPIO_Pin_5 | GPIO_Pin_4;
 	GPIO_Init( GPIOB, &GPIO_InitStructure );
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6;
+	GPIO_Init( GPIOC, &GPIO_InitStructure );
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_5;
 	GPIO_Init( GPIOE, &GPIO_InitStructure );
 
@@ -37,8 +43,12 @@ void initEncoder(void)
 
 	GPIO_PinAFConfig( GPIOB, GPIO_PinSource4, GPIO_AF_TIM3 );
 	GPIO_PinAFConfig( GPIOB, GPIO_PinSource5, GPIO_AF_TIM3 );
+
 	GPIO_PinAFConfig( GPIOB, GPIO_PinSource6, GPIO_AF_TIM4 );
 	GPIO_PinAFConfig( GPIOB, GPIO_PinSource7, GPIO_AF_TIM4 );
+
+	GPIO_PinAFConfig( GPIOC, GPIO_PinSource6, GPIO_AF_TIM8 );
+	GPIO_PinAFConfig( GPIOC, GPIO_PinSource7, GPIO_AF_TIM8 );
 
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x00;
 	TIM_TimeBaseStructure.TIM_Period = 0xffffffff;
@@ -46,15 +56,19 @@ void initEncoder(void)
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
 
-	TIM_TimeBaseStructure.TIM_Period = 2048*2-1;
+	TIM_TimeBaseStructure.TIM_Period = ( 2048 * 2 ) - 1;
 	TIM_TimeBaseInit( TIM3, &TIM_TimeBaseStructure );
 
 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
 	TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
+	TIM_TimeBaseInit( TIM8, &TIM_TimeBaseStructure );
 
 	TIM_EncoderInterfaceConfig( TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
-	TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
+	TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
+
+	TIM_CounterModeConfig( TIM8, TIM_CounterMode_Down);
+	TIM_TIxExternalClockConfig( TIM8, TIM_TIxExternalCLK1Source_TI1, TIM_ICPolarity_Falling, 0x00);
 
 	TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
 	TIM_ICInitStruct.TIM_ICFilter = 0x0F;
@@ -62,27 +76,34 @@ void initEncoder(void)
 	TIM_ICInit( TIM2, &TIM_ICInitStruct );
 	TIM_ICInit( TIM3, &TIM_ICInitStruct );
 	TIM_ICInit( TIM4, &TIM_ICInitStruct );
+	TIM_ICInit( TIM8, &TIM_ICInitStruct );
 
 	TIM_ICInitStruct.TIM_Channel = TIM_Channel_2;
 	TIM_ICInit( TIM2, &TIM_ICInitStruct );
 	TIM_ICInit( TIM3, &TIM_ICInitStruct );
 	TIM_ICInit( TIM4, &TIM_ICInitStruct );
 
+	TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;
+	TIM_ICInit( TIM8, &TIM_ICInitStruct );
+
 	/* 32 bits. Abs. Pos Timer2 */
 	TIM_Cmd( TIM2, ENABLE );
 	/* 16 bits. Rotor Abs. Pos Timer3 */
 	TIM_Cmd( TIM3, ENABLE );
 	TIM_Cmd( TIM4, ENABLE );
+	TIM_Cmd( TIM8, ENABLE );
 
-	TIM2->CNT = 0; // abs.pos
-	TIM3->CNT = 0; // Rotor angle
-	TIM4->CNT = 0; // Speed counter
+	TIM2->CNT = 0; // Abs. Pos Timer2 ( 32 bits. )
+	TIM3->CNT = 0; // Rotor Abs. Pos ( 16 bits. )
+	TIM4->CNT = 0; // Speed counter ( 16 bits. )
+	TIM8->CNT = 0;
 
 	encoderInitZ();
 
 	createSinCosTable();
 
 	initTim10();
+	initTim8_IRQ();
 
 	if( 0 && !readHallMap() ) {
 		for(volatile uint32_t i = 0; i < 2000000; i++);
@@ -222,6 +243,8 @@ uint16_t readSanyoWareSaveEncoder(void) // ---
 {
 	return TIM3->ARR - TIM3->CNT;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 void EXTI15_10_IRQHandler(void)
 {
@@ -450,3 +473,42 @@ void TIM1_UP_TIM10_IRQHandler(void)
 		uwTIM10PulseLength = TIM_GetCapture1( TIM10 );
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void initTim8_IRQ(void)
+{
+	GPIO_InitTypeDef GPIO_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+	TIM_ICInitTypeDef  TIM_ICInitStructure;
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
+
+	/* TIM8 clock enable */
+	//RCC_APB2PeriphClockCmd( RCC_APB2Periph_TIM8, ENABLE );
+
+	/* Enable the TIM10 global Interrupt */
+	NVIC_InitStructure.NVIC_IRQChannel = TIM8_UP_TIM13_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init( &NVIC_InitStructure );
+
+	TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
+	TIM_SetCounter (TIM8, 0);
+	TIM_ITConfig( TIM8, TIM_IT_Update, ENABLE );
+}
+
+void TIM8_UP_TIM13_IRQHandler(void)
+{
+	if( SET == TIM_GetITStatus( TIM8, TIM_IT_Update ) ) {
+		TIM_ClearITPendingBit(TIM8, TIM_IT_Update);
+
+		if( !( TIM8->CR1 & TIM_CR1_DIR ) ) {
+			tim8_overflow++;
+		} else {
+			tim8_overflow--;
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////

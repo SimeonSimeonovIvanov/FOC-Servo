@@ -173,7 +173,7 @@ void svpwmInitADC( void )
 #ifdef FOC_ADC_Mode_Independent
 	/*
 	 * TIM1(CC4) -> ADC1
-	 * TIM8(CC1) -> ADC2
+	 * TIM8(CC1) -> ADC2***
 	 */
 
 	ADC_InjectedSequencerLengthConfig( ADC2, 2 ); // 4 ???
