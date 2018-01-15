@@ -74,7 +74,6 @@ void svpwmInitTIM( void )
 	TIM_ClearITPendingBit( TIM1, TIM_IT_Break );
 	TIM_ITConfig( TIM1, TIM_IT_Break, DISABLE );
 
-	TIM_SelectOutputTrigger(TIM1, TIM_TRGOSource_OC4Ref );
 	TIM_ARRPreloadConfig( TIM1, ENABLE );
 
 	DBGMCU->APB2FZ |= DBGMCU_APB1_FZ_DBG_TIM1_STOP;

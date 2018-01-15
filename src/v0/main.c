@@ -99,7 +99,7 @@ int main(void)
 			sp_counter = iEncoderGetAbsPos();
 		}
 
-		stFoc.Is = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
+		stFoc.Is = (int)( ( 10.0f / 8196.0f) * (float)(sp_pos - pv_pos ) * 1000.0f ); sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
 		//rpm = ( sp_pos - pv_pos ) * 100;
 		//rpm = sp_pos * 100;

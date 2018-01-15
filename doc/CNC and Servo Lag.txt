@@ -1,0 +1,18 @@
+http://www.practicalmachinist.com/vb/cnc-machining/lag-error-234762/#post1679838
+
+ mike_kilroy
+mike_kilroy is offline Stainless 
+
+system gain (amount of "lag" error) is SET by the analog velocity speed scale adjustment pot on the servo drive amplifier. it was typically set to 1IPM/MiL on that vintage machine. that means if u run 100IPM u will have .100" or 100 mills of following ("lag") error. 400ipm means .4" so u can see the faster u go the more lag.
+
+then there is a max lag error shut off point - maybe 1" or so in the above ex for a machine that can run to 400ipm.
+
+yes, if it used to work somethng likely changed so mechanics is first thing to look at; if friction increases then the lag might increase (depends on the servo drive design - if it has integral gain - the I in PID loop then it takes a LOT of extra friction to bother this).
+
+if you can turn the screw by hand easy and dont think it changed it could be aging of electronics and a simple readjust of speed pot on Y axis servo drive will bring it back.
+
+remember that WHEN something brakes it is usually the last thing we did that caused it to brake.... so think back..... did this y shake and error start suddendly? after a crash? or did it creep up on you getting worse and worse -- over 1 day? 1 hour? 2 years? these r all good clues to help point to the culprit
+
+if u can see lag error and speed on ur nc screen, check all axis; they shyud be the same. if u see y has bigger lag at a given speed, adjust the speed pot on the drive to make it the sanme as the other axes. if u dont know where the speed pot is, tell us the drive mfgr and model cuz some of us may know
+
+too hi or too lo gain will cause the same y axis oscillation or jerkyness you see. 
