@@ -1,11 +1,11 @@
 #include "main.h"
 
 #define REG_HOLDING_START   40001
-#define REG_HOLDING_NREGS   20
+#define REG_HOLDING_NREGS   50
 
 extern float sp_speed, pv_speed;
 extern float ai0_filtered_value;
-extern int32_t sp_pos, pv_pos;
+extern int32_t sp_pos, pv_pos, pos_error, sp_pos_freq;
 extern uint16_t ai0, ai1;
 
 extern uint32_t uwTIM10PulseLength;
@@ -99,7 +99,7 @@ int main(void)
 			sp_counter = iEncoderGetAbsPos();
 		}
 
-		stFoc.Is = (int)( ( 10.0f / 8196.0f) * (float)(sp_pos - pv_pos ) * 1000.0f ); sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
+		stFoc.Is = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
 		//rpm = ( sp_pos - pv_pos ) * 100;
 		//rpm = sp_pos * 100;
@@ -128,6 +128,15 @@ int main(void)
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[14] = rpm;
 		usRegHoldingBuf[15] = rpm>>16;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		usRegHoldingBuf[16] = sp_counter;
+		usRegHoldingBuf[17] = sp_counter>>16;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		usRegHoldingBuf[18] = pos_error;
+		usRegHoldingBuf[19] = pos_error>>16;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		usRegHoldingBuf[20] = sp_pos_freq;
+		usRegHoldingBuf[21] = sp_pos_freq>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

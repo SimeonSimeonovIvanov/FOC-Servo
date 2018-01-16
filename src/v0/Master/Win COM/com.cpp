@@ -402,14 +402,15 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 	int address = 10;
 
 	while (1) {
-		unsigned int hreg[9];
+		unsigned int hreg[50];
 
-		iResult = mbReadHoldingRegisters(&lpMainData->mbMaster, lpMainData->SlaveID, 40000, 17, hreg);
+		iResult = mbReadHoldingRegisters(&lpMainData->mbMaster, lpMainData->SlaveID, 40000, 22, hreg);
 		if (!iResult) {
 			int current_a, current_b, dc_voltage, ai0, uvw, encoder0_raw, encoder0_angle, encoder1_pos, offset;
 			int rpm_t, rpm_m, rpm_tm;
 			int dc_current;
 			int mcu_rpm;
+			int sp_pos_tim8, pos_error, temp_32;
 
 			current_a = mbU16toSI(hreg[0]);
 			current_b = mbU16toSI(hreg[1]);
@@ -427,6 +428,10 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			dc_current = mbU16toSI(hreg[13]);
 
 			mcu_rpm = mbU32toSI(hreg[15] << 16 | hreg[14]);
+
+			sp_pos_tim8 = mbU32toSI(hreg[17] << 16 | hreg[16]);
+			pos_error = mbU32toSI(hreg[19] << 16 | hreg[18]);
+			temp_32 = mbU32toSI(hreg[21] << 16 | hreg[20]);
 
 			sprintf(szBuffer, "CA: %d", current_a);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC0), szBuffer);
@@ -455,8 +460,23 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			sprintf(szBuffer, "%d", encoder1_pos);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_ENC1_ABS_POS), szBuffer);
 
-			sprintf(szBuffer, "%4.2f", (float)mcu_rpm * 0.01f );
+			sprintf(szBuffer, "%4.2f", (float)mcu_rpm * 0.01f);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_MCU_RPM), szBuffer);
+
+			sprintf(szBuffer, "%d", sp_pos_tim8);
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_SP_POS_TIM8), szBuffer);
+
+			float ftemp;
+
+			//ftemp = (10.0f * pos_error) / 8196.0f; // Винт, 10 мм/об.
+			ftemp = 0.02*((500.0f * (pos_error/3)) / (3*8196.0f)); // Винт, 10 мм/об.
+
+			sprintf(szBuffer, "%d | %4.2f mm.", pos_error, ftemp);
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_POS_ERROR), szBuffer);
+
+			ftemp = (60.0f * temp_32) / 8196.0f;
+			sprintf(szBuffer, "%4.2f", ftemp);
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_TEMP_32), szBuffer);
 
 			///////////////////////////////////////////////////////////////////////////////////////
 			sprintf(szBuffer, "%d", rpm_m);

@@ -1,12 +1,12 @@
 #include <string.h>
 #include "foc.h"
 
-#define __IQ_CONTROL__				0
-#define __POS_CONTROL__				1 // ---
-#define __AI1_SET_SPEED__			2 // +++ ?
-#define __POS_AND_SPEED_CONTROL__	3 // +++ ?
+#define __IQ_CONTROL__              0
+#define __POS_CONTROL__             1 // ---
+#define __AI1_SET_SPEED__           2 // +++ ?
+#define __POS_AND_SPEED_CONTROL__   3 // +++ ?
 
-#define __CONTROL_MODE__			__POS_AND_SPEED_CONTROL__
+#define __CONTROL_MODE__            2
 
 const float P = 8196.0f;
 const float Ts = 0.0025f;
@@ -19,7 +19,7 @@ extern int32_t sp_counter;
 static volatile int32_t arrSpPos[10];
 static volatile LP_MC_FOC lpFoc;
 
-volatile int32_t pv_pos = 0, sp_pos = 0, sp_update_counter = 0;
+volatile int32_t pv_pos = 0, sp_pos = 0, pos_error = 0, sp_update_counter = 0, sp_pos_freq = 0;
 
 volatile float sp_speed, pv_speed;
 volatile int16_t enc_delta;
@@ -38,42 +38,40 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_CONTROL__ )
-	pidInit( &pidPos, 0.5f, 0.0005f, 0.0f, 0.001f );
+	pidInit( &pidPos, 0.2f, 0.0000f, 0.0f, 0.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.2f );
-	pidSetInputRange( &pidPos, 200 );
+	pidSetInputRange( &pidPos, 2000 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
 
-#if ( __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-	pidInit( &pidSpeed, 0.45f, 0.015f, 0.0f, 1.001f );
+#if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
+	pidInit( &pidSpeed, 0.4f, 0.005f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidSpeed, 0.7f );
+	pidSetIntegralLimit( &pidSpeed, 0.99f );
 	pidSetInputRange( &pidSpeed, 100 );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
-	pidInit( &pidSpeed, 0.45f, 0.015f, 0.0f, 1.001f );
-	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidSpeed, 0.7f );
-	pidSetInputRange( &pidSpeed, 100 );
-
-	pidInit( &pidPos, 4.0f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidPos, 3.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 20000 );
+
+	//pidInit_test( &pidPos, 1.0f, 0.0f, 0.0f, 1.001f );
+	//pidSetOutLimit_test( &pidPos, 3000.0f, -3000.0f );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.12f, 0.001f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.12f, 0.0038f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.25f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.12f, 0.001f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.12f, 0.0038f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.25f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -167,8 +165,7 @@ void mcUsrefLimit(LP_MC_FOC lpFoc)
 void ADC_IRQHandler( void )
 {
 	volatile static int32_t counter_pos_reg = 0, counter_get_speed = 0, counter_speed_reg = 0;
-	volatile static uint16_t angle = 0;
-	uint16_t portc;
+	volatile static uint16_t angle = 0, temp = 0;
 
 	GPIO_SetBits( GPIOB, GPIO_Pin_2 );
 
@@ -262,16 +259,17 @@ void ADC_IRQHandler( void )
 		enc_delta_old = enc_delta;
 	}
 
-	static volatile float arrSpeedSP[10], arrSpeedFB[300];
+	static volatile float arrSpeedSP[10] = { 0 }, arrSpeedFB[300] = { 0 };
 	volatile float pv_speed_filter;
 
 	pv_speed = lpFoc->f_rpm_mt;
 	pv_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 5 );
 
-	sp_counter = ( (65535 * tim8_overflow) + TIM8->CNT  ) * 20;
+	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT  ) * 10;
 
 	pv_pos = iEncoderGetAbsPos();
 	sp_pos = sp_counter;
+	pos_error = sp_pos - pv_pos;
 
 #if ( __CONTROL_MODE__ == __AI1_SET_SPEED__ )
 	sp_speed = 2.0f * ( ai0_filtered_value - 2047.0f );
@@ -282,11 +280,21 @@ void ADC_IRQHandler( void )
 
 	if( lpFoc->enable ) {
 #if ( __CONTROL_MODE__ == __POS_CONTROL__ )
-		if( 16 == ++counter_pos_reg ) {
+		if( 1 == ++counter_pos_reg ) {
 			lpFoc->Iq_des = 1575.0f * pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 			counter_pos_reg = 0;
 		}
 #endif
+
+		if( 16000 == ++temp) {
+			static int32_t new = 0, old = 0;
+
+			new = sp_pos;
+			sp_pos_freq = new - old;
+			old = new;
+
+			temp = 0;
+		}
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
 		static int32_t counter01 = 0, counter02 = 0;
@@ -306,12 +314,14 @@ void ADC_IRQHandler( void )
 			float d_sp_pos;
 			float pid_out;
 
-			sp_pos_temp = ffilter( (float)sp_pos, arrPosSP, 5 );
+			sp_pos_temp = ffilter( (float)sp_pos, arrPosSP, 2 );
 
 			d_sp_pos = sp_pos_temp - sp_pos_old;
 			sp_pos_old = sp_pos_temp;
 
-			pid_out = ( 0.00015f * d_sp_pos ) + pidTask( &pidPos, (float)sp_pos_temp, (float)pv_pos );
+			//sp_speed = ( 0.015f * d_sp_pos ) + pidTask_test( &pidPos, (float)sp_pos_temp, (float)pv_pos );
+
+			pid_out = ( 0.00000f * d_sp_pos ) + pidTask( &pidPos, (float)sp_pos_temp, (float)pv_pos );
 			if( pid_out > 1.0f ) pid_out = 1.0f;
 			if( pid_out < -1.0f ) pid_out = -1.0f;
 
@@ -321,22 +331,26 @@ void ADC_IRQHandler( void )
 		}
 #endif
 
-#if ( ( __CONTROL_MODE__ == __AI1_SET_SPEED__ ) || ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ ) )
+#if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
 		if( 4 == ++counter_speed_reg ) {
 			static float old_sp_speed = 0;
 			float d_sp_speed;
 
-			if( sp_speed >  4000.0f ) sp_speed =  4000.0f;
-			if( sp_speed < -4000.0f ) sp_speed = -4000.0f;
+			//static volatile float arrSpeedSP[10] = { 0 };
+			//volatile float sp_speed_temp;
+			//sp_speed_temp = ffilter( (float)sp_speed, arrSpeedSP, 5 );
+
+			if( sp_speed > +3500.0f ) sp_speed = +3500.0f;
+			if( sp_speed < -3500.0f ) sp_speed = -3500.0f;
 
 			if( pv_speed < 15.0f && pv_speed > -15.0f ) pidSpeed.kp = 0.30f;
-			else pidSpeed.kp = 0.45f;
+			else pidSpeed.kp = 0.40f;
 
 			d_sp_speed = sp_speed - old_sp_speed;
 			old_sp_speed = sp_speed;
 
 			//lpFoc->Iq_des = ( 50.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, pv_speed_filter );
-			lpFoc->Iq_des = 1575.0f * ( ( 0.01 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed_filter ) );
+			lpFoc->Iq_des = 1575.0f * ( ( 0.00 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed_filter ) );
 
 			counter_speed_reg = 0;
 		}
@@ -358,7 +372,7 @@ void ADC_IRQHandler( void )
 		pidSpeed.sumError = 0.0f;
 		pidPos.sumError = 0.0f;
 	}
-
+	///////////////////////////////////////////////////////////////////////////
 	/*static float dt = 1.0f/16000.0f;
 	const  float freq = 500.0f;
 	static float freqt = 1.0f / freq;
@@ -369,7 +383,6 @@ void ADC_IRQHandler( void )
 	if( t >= freqt ) {
 		t = 0;
 	}*/
-
 	///////////////////////////////////////////////////////////////////////////
 #if ( __CONTROL_MODE__ == __IQ_CONTROL__ )
 	lpFoc->Iq_des = ( ai0_filtered_value - 2047.0f );
@@ -389,7 +402,7 @@ void ADC_IRQHandler( void )
 		static volatile float temp = 0;
 
 		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.89 );
-		lpFoc->Iq_des = temp;
+		//lpFoc->Iq_des = temp;
 
 		if( lpFoc->Iq_des >  1575.0f ) lpFoc->Iq_des =  1575.0f;
 		if( lpFoc->Iq_des < -1575.0f ) lpFoc->Iq_des = -1575.0f;
@@ -417,9 +430,9 @@ void ADC_IRQHandler( void )
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->f_rpm_mt * 0.5f + 2047 );
 	DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, pv_speed_filter * 0.5f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->angle + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_pos*0.5f + 2047, pv_pos*0.5f + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, (sp_pos - pv_pos) * 1.0f + 2047, pv_speed_filter * 0.5f + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_pos * 0.5f + 2047, pv_pos * 0.5f + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Is + 2047, lpFoc->f_rpm_mt_filtered_value + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id + 2047, lpFoc->Iq + 2047 );
@@ -428,6 +441,7 @@ void ADC_IRQHandler( void )
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq + 2047, pv_speed_filter*0.5 + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq + 2047, sp_speed*0.5 + 2047);
 
+	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Is*0.9f + 2047, lpFoc->Iq_des*0.9f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq*0.9f + 2047, lpFoc->Iq_des*0.9f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Ia * 0.5f + 2047, lpFoc->Ib * 0.5f + 2047 );
 

@@ -44,7 +44,8 @@
 #define IDC_EDIT_ENC0_OFFSET            37
 #define IDC_BUTTON_ENC0_GET_OFFSET      38
 #define IDC_BUTTON_ENC0_SET_OFFSET      39
-#define IDC_MFCBUTTON1                  41
+
+#define IDC_STATIC_POS_ERROR            41
 #define IDC_STATIC_RPM_M                42
 #define IDC_STATIC_RPM_T                43
 #define IDC_STATIC_RPM_MT               44
@@ -52,7 +53,10 @@
 #define IDC_STATIC_RPM_M_RAW            46
 #define IDC_STATIC_RPM_MT_RAW           47
 #define IDC_STATIC_RPM_MT2              48
+#define IDC_STATIC_TEMP                 48
+#define IDC_STATIC_TEMP_32              48
 #define IDC_STATIC_MCU_RPM              49
+#define IDC_STATIC_SP_POS_TIM8          50
 #define IDM_CONNECTION_COMSELECT_COM1   201
 #define IDM_CONNECTION_COMSELECT_COM2   202
 #define IDM_CONNECTION_COMSELECT_COM3   203
@@ -194,7 +198,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        11
 #define _APS_NEXT_COMMAND_VALUE         27
-#define _APS_NEXT_CONTROL_VALUE         48
+#define _APS_NEXT_CONTROL_VALUE         51
 #define _APS_NEXT_SYMED_VALUE           0
 #endif
 #endif
