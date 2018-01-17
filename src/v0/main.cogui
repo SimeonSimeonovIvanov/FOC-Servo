@@ -17,7 +17,7 @@
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="11525" selectionTopPixel="5784"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8402" selectionTopPixel="4166"/>
 </editor>
 </editors>
 <views>
@@ -331,8 +331,14 @@
 <item historyLabel="main.c" index="3">
 <position info="not_deleted" x="3284" y="0"/>
 </item>
-<item active="true" historyLabel="foc.c" index="2">
+<item historyLabel="foc.c" index="2">
 <position info="not_deleted" x="962" y="0"/>
+</item>
+<item historyLabel="foc.c" index="2">
+<position info="not_deleted" x="9561" y="0"/>
+</item>
+<item active="true" historyLabel="foc.c" index="2">
+<position info="not_deleted" x="9491" y="27"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
