@@ -47,7 +47,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-	pidInit( &pidSpeed, 0.4f, 0.005f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 0.4f, 0.0025f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.99f );
 	pidSetInputRange( &pidSpeed, 100 );
@@ -56,7 +56,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
-	pidInit( &pidPos, 3.0f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidPos, 4.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 20000 );
@@ -265,7 +265,7 @@ void ADC_IRQHandler( void )
 	pv_speed = lpFoc->f_rpm_mt;
 	pv_speed_filter = ffilter( (float)pv_speed, arrSpeedFB, 5 );
 
-	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT  ) * 10;
+	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT  ) * 20;
 
 	pv_pos = iEncoderGetAbsPos();
 	sp_pos = sp_counter;
@@ -286,7 +286,7 @@ void ADC_IRQHandler( void )
 		}
 #endif
 
-		if( 16000 == ++temp) {
+		if( 40 == ++temp) {
 			static int32_t new = 0, old = 0;
 
 			new = sp_pos;
@@ -308,20 +308,23 @@ void ADC_IRQHandler( void )
 		//sp_pos = counter02;
 
 		if( 8 == ++counter_pos_reg ) {
-			static volatile float arrPosSP[10] = { 0 };
+			//static volatile float arrPosSP[10] = { 0 };
 			static float sp_pos_old = 0;
 			volatile float sp_pos_temp;
 			float d_sp_pos;
 			float pid_out;
 
-			sp_pos_temp = ffilter( (float)sp_pos, arrPosSP, 2 );
+			//float sp_pos_rpm  = ((60.0f * sp_pos_freq) * (400.0f / 8196.0f)); // Ts = 0.005 ms.
+
+			sp_pos_temp = sp_pos; //ffilter( (float)sp_pos, arrPosSP, 2 );
 
 			d_sp_pos = sp_pos_temp - sp_pos_old;
 			sp_pos_old = sp_pos_temp;
 
 			//sp_speed = ( 0.015f * d_sp_pos ) + pidTask_test( &pidPos, (float)sp_pos_temp, (float)pv_pos );
+			pid_out = ( 0.00001f * d_sp_pos ) + pidTask( &pidPos, (float)sp_pos_temp, (float)pv_pos );
+			//pid_out = ( 0.000125f * sp_pos_rpm ) + pidTask( &pidPos, (float)sp_pos_temp, (float)pv_pos );
 
-			pid_out = ( 0.00000f * d_sp_pos ) + pidTask( &pidPos, (float)sp_pos_temp, (float)pv_pos );
 			if( pid_out > 1.0f ) pid_out = 1.0f;
 			if( pid_out < -1.0f ) pid_out = -1.0f;
 
@@ -350,7 +353,7 @@ void ADC_IRQHandler( void )
 			old_sp_speed = sp_speed;
 
 			//lpFoc->Iq_des = ( 50.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, pv_speed_filter );
-			lpFoc->Iq_des = 1575.0f * ( ( 0.00 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed_filter ) );
+			lpFoc->Iq_des = 1575.0f * ( ( 0.01 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed_filter ) );
 
 			counter_speed_reg = 0;
 		}

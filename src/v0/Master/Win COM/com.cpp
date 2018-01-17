@@ -469,12 +469,14 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			float ftemp;
 
 			//ftemp = (10.0f * pos_error) / 8196.0f; // Винт, 10 мм/об.
-			ftemp = 0.02*((500.0f * (pos_error/3)) / (3*8196.0f)); // Винт, 10 мм/об.
+			ftemp = ((500.0f * (pos_error/3)) / (3*8196.0f)); // Винт, 10 мм/об.
 
 			sprintf(szBuffer, "%d | %4.2f mm.", pos_error, ftemp);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_POS_ERROR), szBuffer);
 
-			ftemp = (60.0f * temp_32) / 8196.0f;
+			//ftemp = (60.0f * temp_32) / 8196.0f; // Ts = 1.0 s.
+			ftemp = ((60.0f * temp_32) * (400.0f / 8196.0f)); // Ts = 0.005 ms.
+
 			sprintf(szBuffer, "%4.2f", ftemp);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_TEMP_32), szBuffer);
 
