@@ -47,7 +47,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-	pidInit( &pidSpeed, 0.5f, 0.0035f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 0.5f, 0.005f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.99f );
 	pidSetInputRange( &pidSpeed, 200 );
@@ -56,7 +56,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
-	pidInit( &pidPos, 3.0f, 0.0f, 0.0f, 1.001f );
+	pidInit( &pidPos, 3.0f, 0.000f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 25000 );
@@ -66,12 +66,12 @@ void focInit(LP_MC_FOC lpFocExt)
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.12f, 0.0035f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.12f, 0.004f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.25f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.12f, 0.0035f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.12f, 0.004f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.25f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -268,7 +268,9 @@ void ADC_IRQHandler( void )
 	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT  ) * 20;
 
 	pv_pos = iEncoderGetAbsPos();
+	//sp_pos = ai0_filtered_value*4;
 	sp_pos = sp_counter;
+
 	pos_error = sp_pos - pv_pos;
 
 	if( 40 == ++temp) {
@@ -304,7 +306,6 @@ void ADC_IRQHandler( void )
 			counter01 = 0;
 		}
 
-		//sp_pos = ai0_filtered_value*4;
 		//sp_pos = counter02;
 
 		if( 1 ) { //== ++counter_pos_reg ) {
@@ -315,10 +316,10 @@ void ADC_IRQHandler( void )
 			d_sp_pos = sp_pos - sp_pos_old;
 			sp_pos_old = sp_pos;
 
-			if( pos_error < 10.0f && pos_error > -10.0f ) {
-				//pidPos.kp = 3.5f;
+			if( pos_error < 200.0f && pos_error > -200.0f ) {
+				pidPos.kp = 3.0f;
 			} else {
-				//pidPos.kp = 4.0f;
+				//pidPos.kp = 3.5f;
 			}
 
 			//sp_speed = ( 0.015f * d_sp_pos ) + pidTask_test( &pidPos, (float)sp_pos_temp, (float)pv_pos );
