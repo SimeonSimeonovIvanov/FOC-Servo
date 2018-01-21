@@ -1,5 +1,11 @@
 #include "encoder.h"
 
+#define __TIM8_ENCODER__
+
+#ifndef __TIM8_ENCODER__
+	#define __TIM8_STEP_DIR__
+#endif
+
 //static float arr_sin[361], arr_cos[361];
 static float arr_sin[4096], arr_cos[4096];
 
@@ -62,14 +68,22 @@ void initEncoder(void)
 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
 	TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
 
+#ifdef __TIM8_STEP_DIR__
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x01;
+#endif
 	TIM_TimeBaseInit( TIM8, &TIM_TimeBaseStructure );
 
 	TIM_EncoderInterfaceConfig( TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
-	//TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_BothEdge );
+
+#ifdef __TIM8_STEP_DIR__
+	TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_BothEdge );
+#endif
+
+#ifdef __TIM8_ENCODER__
 	TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
+#endif
 
 	TIM_ICInitStruct.TIM_ICFilter = 0x0F;
 	TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
@@ -84,7 +98,9 @@ void initEncoder(void)
 	TIM_ICInit( TIM3, &TIM_ICInitStruct );
 	TIM_ICInit( TIM4, &TIM_ICInitStruct );
 
-	//TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;
+#ifdef __TIM8_STEP_DIR__
+	TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;
+#endif
 	TIM_ICInit( TIM8, &TIM_ICInitStruct );
 
 	/* 32 bits. Abs. Pos Timer2 */

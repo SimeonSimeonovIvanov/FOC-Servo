@@ -476,7 +476,7 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_POS_ERROR), szBuffer);
 
 			//ftemp = (60.0f * temp_32) / 8196.0f; // Ts = 1.0 s.
-			ftemp = 60.0f * ( ( temp_32 * (1.0f/0.005f) ) * ( 1.0f / 8196.0f ) );
+			ftemp = 60.0f * ( ( temp_32 * (1.0f/0.0025f) ) * ( 1.0f / 8192.0f ) );
 
 			sprintf(szBuffer, "%8.2f", ftemp);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_TEMP_32), szBuffer);
@@ -491,9 +491,9 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			sprintf(szBuffer, "%4.2f", mcu_f_rpm_t );
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_MT_RAW), szBuffer);
 			///////////////////////////////////////////////////////////////////////////////////////
-			const float P = 8196.0f;
-			const float Ts = 0.0025f;
-			const float fc = 3*2000000.0f;
+			const float P = 8192.0f;
+			const float Ts = 0.00125f;
+			const float fc = 3*4000000.0f;
 			float f_rpm_m, f_rpm_t, f_rpm_mt;
 
 			f_rpm_m = 60.0f * ((float)rpm_m / (P * Ts));

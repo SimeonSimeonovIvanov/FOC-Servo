@@ -9,8 +9,8 @@
 #define __CONTROL_MODE__            3
 
 const float P = 8192.0f;
-const float Ts = 0.0025f;
-const float fc = 3*2000000.0f;
+const float Ts = 0.00125f;
+const float fc = 3*4000000.0f;
 
 extern uint32_t uwTIM10PulseLength;
 extern int16_t tim8_overflow;
@@ -258,14 +258,15 @@ void ADC_IRQHandler( void )
 	static volatile float arrSpeedSP[10] = { 0 }, arrSpeedFB[10] = { 0 };
 	volatile float pv_speed_filter;
 
+	lpFoc->f_rpm_mt *= 0.740;
 	pv_speed = lpFoc->f_rpm_mt;
 	pv_speed_filter = pv_speed;ffilter( (float)pv_speed, arrSpeedFB, 4 );
 
-	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT  );
-	sp_counter = ( -4.096f * (float)sp_counter ) * 1.0f;
+	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT );
+	sp_counter = ( ( 8192.0f / 2000.0f ) * (float)sp_counter ) * -1.0f;
 
 	pv_pos = iEncoderGetAbsPos();
-	//sp_pos = ai0_filtered_value*40;
+	//sp_pos = ai0_filtered_value*4;
 	sp_pos = sp_counter;
 
 	/*if(sp_counter) {
@@ -288,12 +289,18 @@ void ADC_IRQHandler( void )
 
 	pos_error = sp_pos - pv_pos;
 
-	if( 80 == ++temp) {
+	static float d_speed_freq = 0.0f, freq_speed_old = 0.0f;
+	if( 40 == ++temp) {
 		static int32_t new = 0, old = 0;
+		float freq_speed;
 
 		new = sp_pos;
 		sp_pos_freq = new - old;
 		old = new;
+
+		freq_speed = 60.0f * ( ( sp_pos_freq * (1.0f/0.00125f) ) * ( 1.0f / 8192.0f ) );
+		d_speed_freq = freq_speed - freq_speed_old;
+		freq_speed_old = freq_speed;
 
 		temp = 0;
 	}
@@ -335,14 +342,14 @@ void ADC_IRQHandler( void )
 			d_sp_pos = sp_pos - sp_pos_old;
 			sp_pos_old = sp_pos;
 
-			if( pos_error < 200.0f && pos_error > -200.0f ) {
-				pidPos.kp = 2.5f;
+			if( pos_error < 600.0f && pos_error > -600.0f ) {
+				pidPos.kp = 4.0f;
 			} else {
-				//pidPos.kp = 3.0f;
+				//pidPos.kp = 8.0f;
 			}
 
 			//sp_speed = ( 0.015f * d_sp_pos ) + pidTask_test( &pidPos, (float)sp_pos_temp, (float)pv_pos );
-			pid_out = ( 0.00f * d_sp_pos ) + pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
+			pid_out = ( 0.00f * d_sp_pos + 0.000 * d_speed_freq ) + pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
 
 			if( pid_out > 1.0f ) pid_out = 1.0f;
 			if( pid_out < -1.0f ) pid_out = -1.0f;
