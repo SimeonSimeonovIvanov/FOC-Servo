@@ -68,7 +68,8 @@ void initEncoder(void)
 	TIM_EncoderInterfaceConfig( TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
-	TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_BothEdge );
+	//TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_BothEdge );
+	TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 
 	TIM_ICInitStruct.TIM_ICFilter = 0x0F;
 	TIM_ICInitStruct.TIM_Channel = TIM_Channel_1;
@@ -83,7 +84,7 @@ void initEncoder(void)
 	TIM_ICInit( TIM3, &TIM_ICInitStruct );
 	TIM_ICInit( TIM4, &TIM_ICInitStruct );
 
-	TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;
+	//TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;
 	TIM_ICInit( TIM8, &TIM_ICInitStruct );
 
 	/* 32 bits. Abs. Pos Timer2 */

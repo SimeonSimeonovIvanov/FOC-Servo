@@ -404,12 +404,14 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 	while (1) {
 		unsigned int hreg[50];
 
-		iResult = mbReadHoldingRegisters(&lpMainData->mbMaster, lpMainData->SlaveID, 40000, 22, hreg);
+		iResult = mbReadHoldingRegisters(&lpMainData->mbMaster, lpMainData->SlaveID, 40000, 30, hreg);
 		if (!iResult) {
 			int current_a, current_b, dc_voltage, ai0, uvw, encoder0_raw, encoder0_angle, encoder1_pos, offset;
 			int rpm_t, rpm_m, rpm_tm;
 			int dc_current;
 			int mcu_rpm;
+			float sp_speed;
+			float mcu_f_rpm_t;
 			int sp_pos_tim8, pos_error, temp_32;
 
 			current_a = mbU16toSI(hreg[0]);
@@ -427,11 +429,14 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			rpm_t = hreg[12];
 			dc_current = mbU16toSI(hreg[13]);
 
-			mcu_rpm = mbU32toSI(hreg[15] << 16 | hreg[14]);
+			mcu_rpm = 0; mbU32toSI(hreg[15] << 16 | hreg[14]);
 
 			sp_pos_tim8 = mbU32toSI(hreg[17] << 16 | hreg[16]);
 			pos_error = mbU32toSI(hreg[19] << 16 | hreg[18]);
 			temp_32 = mbU32toSI(hreg[21] << 16 | hreg[20]);
+
+			mcu_f_rpm_t = 0.01f * mbU32toSI(hreg[23] << 16 | hreg[22]);
+			sp_speed = mbU32toSI(hreg[25] << 16 | hreg[24]) / 100.0f;
 
 			sprintf(szBuffer, "CA: %d", current_a);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_ADC0), szBuffer);
@@ -460,24 +465,20 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			sprintf(szBuffer, "%d", encoder1_pos);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_ENC1_ABS_POS), szBuffer);
 
-			sprintf(szBuffer, "%4.2f", (float)mcu_rpm * 0.01f);
-			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_MCU_RPM), szBuffer);
-
 			sprintf(szBuffer, "%d", sp_pos_tim8);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_SP_POS_TIM8), szBuffer);
 
 			float ftemp;
 
-			//ftemp = (10.0f * pos_error) / 8196.0f; // Винт, 10 мм/об.
-			ftemp = ((500.0f * (pos_error/3)) / (3*8196.0f)); // Винт, 10 мм/об.
+			ftemp = 10.0f * ( pos_error / 8192.0f ); // Винт, 10 мм/об.
 
 			sprintf(szBuffer, "%d | %4.2f mm.", pos_error, ftemp);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_POS_ERROR), szBuffer);
 
 			//ftemp = (60.0f * temp_32) / 8196.0f; // Ts = 1.0 s.
-			ftemp = ((60.0f * temp_32) * (400.0f / 8196.0f)); // Ts = 0.005 ms.
+			ftemp = 60.0f * ( ( temp_32 * (1.0f/0.005f) ) * ( 1.0f / 8196.0f ) );
 
-			sprintf(szBuffer, "%4.2f", ftemp);
+			sprintf(szBuffer, "%8.2f", ftemp);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_TEMP_32), szBuffer);
 
 			///////////////////////////////////////////////////////////////////////////////////////
@@ -486,40 +487,42 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 
 			sprintf(szBuffer, "%d", rpm_t);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_T_RAW), szBuffer);
+
+			sprintf(szBuffer, "%4.2f", mcu_f_rpm_t );
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_MT_RAW), szBuffer);
 			///////////////////////////////////////////////////////////////////////////////////////
 			const float P = 8196.0f;
 			const float Ts = 0.0025f;
-			const float fc = 2000000.0f;
+			const float fc = 3*2000000.0f;
 			float f_rpm_m, f_rpm_t, f_rpm_mt;
 
 			f_rpm_m = 60.0f * ((float)rpm_m / (P * Ts));
+			if (rpm_m < 0) {
+				rpm_t = -rpm_t;
+			}
 
 			if (rpm_t) {
-				if (rpm_m < 0) {
-					rpm_t = -rpm_t;
-				}
-
-				f_rpm_t = 60.0f * (fc / (0.5*P * (float)rpm_t));
+				f_rpm_t = 60.0f * (fc / (P * (float)rpm_t));
 			} else {
 				f_rpm_t = 0.0f;
 			}
 
-			if (f_rpm_m < 100 && f_rpm_m ) {
-				//f_rpm_mt = f_rpm_t;
-			} //else
 			if (f_rpm_m + f_rpm_t) {
-				f_rpm_mt = 2*0.98*(f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t);
+				f_rpm_mt = 2*(f_rpm_m * f_rpm_t) / (f_rpm_m + f_rpm_t);
 			} else {
 				f_rpm_mt = 0.0f;
 			}
-			/////////////////////////////////////////////////////////////////////////////////////////////////////
-			sprintf(szBuffer, "%4.3f", f_rpm_m);
+			///////////////////////////////////////////////////////////////////////////////////////
+			sprintf(szBuffer, "%4.2f", f_rpm_m);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_M), szBuffer);
-			sprintf(szBuffer, "%4.3f", f_rpm_t);
+			sprintf(szBuffer, "%4.2f", f_rpm_t);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_T), szBuffer);
-			sprintf(szBuffer, "%4.3f", f_rpm_mt);
+			sprintf(szBuffer, "%4.2f", f_rpm_mt);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_RPM_MT), szBuffer);
 			///////////////////////////////////////////////////////////////////////////////////////
+			sprintf(szBuffer, "%4.2f", (float)sp_speed);
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_SP_SPEED), szBuffer);
+			/////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 
 		switch (lpMainData->flagButtonOnClick) {

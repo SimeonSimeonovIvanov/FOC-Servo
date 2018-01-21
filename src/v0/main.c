@@ -3,7 +3,7 @@
 #define REG_HOLDING_START   40001
 #define REG_HOLDING_NREGS   50
 
-extern float sp_speed, pv_speed;
+extern float sp_speed, pv_speed, pv_speed_filter;
 extern float ai0_filtered_value;
 extern int32_t sp_pos, pv_pos, pos_error, sp_pos_freq;
 extern uint16_t ai0, ai1;
@@ -70,7 +70,7 @@ int main(void)
 		FirstOrderLagFilter( &stFoc.f_rpm_m_filtered_value, stFoc.f_rpm_m, 0.0005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_t_filtered_value, stFoc.f_rpm_t, 0.0005f );
 
-		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.005f );
+		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.00005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt, 0.00008f );
 
 		if( 0 || dc_bus_filtered_value > 1000 ) {
@@ -100,7 +100,7 @@ int main(void)
 		}
 
 		stFoc.Is = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
-		rpm = stFoc.f_rpm_mt_temp_filtered_value * 100;
+		rpm = stFoc.f_rpm_mt_filtered_value*100.0f;
 		//rpm = ( sp_pos - pv_pos ) * 100;
 		//rpm = sp_pos * 100;
 
@@ -137,6 +137,12 @@ int main(void)
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[20] = sp_pos_freq;
 		usRegHoldingBuf[21] = sp_pos_freq>>16;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		usRegHoldingBuf[22] = (int)(stFoc.f_rpm_mt*100.0f);
+		usRegHoldingBuf[23] = (int)(stFoc.f_rpm_mt*100.0f)>>16;
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		usRegHoldingBuf[24] = (int)(sp_speed*100.0f);
+		usRegHoldingBuf[25] = (int)(sp_speed*100.0f)>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		(void)eMBPoll();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

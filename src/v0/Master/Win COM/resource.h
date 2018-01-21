@@ -44,7 +44,6 @@
 #define IDC_EDIT_ENC0_OFFSET            37
 #define IDC_BUTTON_ENC0_GET_OFFSET      38
 #define IDC_BUTTON_ENC0_SET_OFFSET      39
-
 #define IDC_STATIC_POS_ERROR            41
 #define IDC_STATIC_RPM_M                42
 #define IDC_STATIC_RPM_T                43
@@ -56,6 +55,7 @@
 #define IDC_STATIC_TEMP                 48
 #define IDC_STATIC_TEMP_32              48
 #define IDC_STATIC_MCU_RPM              49
+#define IDC_STATIC_SP_SPEED             49
 #define IDC_STATIC_SP_POS_TIM8          50
 #define IDM_CONNECTION_COMSELECT_COM1   201
 #define IDM_CONNECTION_COMSELECT_COM2   202
