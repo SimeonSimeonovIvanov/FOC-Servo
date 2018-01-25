@@ -35,6 +35,19 @@ void focInit(LP_MC_FOC lpFocExt)
 
 	memset( lpFoc, 0, sizeof( MC_FOC ) );
 
+	lpFoc->fMaxRPM = 3000.0f;
+
+	/*        EATON Wiring Manual | 2011
+	 * "The rotation direction of a motor is always
+	 * determined by directly looking at the drive
+	 * shaft of the motor (from the drive end). On
+	 * motors with two shaft ends, the driving end
+	 * is denoted with D (= Drive), the non-driving
+	 * end with N (= No drive)."
+	 */
+	lpFoc->fMaxRPMforCW  = 3000.00; // FWD - forward run ( +, clockwise rotation field )
+	lpFoc->fMaxRPMforCCW = 3000.00; // REV - reverse run ( -, anticlockwise rotation field active )
+
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_CONTROL__ )
@@ -56,13 +69,14 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
-	pidInit( &pidPos, 3.0f, 0.0f, 0.0f, 1.001f );
+	/*pidInit( &pidPos, 4.0f, 0.0f, 0.0f, 1.001f );
 	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidPos, 0.0f );
-	pidSetInputRange( &pidPos, 25000 );
+	pidSetInputRange( &pidPos, 25000 );*/
 
-	//pidInit_test( &pidPos, 1.0f, 0.0f, 0.0f, 1.001f );
-	//pidSetOutLimit_test( &pidPos, 3000.0f, -3000.0f );
+	pidInit_test( &pidPos, 0.45f, 0.01f, 0.51f, 1.0f );
+	pidSetIntegralLimit_test( &pidPos, 3000 );
+	pidSetOutLimit_test( &pidPos, 3000.0f, -3000.0f );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
@@ -204,7 +218,7 @@ void ADC_IRQHandler( void )
 
 	adc_current_filter( &lpFoc->current_a, &lpFoc->current_b );
 
-	enc_delta = -TIM4->CNT;
+	enc_delta = TIM4->CNT;
 
 	if( 40 == ++counter_get_speed ) {
 		volatile float rpm_m, rpm_t;
@@ -270,8 +284,10 @@ void ADC_IRQHandler( void )
 	sp_pos = sp_counter;
 
 	/*if(sp_counter) {
-		if( sp_counter >= 1000 && sp_counter <= 10000 ) {
-			sp_pos = ( ((float)( 1.0f/( 10000.0f - 1000.0f )  ) * ((float)sp_counter - 1000.0f)) * 10000.0f ) + 1000 ;
+		if( sp_counter >= 1000.0f && sp_counter <= 10000 ) {
+			sp_pos = (
+					( (float)( 1.0f/( 10000.0f - 1000.0f )  ) * ((float)sp_counter - 1000.0f) ) * 9000.0f
+			) + 1000.0f;
 		}
 
 		if( sp_counter > 10000 && sp_counter < 15000 ) {
@@ -280,10 +296,12 @@ void ADC_IRQHandler( void )
 
 		if( sp_counter >= 15000 ) {
 			sp_pos = 0;
+			lpFoc->fMaxRPMforCCW = 100;
 		}
 
-		if( sp_counter >= 20000 ) {
+		if( sp_counter >= 25000 ) {
 			sp_counter = tim8_overflow = TIM8->CNT = 0;
+			lpFoc->fMaxRPMforCCW = 3000;
 		}
 	}*/
 
@@ -291,6 +309,7 @@ void ADC_IRQHandler( void )
 
 	static float d_speed_freq = 0.0f, freq_speed_old = 0.0f;
 	if( 40 == ++temp) {
+		static volatile float arr_d_speed_freq[10] = { 0 };
 		static int32_t new = 0, old = 0;
 		float freq_speed;
 
@@ -299,7 +318,10 @@ void ADC_IRQHandler( void )
 		old = new;
 
 		freq_speed = 60.0f * ( ( sp_pos_freq * (1.0f/0.00125f) ) * ( 1.0f / 8192.0f ) );
+
 		d_speed_freq = freq_speed - freq_speed_old;
+		d_speed_freq = ffilter( (float)d_speed_freq, arr_d_speed_freq, 10 );
+
 		freq_speed_old = freq_speed;
 
 		temp = 0;
@@ -335,26 +357,25 @@ void ADC_IRQHandler( void )
 
 		//sp_pos = counter02;
 
-		if( 1 ) { //== ++counter_pos_reg ) {
+		if( 16 == ++counter_pos_reg ) {
 			static float sp_pos_old = 0;
 			float d_sp_pos, pid_out;
 
 			d_sp_pos = sp_pos - sp_pos_old;
 			sp_pos_old = sp_pos;
 
-			if( pos_error < 600.0f && pos_error > -600.0f ) {
-				pidPos.kp = 4.0f;
+			if( pos_error < 10.0f && pos_error > -10.0f ) {
+				//pidPos.kp = ...;
 			} else {
-				//pidPos.kp = 8.0f;
+				//pidPos.kp = ...f;
 			}
 
-			//sp_speed = ( 0.015f * d_sp_pos ) + pidTask_test( &pidPos, (float)sp_pos_temp, (float)pv_pos );
-			pid_out = ( 0.00f * d_sp_pos + 0.000 * d_speed_freq ) + pidTask( &pidPos, (float)sp_pos, (float)pv_pos );
-
+			/*pid_out = ( 0.00f * d_sp_pos + 0.000 * d_speed_freq ) + pidTask( &pidPos, (float)sp_pos, (float)-pv_pos );
 			if( pid_out > 1.0f ) pid_out = 1.0f;
 			if( pid_out < -1.0f ) pid_out = -1.0f;
+			sp_speed = -lpFoc->fMaxRPM * pid_out;*/
 
-			sp_speed = 3000.0f * pid_out;
+			sp_speed = ( 5.0f * d_sp_pos ) + pidTask_test( &pidPos, (float)sp_pos, (float)pv_pos );
 
 			counter_pos_reg = 0;
 		}
@@ -365,8 +386,12 @@ void ADC_IRQHandler( void )
 			static float old_sp_speed = 0;
 			float d_sp_speed;
 
-			if( sp_speed > +3500.0f ) sp_speed = +3500.0f;
-			if( sp_speed < -3500.0f ) sp_speed = -3500.0f;
+			if( sp_speed > +lpFoc->fMaxRPMforCW ) {
+				sp_speed = +lpFoc->fMaxRPMforCW;
+			}
+			if( sp_speed < -lpFoc->fMaxRPMforCCW ) {
+				sp_speed = -lpFoc->fMaxRPMforCCW;
+			}
 
 			if( pv_speed < 15.0f && pv_speed > -15.0f ) {
 				//pidSpeed.kp = 0.35f;
@@ -378,7 +403,7 @@ void ADC_IRQHandler( void )
 			old_sp_speed = sp_speed;
 
 			//lpFoc->Iq_des = ( 50.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, pv_speed_filter );
-			lpFoc->Iq_des = 1575.0f * ( ( 0.001 * d_sp_speed ) + pidTask( &pidSpeed, sp_speed, pv_speed_filter ) );
+			lpFoc->Iq_des = 1575.0f * ( ( 0.001 * d_sp_speed ) + pidTask( &pidSpeed, -sp_speed, -pv_speed_filter ) );
 
 			counter_speed_reg = 0;
 		}

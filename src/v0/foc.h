@@ -64,6 +64,7 @@ typedef struct {
 	int sector;
 	int PWM1, PWM2, PWM3;
 
+	float fMaxRPM, fMaxRPMforCW, fMaxRPMforCCW;
 
 	float f_rpm_m, f_rpm_m_filtered_value;
 	float f_rpm_t, f_rpm_t_filtered_value;

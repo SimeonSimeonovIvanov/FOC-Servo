@@ -178,7 +178,7 @@ void initHall( void )
 
 int32_t iEncoderGetAbsPos(void)
 {
-	return -( (int32_t)TIM2->CNT );
+	return (int32_t)TIM2->CNT;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

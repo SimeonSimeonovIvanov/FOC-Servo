@@ -35,12 +35,12 @@ float pidTask_test( LP_PID lpPid, float sp, float pv )
 
 	lpPid->error = ( sp - pv );
 
-	/*if( lpPid->error > 0.999f ) {
-		lpPid->error = 0.999f;
+	/*if( lpPid->error > 3000.999f ) {
+		lpPid->error = 3000.999f;
 	}
 
-	if( lpPid->error < -0.999f ) {
-		lpPid->error = -0.999f;
+	if( lpPid->error < -3000.999f ) {
+		lpPid->error = -3000.999f;
 	}*/
 
 	lpPid->sumError += lpPid->error;
