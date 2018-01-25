@@ -4,9 +4,10 @@
 #define REG_HOLDING_NREGS   50
 
 extern float sp_speed, pv_speed, pv_speed_filter;
+extern int32_t sp_pos, pv_pos, sp_pos_freq;
 extern float ai0_filtered_value;
-extern int32_t sp_pos, pv_pos, pos_error, sp_pos_freq;
 extern uint16_t ai0, ai1;
+extern PID pidPos, pidSpeed;
 
 extern uint32_t uwTIM10PulseLength;
 extern int16_t tim8_overflow;
@@ -132,8 +133,8 @@ int main(void)
 		usRegHoldingBuf[16] = sp_counter;
 		usRegHoldingBuf[17] = sp_counter>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[18] = pos_error;
-		usRegHoldingBuf[19] = pos_error>>16;
+		usRegHoldingBuf[18] = (int)pidPos.error;
+		usRegHoldingBuf[19] = (int)pidPos.error>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[20] = sp_pos_freq;
 		usRegHoldingBuf[21] = sp_pos_freq>>16;

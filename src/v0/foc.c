@@ -19,7 +19,7 @@ extern int32_t sp_counter;
 static volatile int32_t arrSpPos[10];
 static volatile LP_MC_FOC lpFoc;
 
-volatile int32_t pv_pos = 0, sp_pos = 0, pos_error = 0, sp_update_counter = 0, sp_pos_freq = 0;
+volatile int32_t pv_pos = 0, sp_pos = 0, sp_update_counter = 0, sp_pos_freq = 0;
 
 volatile float sp_speed, pv_speed;
 volatile int16_t enc_delta;
@@ -60,7 +60,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-	pidInit( &pidSpeed, 0.5f, 0.005f, 0.0f, 1.001f );
+	pidInit( &pidSpeed, 1.8f, 0.01f, 0.0f, 1.0f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.999f );
 	pidSetInputRange( &pidSpeed, 200 );
@@ -74,7 +74,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 25000 );*/
 
-	pidInit_test( &pidPos, 0.45f, 0.01f, 0.51f, 1.0f );
+	pidInit_test( &pidPos, 0.5f, 0.0f, 0.0f, 0.001f );
 	pidSetIntegralLimit_test( &pidPos, 3000 );
 	pidSetOutLimit_test( &pidPos, 3000.0f, -3000.0f );
 #endif
@@ -305,8 +305,6 @@ void ADC_IRQHandler( void )
 		}
 	}*/
 
-	pos_error = sp_pos - pv_pos;
-
 	static float d_speed_freq = 0.0f, freq_speed_old = 0.0f;
 	if( 40 == ++temp) {
 		static volatile float arr_d_speed_freq[10] = { 0 };
@@ -364,10 +362,10 @@ void ADC_IRQHandler( void )
 			d_sp_pos = sp_pos - sp_pos_old;
 			sp_pos_old = sp_pos;
 
-			if( pos_error < 10.0f && pos_error > -10.0f ) {
-				//pidPos.kp = ...;
+			if( pidPos.error < 50.0f && pidPos.error > -50.0f ) {
+				//pidPos.kp = 0.1;
 			} else {
-				//pidPos.kp = ...f;
+				//pidPos.kp = 0.45;
 			}
 
 			/*pid_out = ( 0.00f * d_sp_pos + 0.000 * d_speed_freq ) + pidTask( &pidPos, (float)sp_pos, (float)-pv_pos );
@@ -375,14 +373,14 @@ void ADC_IRQHandler( void )
 			if( pid_out < -1.0f ) pid_out = -1.0f;
 			sp_speed = -lpFoc->fMaxRPM * pid_out;*/
 
-			sp_speed = ( 5.0f * d_sp_pos ) + pidTask_test( &pidPos, (float)sp_pos, (float)pv_pos );
+			sp_speed = ( 0.0f * d_sp_pos ) + pidTask_test( &pidPos, (float)sp_pos, (float)pv_pos );
 
 			counter_pos_reg = 0;
 		}
 #endif
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-		if( 1 ) { //== ++counter_speed_reg ) {
+		if( 1 == ++counter_speed_reg ) {
 			static float old_sp_speed = 0;
 			float d_sp_speed;
 
@@ -454,7 +452,7 @@ void ADC_IRQHandler( void )
 	if( lpFoc->enable ) {
 		static volatile float temp = 0;
 
-		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.95 );
+		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.99 );
 		lpFoc->Iq_des = temp;
 
 		if( lpFoc->Iq_des >  1575.0f ) lpFoc->Iq_des =  1575.0f;
