@@ -3,28 +3,26 @@
 #define REG_HOLDING_START   40001
 #define REG_HOLDING_NREGS   50
 
-extern int16_t enc3_new, enc3_old, enc3_delta;
-
-extern float sp_speed, pv_speed, pv_speed_filter;
-extern int32_t sp_pos, pv_pos, sp_pos_freq;
-extern float ai0_filtered_value;
-extern uint16_t ai0, ai1;
+extern float sp_speed, pv_speed;
+extern int32_t sp_pos, pv_pos;
 extern PID pidPos, pidSpeed;
 
+extern float ai0_filtered_value;
+extern uint16_t ai0, ai1;
+
+extern int16_t tim8_overflow, enc_delta;
 extern uint32_t uwTIM10PulseLength;
-extern int16_t tim8_overflow;
 extern uint16_t sanyo_uvw;
-extern int16_t enc_delta;
+
+volatile MC_FOC stFoc;
 
 static USHORT usRegHoldingStart = REG_HOLDING_START;
 static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ] = { 0 };
 
-volatile MC_FOC stFoc;
-
 int main(void)
 {
-	float enc_delta_filtered_value = 0, TIM10PulseLength_filtered_value = 0;
 	float Iq_filtered_value = 0, Iq_des_filtered_value = 0;
+	float TIM10PulseLength_filtered_value = 0;
 	float dc_bus_filtered_value = 0;
 	int32_t rpm;
 
@@ -67,7 +65,6 @@ int main(void)
 		FirstOrderLagFilter( &dc_bus_filtered_value, stFoc.vbus_voltage, 0.0002f );
 		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.009f );
 
-		FirstOrderLagFilter( &enc_delta_filtered_value,  (float)enc_delta, 0.0005f );
 		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.0005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_m_filtered_value, stFoc.f_rpm_m, 0.0005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_t_filtered_value, stFoc.f_rpm_t, 0.0005f );
@@ -121,10 +118,10 @@ int main(void)
 		usRegHoldingBuf[7] = pv_pos;
 		usRegHoldingBuf[8] = pv_pos>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[11] = (int16_t)enc_delta_filtered_value;
+		usRegHoldingBuf[11] = (int16_t)enc_delta;
 		usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[13] = (int)enc3_delta;(int)stFoc.Is;
+		usRegHoldingBuf[13] = (int)stFoc.Is;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[14] = rpm;
 		usRegHoldingBuf[15] = rpm>>16;
@@ -135,8 +132,9 @@ int main(void)
 		usRegHoldingBuf[18] = (int)pidPos.error;
 		usRegHoldingBuf[19] = (int)pidPos.error>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[20] = sp_pos_freq;
-		usRegHoldingBuf[21] = sp_pos_freq>>16;
+		// temp:
+		usRegHoldingBuf[20] = 0;
+		usRegHoldingBuf[21] = 0>>1;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[22] = (int)(stFoc.f_rpm_mt*100.0f);
 		usRegHoldingBuf[23] = (int)(stFoc.f_rpm_mt*100.0f)>>16;
