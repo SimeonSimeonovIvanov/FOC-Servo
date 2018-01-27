@@ -64,7 +64,8 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-	pidInit( &pidSpeed, 1.8f, 0.01f, 0.0f, 1.0f );
+	//pidInit( &pidSpeed, 1.8f, 0.01f, 0.0f, 1.0f );
+	pidInit( &pidSpeed, 1.0f, 0.01f, 0.0f, 1.0f );
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.999f );
 	pidSetInputRange( &pidSpeed, 200 );
@@ -73,11 +74,6 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
-	/*pidInit( &pidPos, 4.0f, 0.0f, 0.0f, 1.001f );
-	pidSetOutLimit( &pidPos, 0.999f, -0.999f );
-	pidSetIntegralLimit( &pidPos, 0.0f );
-	pidSetInputRange( &pidPos, 25000 );*/
-
 	pidInit_test( &pidPos, 0.5f, 0.0f, 0.0f, 1.0f );
 	pidSetIntegralLimit_test( &pidPos, 0.0f );
 	pidSetOutLimit_test( &pidPos, 3000.0f, -3000.0f );
