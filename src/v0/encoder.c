@@ -123,7 +123,7 @@ void initEncoder(void)
 	initTim8_IRQ();
 
 	if( 0 && !readHallMap() ) {
-		for(volatile uint32_t i = 0; i < 2000000; i++);
+		for(volatile uint32_t i = 0; i < 2000000; i++); // Power UP Delay: ?.? ms.
 		initSanyoWareSaveEncoder();
 	}
 }
@@ -231,11 +231,11 @@ uint16_t initSanyoWareSaveEncoder(void) // ---
 	static uint32_t map1[] = {
 			0,
 			0,
-			60*11.377f + 30*11.377f,
-			120*11.377f + 30*11.377f,
-			180*11.377f + 30*11.377f,
-			240*11.377f + 30*11.377f,
-			300*11.377f + 30*11.377f,
+			60*11.375f + 30*11.375f,
+			120*11.375f + 30*11.375f,
+			180*11.375f + 30*11.375f,
+			240*11.375f + 30*11.375f,
+			300*11.375f + 30*11.375f,
 			0
 	};
 	static uint16_t hall_map[8] = { 0, 5, 3, 4, 1, 6, 2, 0 };
@@ -280,8 +280,8 @@ void EXTI15_10_IRQHandler(void)
 uint16_t readRawEncoderWithUVW(void) // !!!
 {
 	static uint32_t hall_old = 0;
-	static uint32_t map1[] = { 0, 0, 60*11.377f, 120*11.377f, 180*11.377f, 240*11.377f, 300*11.377f, 0 };
-	static uint32_t map2[] = { 0, 60*11.377f, 120*11.377f, 180*11.377f, 240*11.377f, 300*11.377f, 360*11.377f, 0 };
+	static uint32_t map1[] = { 0, 0, 60*11.375f, 120*11.375f, 180*11.375f, 240*11.375f, 300*11.375f, 0 };
+	static uint32_t map2[] = { 0, 60*11.375f, 120*11.375f, 180*11.375f, 240*11.375f, 300*11.375f, 360*11.375f, 0 };
 
 	uint32_t hall = 0, encoder = 0, hall_angle = 0;
 
@@ -311,9 +311,9 @@ uint16_t readRawEncoderWithUVW(void) // !!!
 	encoder = TIM3->ARR - TIM3->CNT;
 
 	if( !hall_old ) {
-		encoder = 11.377f * encoderAddOffset( encoder * 0.0878906f, 30 );
+		encoder = 11.375f * encoderAddOffset( encoder * 0.0879120879f, 30 );
 	} else {
-		//encoder = 11.377f * encoderAddOffset( encoder * 0.0878906f, -15 );
+		//encoder = 11.375f * encoderAddOffset( encoder * 0.0878906f, -15 );
 	}
 
 	return encoder;
@@ -344,12 +344,12 @@ uint16_t read360uvw(void)
 			}
 		}
 
-		hall_angle = 11.377f * hall_angle;
+		hall_angle = 11.375f * hall_angle;
 		TIM3->CNT = hall_angle;
 	}
 
 	// 4000 Импулса за половин оборот (180 мех.градуса) на енкодер = 360 ел.градуса ( 4 полюсен мотор ):
-	encoder = TIM3->CNT * 0.0878906f;
+	encoder = TIM3->CNT * 0.0879120879f;
 
 	if( !hall_old ) {
 		encoder = encoderAddOffset( encoder, 30 );
@@ -396,8 +396,8 @@ uint16_t readRawHallInput( void )
 void createSinCosTable(void)
 {
 	for( int i = 0; i < 4096; i++ ) {
-		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * 0.0878906f ) );
-		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * 0.0878906f ) );
+		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * 0.0879120879f ) );
+		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * 0.0879120879f ) );
 	}
 	return;
 

@@ -3,6 +3,8 @@
 #define REG_HOLDING_START   40001
 #define REG_HOLDING_NREGS   50
 
+extern int16_t enc3_new, enc3_old, enc3_delta;
+
 extern float sp_speed, pv_speed, pv_speed_filter;
 extern int32_t sp_pos, pv_pos, sp_pos_freq;
 extern float ai0_filtered_value;
@@ -17,7 +19,6 @@ extern int16_t enc_delta;
 static USHORT usRegHoldingStart = REG_HOLDING_START;
 static USHORT usRegHoldingBuf[ REG_HOLDING_NREGS ] = { 0 };
 
-volatile int32_t sp_counter = 0;
 volatile MC_FOC stFoc;
 
 int main(void)
@@ -74,12 +75,13 @@ int main(void)
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_filtered_value, stFoc.f_rpm_mt, 0.00005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_mt_temp_filtered_value, stFoc.f_rpm_mt, 0.00008f );
 
-		if( 0 || dc_bus_filtered_value > 1000 ) {
+		if( dc_bus_filtered_value > 1000 ) {
 			if( charge_relya_on_delay_counter >= charge_relya_on_delay ) {
 				GPIO_SetBits( GPIOD, GPIO_Pin_11 ); // MCU_CHARGE_RELAY
 				GPIO_SetBits( GPIOD, GPIO_Pin_10 ); // MCU_EN_POWER_STAGE
 
 				if( foc_enable_on_delay_counter >= foc_enable_on_delay ) {
+					TIM_Cmd( TIM8, ENABLE );
 					stFoc.enable = 1;
 				} else {
 					++foc_enable_on_delay_counter;
@@ -96,15 +98,12 @@ int main(void)
 			}
 		}
 
-		if(!stFoc.enable) {
-			sp_counter = iEncoderGetAbsPos();
-		}
-
 		stFoc.Is = sqrtf( stFoc.Id * stFoc.Id + stFoc.Iq * stFoc.Iq );
 		rpm = stFoc.f_rpm_mt_filtered_value*100.0f;
 		//rpm = ( sp_pos - pv_pos ) * 100;
 		//rpm = sp_pos * 100;
 
+		//hall = readRawHallInput();
 		hall = readHallMap();
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[0] = (int)stFoc.Ia;
@@ -114,24 +113,24 @@ int main(void)
 		usRegHoldingBuf[3] = ai0_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 0 ( rot.angle )
-		usRegHoldingBuf[4] = 7 - hall; // !!!
+		usRegHoldingBuf[4] = hall; // !!!
 		usRegHoldingBuf[6] = TIM3->CNT;
 		usRegHoldingBuf[5] = stFoc.angle*0.0879f;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// Encoder 1 ( abs.pos )
-		usRegHoldingBuf[7] = iEncoderGetAbsPos();
-		usRegHoldingBuf[8] = iEncoderGetAbsPos()>>16;
+		usRegHoldingBuf[7] = pv_pos;
+		usRegHoldingBuf[8] = pv_pos>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[11] = (int16_t)enc_delta_filtered_value;
 		usRegHoldingBuf[12] = (uint16_t)TIM10PulseLength_filtered_value;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[13] = (int)stFoc.Is;
+		usRegHoldingBuf[13] = (int)enc3_delta;(int)stFoc.Is;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[14] = rpm;
 		usRegHoldingBuf[15] = rpm>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[16] = sp_counter;
-		usRegHoldingBuf[17] = sp_counter>>16;
+		usRegHoldingBuf[16] = sp_pos;
+		usRegHoldingBuf[17] = sp_pos>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[18] = (int)pidPos.error;
 		usRegHoldingBuf[19] = (int)pidPos.error>>16;

@@ -14,12 +14,13 @@ const float fc = 3*4000000.0f;
 
 extern uint32_t uwTIM10PulseLength;
 extern int16_t tim8_overflow;
-extern int32_t sp_counter;
 
 static volatile int32_t arrSpPos[10];
 static volatile LP_MC_FOC lpFoc;
 
-volatile int32_t pv_pos = 0, sp_pos = 0, sp_update_counter = 0, sp_pos_freq = 0;
+int16_t enc3_new = 0, enc3_old = 0, enc3_delta = 0;
+
+volatile int32_t sp_pos = 0, sp_counter = 0, pv_pos = 0, sp_update_counter = 0, sp_pos_freq = 0;
 
 volatile float sp_speed, pv_speed;
 volatile int16_t enc_delta;
@@ -74,8 +75,8 @@ void focInit(LP_MC_FOC lpFocExt)
 	pidSetIntegralLimit( &pidPos, 0.0f );
 	pidSetInputRange( &pidPos, 25000 );*/
 
-	pidInit_test( &pidPos, 0.5f, 0.0f, 0.0f, 0.001f );
-	pidSetIntegralLimit_test( &pidPos, 3000 );
+	pidInit_test( &pidPos, 0.5f, 0.0f, 0.0f, 1.0f );
+	pidSetIntegralLimit_test( &pidPos, 0.0f );
 	pidSetOutLimit_test( &pidPos, 3000.0f, -3000.0f );
 #endif
 
@@ -218,10 +219,27 @@ void ADC_IRQHandler( void )
 
 	adc_current_filter( &lpFoc->current_a, &lpFoc->current_b );
 
-	enc_delta = TIM4->CNT;
+	if( !lpFoc->main_state ) {
+		lpFoc->enable = 0;
+		return;
+	}
 
+	enc_delta = TIM4->CNT;
 	if( 40 == ++counter_get_speed ) {
 		volatile float rpm_m, rpm_t;
+
+		///////////////////////////////////////////////////////////////////////////////
+
+		//enc3_new = ( enc3_new - 2047 );
+
+		enc3_delta = TIM4->CNT - enc3_old;
+		enc3_old = TIM4->CNT;
+		if(
+				enc3_delta > 2047 || enc3_delta < -2047
+		) ;//enc3_delta = 4095 - enc3_delta;
+
+		//enc3_old = enc3_new;
+		///////////////////////////////////////////////////////////////////////////////
 
 		TIM4->CNT = 0;
 
@@ -277,11 +295,9 @@ void ADC_IRQHandler( void )
 	pv_speed_filter = pv_speed;ffilter( (float)pv_speed, arrSpeedFB, 4 );
 
 	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT );
-	sp_counter = ( ( 8192.0f / 2000.0f ) * (float)sp_counter ) * -1.0f;
+	sp_counter = ( ( ( 8192.0f - 1.0f ) / 2000.0f ) * (float)sp_counter ) * -1.0f;
 
 	pv_pos = iEncoderGetAbsPos();
-	//sp_pos = ai0_filtered_value*4;
-	sp_pos = sp_counter;
 
 	/*if(sp_counter) {
 		if( sp_counter >= 1000.0f && sp_counter <= 10000 ) {
@@ -325,11 +341,6 @@ void ADC_IRQHandler( void )
 		temp = 0;
 	}
 
-	if( !lpFoc->main_state ) {
-		lpFoc->enable = 0;
-		return;
-	}
-
 #if ( __CONTROL_MODE__ == __AI1_SET_SPEED__ )
 	sp_speed = 2.0f * ( ai0_filtered_value - 2047.0f );
 	if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
@@ -338,6 +349,7 @@ void ADC_IRQHandler( void )
 #endif
 
 	if( lpFoc->enable ) {
+
 #if ( __CONTROL_MODE__ == __POS_CONTROL__ )
 		if( 16 == ++counter_pos_reg ) {
 			lpFoc->Iq_des = pidTask_test( &pidPos, (float)sp_pos, (float)pv_pos );
@@ -348,24 +360,26 @@ void ADC_IRQHandler( void )
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
 		static int32_t counter01 = 0, counter02 = 0;
 
-		if( ++counter01 == 16000 ) {
-			counter02 += 4*8192;( ai0_filtered_value - 2047.0f ) * ( 1.0f / 10.0f );
+		if( ++counter01 == 160 ) {
+			counter02 += 4*8191;( ai0_filtered_value - 2047.0f ) * ( 1.0f / 10.0f );
 			counter01 = 0;
 		}
 
+		//sp_pos = ai0_filtered_value * 4;
 		//sp_pos = counter02;
+		sp_pos = sp_counter;
 
-		if( 16 == ++counter_pos_reg ) {
+		if( 1 == ++counter_pos_reg ) {
 			static float sp_pos_old = 0;
 			float d_sp_pos, pid_out;
 
 			d_sp_pos = sp_pos - sp_pos_old;
 			sp_pos_old = sp_pos;
 
-			if( pidPos.error < 50.0f && pidPos.error > -50.0f ) {
-				//pidPos.kp = 0.1;
+			if( fabs( pidPos.error ) < 50.0f ) {
+				//pidPos.kp = 0.5f;
 			} else {
-				//pidPos.kp = 0.45;
+				//pidPos.kp = 1.0f;
 			}
 
 			/*pid_out = ( 0.00f * d_sp_pos + 0.000 * d_speed_freq ) + pidTask( &pidPos, (float)sp_pos, (float)-pv_pos );
@@ -391,7 +405,7 @@ void ADC_IRQHandler( void )
 				sp_speed = -lpFoc->fMaxRPMforCCW;
 			}
 
-			if( pv_speed < 15.0f && pv_speed > -15.0f ) {
+			if( fabs( pv_speed ) < 15.0f ) {
 				//pidSpeed.kp = 0.35f;
 			} else {
 				//pidSpeed.kp = 0.50f;
@@ -401,12 +415,13 @@ void ADC_IRQHandler( void )
 			old_sp_speed = sp_speed;
 
 			//lpFoc->Iq_des = ( 50.5 * d_sp_speed ) + pidTask_test( &pidSpeed, sp_speed, pv_speed_filter );
-			lpFoc->Iq_des = 1575.0f * ( ( 0.001 * d_sp_speed ) + pidTask( &pidSpeed, -sp_speed, -pv_speed_filter ) );
+			lpFoc->Iq_des = 1575.0f * ( ( 0.05 * d_sp_speed ) + pidTask( &pidSpeed, -sp_speed, -pv_speed_filter ) );
 
 			counter_speed_reg = 0;
 		}
 #endif
 	} else {
+		TIM_Cmd( TIM8, DISABLE );
 		tim8_overflow = 0;
 		TIM8->CNT = 0;
 
@@ -423,6 +438,7 @@ void ADC_IRQHandler( void )
 		pidSpeed.sumError = 0.0f;
 		pidPos.sumError = 0.0f;
 	}
+
 	///////////////////////////////////////////////////////////////////////////
 	/*static float dt = 1.0f/16000.0f;
 	const  float freq = 500.0f;
