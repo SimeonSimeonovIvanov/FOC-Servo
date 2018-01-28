@@ -2,11 +2,10 @@
 #include "foc.h"
 
 #define __IQ_CONTROL__              0
-#define __POS_CONTROL__             1 // ---
-#define __AI1_SET_SPEED__           2 // +++ ?
-#define __POS_AND_SPEED_CONTROL__   3 // +++ ?
+#define __AI1_SET_SPEED__           1 // +++ ?
+#define __POS_AND_SPEED_CONTROL__   2 // +++ ?
 
-#define __CONTROL_MODE__            3
+#define __CONTROL_MODE__            2
 
 const float P = 8192.0f;
 const float Ts = 0.00125f;
@@ -41,6 +40,8 @@ void focInit(LP_MC_FOC lpFocExt)
 	pv_speed = 0;
 	sp_counter = 0;
 
+	///////////////////////////////////////////////////////////////////////////
+
 	/*        EATON Wiring Manual | 2011
 	 * "The rotation direction of a motor is always
 	 * determined by directly looking at the drive
@@ -54,24 +55,13 @@ void focInit(LP_MC_FOC lpFocExt)
 
 	///////////////////////////////////////////////////////////////////////////
 
-#if ( __CONTROL_MODE__ == __POS_CONTROL__ )
-	pidInit_test( &pidPos, 0.3f, 0.01f, 0.0f, 0.001f );
-	pidSetOutLimit_test( &pidPos, 1500, -1500 );
-	pidSetIntegralLimit_test( &pidPos, 1500 );
-	//pidSetInputRange_test( &pidPos, 100 );
-#endif
-
-	///////////////////////////////////////////////////////////////////////////
-
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
 	//pidInit( &pidSpeed, 1.8f, 0.01f, 0.0f, 1.0f );
-	pidInit( &pidSpeed, 1.0f, 0.01f, 0.0f, 1.0f );
+	pidInit( &pidSpeed, 1.0f, 0.0081f, 0.0f, 1.0f ); // Motor without load
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.999f );
 	pidSetInputRange( &pidSpeed, 200 );
 #endif
-
-	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
 	pidInit_test( &pidPos, 0.5f, 0.0f, 0.0f, 1.0f );
@@ -276,7 +266,7 @@ void ADC_IRQHandler( void )
 
 	lpFoc->f_rpm_mt *= 0.740;
 	pv_speed = lpFoc->f_rpm_mt;
-	pv_speed = ffilter( (float)pv_speed, arrSpeedFB, 2 );
+	pv_speed = ffilter( (float)pv_speed, arrSpeedFB, 5 );
 
 	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT );
 	sp_counter = ( ( ( 8192.0f - 1.0f ) / 2000.0f ) * (float)sp_counter ) * -1.0f;
@@ -291,14 +281,6 @@ void ADC_IRQHandler( void )
 #endif
 
 	if( lpFoc->enable ) {
-
-#if ( __CONTROL_MODE__ == __POS_CONTROL__ )
-		if( 16 == ++counter_pos_reg ) {
-			lpFoc->Iq_des = pidTask_test( &pidPos, (float)sp_pos, (float)pv_pos );
-			counter_pos_reg = 0;
-		}
-#endif
-
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
 		static int32_t counter01 = 0, counter02 = 0;
 
@@ -310,7 +292,9 @@ void ADC_IRQHandler( void )
 		//sp_pos = ai0_filtered_value * 4;
 		//sp_pos = counter02;
 		sp_pos = sp_counter;
+#endif
 
+#if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
 		if( 1 == ++counter_pos_reg ) {
 			static float sp_pos_old = 0;
 
@@ -424,9 +408,9 @@ void ADC_IRQHandler( void )
 	TIM_SetCompare3( TIM1, lpFoc->PWM3 );
 	///////////////////////////////////////////////////////////////////////////
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->f_rpm_mt_temp_filtered_value * 0.5f + 2047 );
-	DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->f_rpm_mt_filtered_value * 0.5f + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->f_rpm_mt_filtered_value * 0.5f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->f_rpm_mt * 0.5f + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, pv_speed_filter * 0.5f + 2047 );
+	DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, pv_speed * 0.5f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->angle + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, (sp_pos - pv_pos) * 1.0f + 2047, pv_speed_filter * 0.5f + 2047 );
