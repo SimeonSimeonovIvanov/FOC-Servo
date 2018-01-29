@@ -10,6 +10,7 @@
 	Last Update:	25.08.2015
 */
 #include "stdafx.h"
+#include "math.h"
 #include "com.h"
 
 unsigned char inPort[32], outPort[16];
@@ -394,6 +395,7 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 	char szBuffer[100];
 	unsigned int i = 0, counter = 0;
 	LP_MAIN_DATA lpMainData = (LP_MAIN_DATA)lpParam;
+	static float max = 0, min = 0;
 
 	lpMainData->DAC_Access[0] = MODBusDacGetAccess(&lpMainData->mbMaster, lpMainData->SlaveID, 0);
 	lpMainData->DAC_Access[1] = MODBusDacGetAccess(&lpMainData->mbMaster, lpMainData->SlaveID, 1);
@@ -470,10 +472,17 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 
 			float ftemp;
 
-			ftemp = 10.0f * ( pos_error / 8192.0f ); // Винт, 10 мм/об.
+			ftemp = pos_error * ( 10.0f / 8192.0f ); // Винт, 10 мм/об.
 
-			sprintf(szBuffer, "%d | %4.2f mm.", pos_error, ftemp);
+			if (fabs(ftemp) > fabs(max)) {
+				max = ftemp;
+			}
+
+			sprintf(szBuffer, "%d | %4.3f mm.", pos_error, ftemp);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_POS_ERROR), szBuffer);
+
+			sprintf(szBuffer, "MAX: %4.3f mm.", max);
+			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_POS_ERROR_MAX), szBuffer);
 
 			//ftemp = (60.0f * temp_32) / 8196.0f; // Ts = 1.0 s.
 			ftemp = 60.0f * ( ( temp_32 * (1.0f/0.0025f) ) * ( 1.0f / 8192.0f ) );
@@ -552,6 +561,24 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 		 break;
 		}
 
+		switch (lpMainData->flagRunStop) {
+		case IDM_RUN:
+		case IDM_STOP:
+			unsigned int value = 0;
+
+			max = 0;
+			if (lpMainData->flagRunStop == IDM_RUN) {
+				value = 1;
+			}
+
+			Sleep(1);
+			mbWriteSingleRegister(&lpMainData->mbMaster, lpMainData->SlaveID, 15, value);
+			Sleep(1);
+
+			lpMainData->flagRunStop = 0;
+			break;
+		}
+
 		Sleep(10);
 	}{
 		//lpMainData->SlaveID = address;
@@ -596,23 +623,6 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			} else {
 //				break;
 			}
-		}
-
-		switch( lpMainData->flagRunStop ) {
-		case IDM_RUN:
-		case IDM_STOP:
-			unsigned int value = 0;
-
-			if( lpMainData->flagRunStop == IDM_RUN ) {
-				value = 1;
-			}
-
-			Sleep( 1 );
-			mbWriteSingleRegister( &lpMainData->mbMaster, lpMainData->SlaveID, 15, value );
-			Sleep( 1 );
-
-			lpMainData->flagRunStop = 0;
-		 break;
 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
