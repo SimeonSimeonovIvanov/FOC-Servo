@@ -59,7 +59,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	//pidInit( &pidSpeed, 1.8f, 0.01f, 0.0f, 1.0f );
 	//pidInit( &pidSpeed, 1.0f, 0.0081f, 0.0f, 1.0f ); // Motor without load
 
-	pidInit( &pidSpeed, 0.9f, 0.0081f, 0.0f, 1.0f );
+	pidInit( &pidSpeed, 0.8f, 0.0081f, 0.0f, 1.0f );
 
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.999f );
@@ -69,7 +69,7 @@ void focInit(LP_MC_FOC lpFocExt)
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
 	//pidInit_test( &pidPos, 0.5f, 0.0f, 0.0f, 1.0f );  // Motor without load
 
-	pidInit_test( &pidPos, 0.5f, 0.0035f, 0.0f, 1.0f );
+	pidInit_test( &pidPos, 0.5f, 0.002f, 0.0f, 1.0f );
 
 	pidSetIntegralLimit_test( &pidPos, 3000.0f );
 	pidSetOutLimit_test( &pidPos, 3000.0f, -3000.0f );
@@ -295,14 +295,16 @@ void ADC_IRQHandler( void )
 			counter01 = 0;
 		}
 
-		//sp_pos = ai0_filtered_value * 4;
-		//sp_pos = counter02;
+		//sp_pos = ai0_filtered_value - 2047.0f;
 		sp_pos = sp_counter;
+		//sp_pos = counter02;
+
 #endif
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
 		if( 1 == ++counter_pos_reg ) {
 			static float sp_pos_old = 0;
+			float delta_sp_pos;
 
 			if( fabs( pidPos.error ) < 50.0f ) {
 				//pidPos.kp = 0.5f;
@@ -310,12 +312,15 @@ void ADC_IRQHandler( void )
 				//pidPos.kp = 1.0f;
 			}
 
+			delta_sp_pos = sp_pos - sp_pos_old;
+			sp_pos_old = sp_pos;
+
 			/*pid_out = ( 0.00f * d_sp_pos + 0.000 * d_speed_freq ) + pidTask( &pidPos, (float)sp_pos, (float)-pv_pos );
 			if( pid_out > 1.0f ) pid_out = 1.0f;
 			if( pid_out < -1.0f ) pid_out = -1.0f;
 			sp_speed = -lpFoc->fMaxRPM * pid_out;*/
 
-			sp_speed = pidTask_test( &pidPos, (float)sp_pos, (float)pv_pos );
+			sp_speed = ( delta_sp_pos * 5.0f ) + pidTask_test( &pidPos, (float)sp_pos, (float)pv_pos );
 
 			counter_pos_reg = 0;
 		}
@@ -416,11 +421,11 @@ void ADC_IRQHandler( void )
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->f_rpm_mt_temp_filtered_value * 0.5f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->f_rpm_mt_filtered_value * 0.5f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->f_rpm_mt * 0.5f + 2047 );
-	DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, pv_speed * 0.5f + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, pv_speed * 0.5f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->angle + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, (sp_pos - pv_pos) * 1.0f + 2047, pv_speed_filter * 0.5f + 2047 );
-	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_pos * 0.5f + 2047, pv_pos * 0.5f + 2047 );
+	DAC_SetDualChannelData( DAC_Align_12b_R, sp_pos * 0.5f + 2047, pv_pos * 0.5f + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Is + 2047, lpFoc->f_rpm_mt_filtered_value + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id + 2047, lpFoc->Iq + 2047 );
