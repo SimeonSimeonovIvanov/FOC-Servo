@@ -485,9 +485,10 @@ DWORD WINAPI comThreadFunc(LPVOID lpParam)
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_POS_ERROR_MAX), szBuffer);
 
 			//ftemp = (60.0f * temp_32) / 8196.0f; // Ts = 1.0 s.
-			ftemp = 60.0f * ( ( temp_32 * (1.0f/0.0025f) ) * ( 1.0f / 8192.0f ) );
+			//ftemp = 60.0f * ( ( temp_32 * (1.0f/0.0025f) ) * ( 1.0f / 8192.0f ) );
 
-			sprintf(szBuffer, "%8.2f", ftemp);
+			ftemp = temp_32;
+			sprintf(szBuffer, "%8.2f", ftemp/100.0f);
 			Static_SetText(GetDlgItem(lpMainData->hwnd, IDC_STATIC_TEMP_32), szBuffer);
 
 			///////////////////////////////////////////////////////////////////////////////////////

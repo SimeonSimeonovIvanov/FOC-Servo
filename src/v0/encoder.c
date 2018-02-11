@@ -1,6 +1,6 @@
 #include "encoder.h"
 
-#define __TIM8_ENCODER__
+//#define __TIM8_ENCODER__
 
 #ifndef __TIM8_ENCODER__
 	#define __TIM8_STEP_DIR__

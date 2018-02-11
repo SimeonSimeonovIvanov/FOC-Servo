@@ -14,6 +14,8 @@ const float fc = 3*4000000.0f;
 extern uint32_t uwTIM10PulseLength;
 extern int16_t tim8_overflow;
 
+float vel;
+
 int32_t sp_pos, pv_pos, sp_counter;
 float sp_speed, pv_speed;
 int16_t enc_delta;
@@ -59,7 +61,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	//pidInit( &pidSpeed, 1.8f, 0.01f, 0.0f, 1.0f );
 	//pidInit( &pidSpeed, 1.0f, 0.0081f, 0.0f, 1.0f ); // Motor without load
 
-	pidInit( &pidSpeed, 0.8f, 0.0081f, 0.0f, 1.0f );
+	pidInit( &pidSpeed, 1.2f, 0.0081f, 0.0f, 1.0f );
 
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.999f );
@@ -247,6 +249,19 @@ void ADC_IRQHandler( void )
 		}
 
 		counter_get_speed = 0;
+
+		////////////////////////////////////////////
+		static int16_t lastpos = 0;
+		int16_t pos;
+
+		pos = TIM3->CNT;
+		vel = ( ( pos - lastpos + 4095 ) % 4096 );
+		lastpos = pos;
+
+		if( vel < 2000 ) vel = -vel;
+		else vel = vel - 4095;
+
+		vel = vel * ( 60.0f / ( 8192.0f * 0.0025f ) );
 	} else {
 		static int16_t enc_delta_old = 0, uwTIM10PulseLength_old = 0;
 
@@ -274,8 +289,9 @@ void ADC_IRQHandler( void )
 	pv_speed = lpFoc->f_rpm_mt;
 	pv_speed = ffilter( (float)pv_speed, arrSpeedFB, 2 );
 
-	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT );
-	sp_counter = ( ( ( 8192.0f - 1.0f ) / 2000.0f ) * (float)sp_counter ) * -1.0f;
+	//sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT );
+	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT ) * 10;
+	//sp_counter = ( ( ( 8192.0f - 1.0f ) / 2000.0f ) * (float)sp_counter ) * -1.0f;
 
 	pv_pos = iEncoderGetAbsPos();
 
@@ -290,14 +306,14 @@ void ADC_IRQHandler( void )
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
 		static int32_t counter01 = 0, counter02 = 0;
 
-		if( ++counter01 == 160 ) {
-			counter02 += 4*8191;( ai0_filtered_value - 2047.0f ) * ( 1.0f / 10.0f );
+		if( ++counter01 == 32000 ) {
+			counter02 += 1*8191;( ai0_filtered_value - 2047.0f ) * ( 1.0f / 10.0f );
 			counter01 = 0;
 		}
 
 		//sp_pos = ai0_filtered_value - 2047.0f;
-		sp_pos = sp_counter;
 		//sp_pos = counter02;
+		sp_pos = sp_counter;
 
 #endif
 

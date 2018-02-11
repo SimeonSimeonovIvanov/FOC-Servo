@@ -7,12 +7,14 @@ extern float sp_speed, pv_speed;
 extern int32_t sp_pos, pv_pos;
 extern PID pidPos, pidSpeed;
 
-extern float ai0_filtered_value;
-extern uint16_t ai0, ai1;
-
 extern int16_t tim8_overflow, enc_delta;
 extern uint32_t uwTIM10PulseLength;
 extern uint16_t sanyo_uvw;
+
+extern float ai0_filtered_value;
+extern uint16_t ai0, ai1;
+
+extern float vel;
 
 volatile MC_FOC stFoc;
 
@@ -133,8 +135,12 @@ int main(void)
 		usRegHoldingBuf[19] = (int)pidPos.error>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		// temp:
-		usRegHoldingBuf[20] = 0;
-		usRegHoldingBuf[21] = 0>>1;
+		int temp;
+
+		temp = (int)(vel*100.0f);
+
+		usRegHoldingBuf[20] = (int)(temp);
+		usRegHoldingBuf[21] = (int)(temp>>16);
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[22] = (int)(stFoc.f_rpm_mt*100.0f);
 		usRegHoldingBuf[23] = (int)(stFoc.f_rpm_mt*100.0f)>>16;
