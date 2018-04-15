@@ -106,22 +106,6 @@ void mcPark(LP_MC_FOC lpFoc)
 
 void mcInvPark(LP_MC_FOC lpFoc)
 {
-	float Vsref, temp;
-
-	Vsref = sqrtf((lpFoc->Vd * lpFoc->Vd) + (lpFoc->Vq * lpFoc->Vq));
-
-	if (Vsref > 0.999f) {
-		temp = 0.999f / Vsref;
-		lpFoc->Vd *= temp;
-		lpFoc->Vq *= temp;
-	}
-
-	if (Vsref < -0.999f) {
-		temp = -0.999f / Vsref;
-		lpFoc->Vd *= temp;
-		lpFoc->Vq *= temp;
-	}
-
 	lpFoc->Valpha = lpFoc->Vd * lpFoc->fCosAngle - lpFoc->Vq * lpFoc->fSinAngle;
 	lpFoc->Vbeta  = lpFoc->Vd * lpFoc->fSinAngle + lpFoc->Vq * lpFoc->fCosAngle;
 }
@@ -131,6 +115,26 @@ void mcInvClark(LP_MC_FOC lpFoc)
 	lpFoc->Vb = lpFoc->Vbeta;
 	lpFoc->Va = (-lpFoc->Vbeta + (SQRT3 * lpFoc->Valpha)) *0.5f;
 	lpFoc->Vc = (-lpFoc->Vbeta - (SQRT3 * lpFoc->Valpha)) *0.5f;
+}
+
+void mcUsrefLimit(LP_MC_FOC lpFoc)
+{
+	float Usref, temp;
+
+	Usref = sqrtf((lpFoc->Vd * lpFoc->Vd) + (lpFoc->Vq * lpFoc->Vq));
+
+	if (Usref > 0.999f) {
+		temp = 0.999f / Usref;
+		lpFoc->Vd *= temp;
+		lpFoc->Vq *= temp;
+	}
+	else {
+		if (Usref < -0.999f) {
+			temp = -0.999f / Usref;
+			lpFoc->Vd *= temp;
+			lpFoc->Vq *= temp;
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -527,12 +531,6 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	Y = (lpFoc->Vb + Vref) * 1.1547f;
 	Z = (lpFoc->Vc + Vref) * 1.1547f;
 
-
-	Vref = (vmax + vmin) * -0.5f;
-	X = (lpFoc->Va + Vref) * 1.1547f;
-	Y = (lpFoc->Vb + Vref) * 1.1547f;
-	Z = (lpFoc->Vc + Vref) * 1.1547f;
-
 	if (X > 0.999f) {
 		temp = 0.999f / X;
 		X *= temp;
@@ -582,10 +580,13 @@ void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // ---  ???
 	float Tpwm = 100.0f / 2.0f;
 	float V, Vref, X, Y, Z;
 
-	V = (1.0f / 6.0f) * sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd);
+	V = sqrtf( lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd ) / 1.5f;
 
-	// "sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));" -> !!! foc_deg_to_rad(90) = ? if lpFoc.Vd != 0 !!!
-	Vref = V * sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));
+	/*
+		"sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));" -> !!! foc_deg_to_rad(90) = ? if lpFoc.Vd != 0 !!!
+	*/
+	Vref = ( V / 6.0f ) * sinf(foc_deg_to_rad( 3.0f * lpFoc->angle ) - foc_deg_to_rad( 90.0f ));
+
 	//Vref = V * svpwm_sin_table[(int)(lpFoc->angle*(4096.0f / 360.0f))];
 
 	X = (lpFoc->Va + Vref);// *1.1547f;

@@ -37,6 +37,7 @@ void mcClark(LP_MC_FOC lpFoc);
 void mcPark(LP_MC_FOC lpFoc);
 void mcInvPark(LP_MC_FOC lpFoc);
 void mcInvClark(LP_MC_FOC lpFoc);
+void mcUsrefLimit(LP_MC_FOC lpFoc);
 
 void mcFocSVPWM_ST2(LP_MC_FOC lpFoc);
 void mcFocSVPWM_ST1(LP_MC_FOC lpFoc);

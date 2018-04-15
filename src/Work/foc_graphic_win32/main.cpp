@@ -178,8 +178,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			stFoc.Vd = pid( Zero_Sp, stFoc.Id );
 			stFoc.Vq = pid(   Iq_Sp, stFoc.Iq );
 			*/
-			stFoc.Vd = 0.49f;
+			stFoc.Vd = 0.00f;
 			stFoc.Vq = 0.99f;
+			///////////////////////////////////////////////////////////////////
+			mcUsrefLimit(&stFoc);
 			///////////////////////////////////////////////////////////////////
 			mcInvPark(&stFoc);
 			mcInvClark(&stFoc);
@@ -188,6 +190,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//mcFocSVPWM_ST1(&stFoc);
 			//mcFocSVPWM0(&stFoc);
 			//mcFocSPWM(&stFoc);
+			
 			mcFocSVPWM_TTHI(&stFoc);
 			//mcFocSVPWM_STHI(&stFoc);
 			///////////////////////////////////////////////////////////////////
