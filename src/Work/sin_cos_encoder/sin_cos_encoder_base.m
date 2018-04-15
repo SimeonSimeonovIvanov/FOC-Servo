@@ -29,7 +29,7 @@ for i=1:N
         n = 1;
     end
     
-    if first_run == 0
+    if first_run == 0 && 0
         if n > 1
             vb(m) = buffer(n-1);
         else
@@ -39,7 +39,7 @@ for i=1:N
         m=m+1;
     end
     
-    %vb(m) = k*cos(i/180*pi);
+    vb(i) = 1.2*k*cos(i/180*pi);
 end
 
 sector = zeros(size(theta));
@@ -97,4 +97,4 @@ hold on;
 plot(theta, sector/4,'Color','blue');
 
 hold on;
-plot(theta, angle360,'Color','yellow');
+plot(theta, angle360,'Color','black');
