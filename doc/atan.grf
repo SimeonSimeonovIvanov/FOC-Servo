@@ -6,12 +6,12 @@ MinVersion = 2.5
 OS = Windows NT 6.1 Service Pack 1
 
 [Axes]
-xMin = -2.29089287231078
-xMax = 3.98531904948928
+xMin = -1.98709733995674
+xMax = 5.76131244004334
 xTickUnit = 0.2
 xGridUnit = 0.2
-yMin = -2.87121460299282
-yMax = 3.40499731880725
+yMin = -3.67018133573203
+yMax = 4.07822844426807
 yTickUnit = 0.5
 yGridUnit = 0.5
 AxesColor = clBlue
@@ -22,20 +22,23 @@ Radian = 1
 [Func1]
 FuncType = 0
 y = sin(x)
+LegendText = sin( x )
 Style = 1
-Color = 0x00CC0033
+Color = clRed
 
 [Func2]
 FuncType = 0
-y = cos(x)
+y = sin(  x + deg_to_rad( 90 ) )
+LegendText = cos(x)
 Style = 1
-Color = 0x00CC0033
+Color = clLime
 
 [Func3]
 FuncType = 0
-y = atan(sin(x)/cos(x))
+y = atan( sin( x ) / sin( x + deg_to_rad( 90 ) ) )
+LegendText = atan( sin( x ) / cos( x ) )
 Style = 1
-Color = 0x00CC0033
+Color = clBlack
 
 [Data]
 TextLabelCount = 0
@@ -44,4 +47,7 @@ PointSeriesCount = 0
 ShadeCount = 0
 RelationCount = 0
 OleObjectCount = 0
+
+[CustomFunctions]
+deg_to_rad(deg) = deg * ( pi / 180 )
 
