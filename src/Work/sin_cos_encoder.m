@@ -12,17 +12,16 @@ N = length(theta);
 first_run = 1;
 n = 1;
 m=1;
-k=1;
+k=0.25;
 
 for i=1:N
     va(i) = k*sin(i/180*pi);
     
     if k < 1
-        k=k+0.001;
+        %k=k+0.001;
     end
     
     buffer(n) = va(i);
-    
     if n <= 91
         n = n + 1;    
     else
@@ -40,19 +39,16 @@ for i=1:N
         m=m+1;
     end
     
-    vb(m) = k*cos(i/180*pi);
-    
-    
+    %vb(m) = k*cos(i/180*pi);
 end
 
-max = 0;
 sector = zeros(size(theta));
-max = 1.55;
+max = 1.57;
 
 for i=1:N
     angle(i) = atan(va(i)/vb(i));
     if(max<angle(i))
-        max = angle(i);
+        %max = angle(i);
     end
         
     if angle(i)<0
