@@ -5,41 +5,42 @@ vb = zeros(size(theta));
 angle = zeros(size(theta));
 angle360 = zeros(size(theta));
 
-buffer = zeros(91);
+buffer = zeros(0);
 
 N = length(theta);
 
 first_run = 1;
 n = 1;
 m=1;
-k=0.25;
+k=1;
 
 for i=1:N
-    va(i) = k*sin(i/180*pi);
+    va(i) = k*sin( i * ( pi/180) );
     
     if k < 1
-        %k=k+0.001;
+        k = k + 0.001;
     end
     
     buffer(n) = va(i);
-    if n <= 91
+    
+    if first_run == 0 && 1
+        if n > 1
+            vb(m) = buffer( n - 1 );
+        else
+            vb(m) = buffer( 90 );
+        end
+        
+        m = m + 1;
+    end
+    
+    if n < 90
         n = n + 1;    
     else
         first_run = 0;
         n = 1;
     end
     
-    if first_run == 0 && 0
-        if n > 1
-            vb(m) = buffer(n-1);
-        else
-            vb(m) = buffer(91);
-        end
-        
-        m=m+1;
-    end
-    
-    vb(i) = 1.2*k*cos(i/180*pi);
+    %vb(i) = 1.2*k*cos( i * ( pi/180) );
 end
 
 sector = zeros(size(theta));
