@@ -6,14 +6,14 @@ MinVersion = 2.5
 OS = Windows NT 6.1 Service Pack 1
 
 [Axes]
-xMin = -11.4019455347374
-xMax = 16.0328967149201
+xMin = -18.513758125518
+xMax = 19.1197703376604
 xTickUnit = 1
 xGridUnit = 1
-yMin = -9.06463918353849
-yMax = 18.3702030661189
-yTickUnit = 2
-yGridUnit = 2
+yMin = -9.28132788733799
+yMax = 10.9039282883668
+yTickUnit = 1
+yGridUnit = 1
 AxesColor = clBlue
 GridColor = 0x00FF9999
 ShowLegend = 1
@@ -22,41 +22,66 @@ Radian = 1
 [Func1]
 FuncType = 0
 y = 6 + Ia( x )
-Color = 0x00CC66CC
+Color = clRed
 
 [Func2]
 FuncType = 0
 y = 6 + Ib( x )
-Color = 0x009966FF
+Color = clBlue
 
 [Func3]
 FuncType = 0
 y = 6 + Ic( x )
-Color = 0x0099CC00
+Color = clLime
 
 [Func4]
 FuncType = 0
 y = 3 + Clark_alpha( x )
-Color = clMaroon
+Color = clRed
 
 [Func5]
 FuncType = 0
 y = 3 + Clark_beta( x )
-Color = clRed
+Color = clBlue
 
 [Func6]
 FuncType = 0
-y = Park_d( x )
+y = 0 + Park_d( x )
 Color = clRed
 
 [Func7]
 FuncType = 0
-y = Park_q( x )
+y = 0 + Park_q( x )
 Color = clBlue
+
+[Func8]
+FuncType = 0
+y = -3 + InvPark_alpha( x )
+Color = clRed
+
+[Func9]
+FuncType = 0
+y = -3 + InvPark_beta( x )
+Color = clBlue
+
+[Func10]
+FuncType = 0
+y = -6 + InvClark_a( x )
+Color = clRed
+
+[Func11]
+FuncType = 0
+y = -6 + InvClark_b( x )
+Color = clBlue
+
+[Func12]
+FuncType = 0
+y = -6 + InvClark_c( x )
+Color = clLime
 
 [Data]
 TextLabelCount = 0
-FuncCount = 7
+FuncCount = 12
 PointSeriesCount = 0
 ShadeCount = 0
 RelationCount = 0
@@ -71,4 +96,9 @@ Clark_alpha(x) = Ia( x )
 Clark_beta(x) = 1/sqrt(3) * Ia(x) + 2/sqrt(3) * Ib(x)
 Park_d(x) = Clark_alpha( x ) * cos( x ) + Clark_beta( x ) * sin( x )
 Park_q(x) = -Clark_alpha( x ) * sin( x ) + Clark_beta( x ) * cos( x )
+InvPark_alpha(x) = Park_d( x ) * cos( x ) - Park_q( x ) * sin( x )
+InvPark_beta(x) = Park_d( x ) * sin( x ) + Park_q( x ) * cos( x )
+InvClark_b(x) = InvPark_beta( x )
+InvClark_a(x) = ( -InvPark_beta( x ) + ( sqrt(3) * InvPark_alpha( x )  )  ) * 0.5
+InvClark_c(x) = ( -InvPark_beta( x ) - ( sqrt(3) * InvPark_alpha( x )  )  ) * 0.5
 
