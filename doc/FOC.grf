@@ -6,12 +6,12 @@ MinVersion = 2.5
 OS = Windows NT 6.1 Service Pack 1
 
 [Axes]
-xMin = -18.513758125518
-xMax = 19.1197703376604
+xMin = -17.6748226938353
+xMax = 24.1402089319185
 xTickUnit = 1
 xGridUnit = 1
-yMin = -9.28132788733799
-yMax = 10.9039282883668
+yMin = -11.5244246707273
+yMax = 10.9036377467225
 yTickUnit = 1
 yGridUnit = 1
 AxesColor = clBlue
@@ -79,9 +79,14 @@ FuncType = 0
 y = -6 + InvClark_c( x )
 Color = clLime
 
+[Func13]
+FuncType = 0
+y = -9 + vn( x )
+Color = clBlue
+
 [Data]
 TextLabelCount = 0
-FuncCount = 12
+FuncCount = 13
 PointSeriesCount = 0
 ShadeCount = 0
 RelationCount = 0
@@ -101,4 +106,5 @@ InvPark_beta(x) = Park_d( x ) * sin( x ) + Park_q( x ) * cos( x )
 InvClark_b(x) = InvPark_beta( x )
 InvClark_a(x) = ( -InvPark_beta( x ) + ( sqrt(3) * InvPark_alpha( x )  )  ) * 0.5
 InvClark_c(x) = ( -InvPark_beta( x ) - ( sqrt(3) * InvPark_alpha( x )  )  ) * 0.5
+vn(x) = ( InvClark_a(x) + InvClark_b(x) + InvClark_c(x) ) / 3
 
