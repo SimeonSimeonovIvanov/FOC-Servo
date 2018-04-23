@@ -178,8 +178,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			stFoc.Vd = pid( Zero_Sp, stFoc.Id );
 			stFoc.Vq = pid(   Iq_Sp, stFoc.Iq );
 			*/
-			stFoc.Vd = 0.00f;
-			stFoc.Vq = 0.99f;
+			stFoc.Vd = 0.0f;
+			stFoc.Vq = 0.9f;
 			///////////////////////////////////////////////////////////////////
 			mcUsrefLimit(&stFoc);
 			///////////////////////////////////////////////////////////////////

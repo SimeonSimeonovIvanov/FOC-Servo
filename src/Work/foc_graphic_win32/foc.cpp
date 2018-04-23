@@ -112,9 +112,15 @@ void mcInvPark(LP_MC_FOC lpFoc)
 
 void mcInvClark(LP_MC_FOC lpFoc)
 {
-	lpFoc->Vb = lpFoc->Vbeta;
-	lpFoc->Va = (-lpFoc->Vbeta + (SQRT3 * lpFoc->Valpha)) *0.5f;
-	lpFoc->Vc = (-lpFoc->Vbeta - (SQRT3 * lpFoc->Valpha)) *0.5f;
+	if (1) {
+		lpFoc->Vb = lpFoc->Vbeta;
+		lpFoc->Va = (-lpFoc->Vbeta + (SQRT3 * lpFoc->Valpha)) *0.5f;
+		lpFoc->Vc = (-lpFoc->Vbeta - (SQRT3 * lpFoc->Valpha)) *0.5f;
+	} else {
+		lpFoc->Va = lpFoc->Valpha;
+		lpFoc->Vb = (-lpFoc->Valpha + (SQRT3 * lpFoc->Vbeta)) *0.5f;
+		lpFoc->Vc = (-lpFoc->Valpha - (SQRT3 * lpFoc->Vbeta)) *0.5f;
+	}
 }
 
 void mcUsrefLimit(LP_MC_FOC lpFoc)
@@ -526,10 +532,10 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 		}
 	}
 
-	Vref = (vmax + vmin) * -0.5f;
-	X = (lpFoc->Va + Vref) * 1.1547f;
-	Y = (lpFoc->Vb + Vref) * 1.1547f;
-	Z = (lpFoc->Vc + Vref) * 1.1547f;
+	Vref = (vmax + vmin) * 0.5f;
+	X = (lpFoc->Va - Vref) * 1.1547f;
+	Y = (lpFoc->Vb - Vref) * 1.1547f;
+	Z = (lpFoc->Vc - Vref) * 1.1547f;
 
 	if (X > 0.999f) {
 		temp = 0.999f / X;
@@ -561,7 +567,7 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 		}
 	}
 
-	lpFoc->PWM1 = Tpwm - (X * Tpwm);
+	lpFoc->PWM1 = Tpwm - (X * Tpwm); // Tpwm - (Vref * Tpwm);
 	lpFoc->PWM2 = Tpwm - (Y * Tpwm);
 	lpFoc->PWM3 = Tpwm - (Z * Tpwm);
 
