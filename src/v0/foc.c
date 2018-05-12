@@ -5,7 +5,7 @@
 #define __AI1_SET_SPEED__           1 // +++ ?
 #define __POS_AND_SPEED_CONTROL__   2 // +++ ?
 
-#define __CONTROL_MODE__            2
+#define __CONTROL_MODE__            __AI1_SET_SPEED__
 
 const float P = 8192.0f;
 const float Ts = 0.00125f;
