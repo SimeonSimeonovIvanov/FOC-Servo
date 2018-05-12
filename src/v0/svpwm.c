@@ -78,6 +78,8 @@ void svpwmInitTIM( void )
 
 	DBGMCU->APB2FZ |= DBGMCU_APB1_FZ_DBG_TIM1_STOP;
 
+	TIM_SelectOutputTrigger( TIM1, TIM_TRGOSource_Update );
+
 	TIM_Cmd( TIM1, ENABLE );
 }
 
@@ -144,8 +146,8 @@ void svpwmInitADC( void )
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
 	ADC_InitStructure.ADC_ScanConvMode = ENABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
-	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
-	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
+	//ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None;
+	//ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_T1_CC1;
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
 	ADC_InitStructure.ADC_NbrOfConversion = 2;
 	ADC_Init( ADC1, &ADC_InitStructure );
@@ -165,9 +167,11 @@ void svpwmInitADC( void )
 	//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	ADC_InjectedSequencerLengthConfig( ADC1, 2 );
 
-	ADC_ExternalTrigInjectedConvConfig( ADC1, ADC_ExternalTrigInjecConv_T1_CC4 );
+	ADC_ExternalTrigInjectedConvConfig( ADC1, ADC_ExternalTrigInjecConv_T1_TRGO );
+	//ADC_ExternalTrigInjectedConvConfig( ADC2, ADC_ExternalTrigInjecConv_T1_TRGO );
+
 	ADC_ExternalTrigInjectedConvEdgeConfig( ADC1, ADC_ExternalTrigInjecConvEdge_Rising );
-	ADC_ExternalTrigInjectedConvEdgeConfig( ADC2, ADC_ExternalTrigInjecConvEdge_Rising );
+	//ADC_ExternalTrigInjectedConvEdgeConfig( ADC2, ADC_ExternalTrigInjecConvEdge_Rising );
 
 #ifdef FOC_ADC_Mode_Independent
 	/*
@@ -222,9 +226,9 @@ void svpwmInitADC( void )
 	ADC_Cmd( ADC1, ENABLE );
 	ADC_Cmd( ADC2, ENABLE );
 
-	ADC_ITConfig( ADC1, ADC_IT_JEOC | ADC_IT_EOC, ENABLE );
+	ADC_ITConfig( ADC1, ADC_IT_JEOC, ENABLE );
 
-	ADC_SoftwareStartConv( ADC1 );
+	//ADC_SoftwareStartConv( ADC1 );
 }
 
 void RCC_Configuration_Adc1( void )

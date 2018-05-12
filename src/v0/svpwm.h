@@ -18,7 +18,7 @@
 /* Resolution: 1Hz */
 #define PWM_PERIOD		( (u16) (CKTIM / (u32)(2 * PWM_FREQ *(PWM_PRSC+1))) ) // 2625
 
-#define REP_RATE		10
+#define REP_RATE		1
 #define DEADTIME		120	// DEADTIME / HCLK = x / 168 Mhz
 
 void svpwmInit(void);
