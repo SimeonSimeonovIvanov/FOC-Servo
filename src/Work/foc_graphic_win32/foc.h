@@ -50,4 +50,6 @@ float fSinAngle(int angle);
 float fCosAngle(int angle);
 void svpwmInitSinTable(void);
 
+float fLimitValue(float value, float limit);
+
 #endif
