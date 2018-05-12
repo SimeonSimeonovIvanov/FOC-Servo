@@ -212,10 +212,6 @@ void ADC_IRQHandler( void )
 #endif
 	}
 
-	if( !( ADC_FLAG_JEOC & ADC2->SR ) ) {
-		return;
-	}
-
 	ADC_ClearITPendingBit( ADC1, ADC_IT_JEOC );
 	ADC_ClearITPendingBit( ADC2, ADC_IT_JEOC );
 
