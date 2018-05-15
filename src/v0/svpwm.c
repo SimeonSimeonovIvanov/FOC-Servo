@@ -519,7 +519,7 @@ void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
 	float Tpwm = (float)PWM_PERIOD * 0.5f;
-	volatile float temp, vmin, vmax, Vref, X, Y, Z;
+	volatile float temp, vmin, vmax, Vcom, X, Y, Z;
 
 	if( lpFoc->Va > lpFoc->Vb ) {
 		vmax = lpFoc->Va;
@@ -537,40 +537,18 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 		}
 	}
 
-	Vref = ( vmax + vmin ) * -0.5f;
-	X = ( lpFoc->Va + Vref ) * 1.1547f;
-	Y = ( lpFoc->Vb + Vref ) * 1.1547f;
-	Z = ( lpFoc->Vc + Vref ) * 1.1547f;
+	Vcom = ( vmax + vmin ) * -0.5f;
+	X = ( lpFoc->Va + Vcom );// * 1.1547f;
+	Y = ( lpFoc->Vb + Vcom );// * 1.1547f;
+	Z = ( lpFoc->Vc + Vcom );// * 1.1547f;
 
-	if( X > 0.999f ) {
-		temp = 0.999f / X;
-		X *= temp;
-	} else {
-		if( X < -0.999f ) {
-			temp = -0.999f / X;
-			X *= temp;
-		}
-	}
-
-	if( Y > 0.999f ) {
-		temp = 0.999f / Y;
-		Y *= temp;
-	} else {
-		if( Y < -0.999f ) {
-			temp = -0.999f / Y;
-			Y *= temp;
-		}
-	}
-
-	if( Z > 0.999f ) {
-		temp = 0.999f / Z;
-		Z *= temp;
-	} else {
-		if( Z < -0.999f ) {
-			temp = -0.999f / Z;
-			Z *= temp;
-		}
-	}
+	//////////////////////////////////////////////////////////////////////////////
+	/*
+	X = fLimitValue( X, 0.999 );
+	Y = fLimitValue( Y, 0.999 );
+	Z = fLimitValue( Z, 0.999 );
+	*/
+	//////////////////////////////////////////////////////////////////////////////
 
 	lpFoc->PWM1 = Tpwm - ( X * Tpwm );
 	lpFoc->PWM2 = Tpwm - ( Y * Tpwm );
@@ -583,16 +561,16 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // --- ???
 {
 	float Tpwm = (float)PWM_PERIOD * 0.5f;
-	float V, Vref, X, Y, Z;
+	float V, Vcom, X, Y, Z;
 
 	// "sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));" -> !!! foc_deg_to_rad(90) = ? if lpFoc.Vd != 0 !!!
 	V = ( 1.0f / 6.0f ) * sqrtf( lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd );
-	//Vref = V * sinf( foc_deg_to_rad( lpFoc->angle * 3.0f ) - foc_deg_to_rad( 90 ) );
-	Vref = V * svpwm_sin_table[(int)lpFoc->angle];
+	//Vcom = V * sinf( foc_deg_to_rad( lpFoc->angle * 3.0f ) - foc_deg_to_rad( 90 ) );
+	Vcom = V * svpwm_sin_table[(int)lpFoc->angle];
 
-	X = ( lpFoc->Va + Vref ) * 1.1547f;
-	Y = ( lpFoc->Vb + Vref ) * 1.1547f;
-	Z = ( lpFoc->Vc + Vref ) * 1.1547f;
+	X = ( lpFoc->Va + Vcom ); // * 1.1547f;
+	Y = ( lpFoc->Vb + Vcom ); // * 1.1547f;
+	Z = ( lpFoc->Vc + Vcom ); // * 1.1547f;
 
 	lpFoc->PWM1 = Tpwm - ( X * Tpwm );
 	lpFoc->PWM2 = Tpwm - ( Y * Tpwm );

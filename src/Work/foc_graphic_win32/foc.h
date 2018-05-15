@@ -1,8 +1,9 @@
 #ifndef __FOC_H__
 #define __FOC_H__
 
-#define SQRT3		1.732050807568877f
-#define divSQRT3	( 1.0f / SQRT3 )
+#define SQRT3			1.732050807568877f
+#define divSQRT3		( 1.0f / SQRT3 )		// 0.57735026918f
+#define SQRT3_DIV2		( SQRT3 * 0.5f )		// 0.86602540378f
 
 //#define SQRT3_DIV2		( SQRT3 * 0.5f )		// 0.86602540378f
 //#define TWO_BY_SQRT3	( 2.0f * SQRT3 )

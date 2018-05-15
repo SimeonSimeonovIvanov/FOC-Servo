@@ -5,7 +5,7 @@
 #define __AI1_SET_SPEED__           1 // +++ ?
 #define __POS_AND_SPEED_CONTROL__   2 // +++ ?
 
-#define __CONTROL_MODE__            __AI1_SET_SPEED__
+#define __CONTROL_MODE__            __POS_AND_SPEED_CONTROL__
 
 const float P = 8192.0f;
 const float Ts = 0.00125f;
@@ -58,10 +58,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-	//pidInit( &pidSpeed, 1.8f, 0.01f, 0.0f, 1.0f );
-	//pidInit( &pidSpeed, 1.0f, 0.0081f, 0.0f, 1.0f ); // Motor without load
-
-	pidInit( &pidSpeed, 1.2f, 0.0081f, 0.0f, 1.0f );
+	pidInit( &pidSpeed, 1.2f, 0.0091f, 0.0f, 1.0f );
 
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.999f );
@@ -69,8 +66,6 @@ void focInit(LP_MC_FOC lpFocExt)
 #endif
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
-	//pidInit_test( &pidPos, 0.5f, 0.0f, 0.0f, 1.0f );  // Motor without load
-
 	pidInit_test( &pidPos, 0.5f, 0.002f, 0.0f, 1.0f );
 
 	pidSetIntegralLimit_test( &pidPos, 3000.0f );
@@ -157,20 +152,14 @@ void mcInvClark(LP_MC_FOC lpFoc)
 
 void mcUsrefLimit(LP_MC_FOC lpFoc)
 {
-	float Usref, temp;
+	float Usref, scale;
 
-	Usref = sqrtf( ( lpFoc->Vd * lpFoc->Vd ) + ( lpFoc->Vq * lpFoc->Vq ) );
+	Usref = sqrtf( lpFoc->Vd * lpFoc->Vd + lpFoc->Vq * lpFoc->Vq );
 
-	if( Usref > 0.999f ) {
-		temp = 0.999f / Usref;
-		lpFoc->Vd *= temp;
-		lpFoc->Vq *= temp;
-	} else {
-		if( Usref < -0.999f ) {
-			temp = -0.999f / Usref;
-			lpFoc->Vd *= temp;
-			lpFoc->Vq *= temp;
-		}
+	if( Usref > SQRT3_DIV2 ) {
+		scale = SQRT3_DIV2 / Usref;
+		lpFoc->Vd *= scale;
+		lpFoc->Vq *= scale;
 	}
 }
 
@@ -491,4 +480,23 @@ void adc_current_filter( uint16_t *current_a, uint16_t *current_b )
 		//arrIb[5] + arrIb[6]  + arrIb[7] + arrIb[8] + arrIb[9]// +
 		//arrIb[10] + arrIb[11]  + arrIb[12] + arrIb[13] + arrIb[14] + arrIb[15]
 	) * ( 1.0f / 4.0f );
+}
+
+float fLimitValue(float value, float limit)
+{
+	//float temp;
+
+	if (value > limit) {
+		//temp = limit / value;
+		//value *= temp;
+		value = limit;
+	} else {
+		if (value < -limit) {
+			//temp = -limit / value;
+			//value *= temp
+			value = -limit;
+		}
+	}
+
+	return value;
 }

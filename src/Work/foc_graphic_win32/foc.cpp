@@ -125,20 +125,14 @@ void mcInvClark(LP_MC_FOC lpFoc)
 
 void mcUsrefLimit(LP_MC_FOC lpFoc)
 {
-	float Usref, temp;
+	float Usref, scale;
 
-	Usref = sqrtf( ( lpFoc->Vd * lpFoc->Vd ) + ( lpFoc->Vq * lpFoc->Vq ) );
+	Usref = sqrtf(lpFoc->Vd * lpFoc->Vd + lpFoc->Vq * lpFoc->Vq);
 
-	if( Usref > 0.999f ) {
-		temp = 0.999f / Usref;
-		lpFoc->Vd *= temp;
-		lpFoc->Vq *= temp;
-	} else {
-		if( Usref < -0.999f ) {
-			temp = -0.999f / Usref;
-			lpFoc->Vd *= temp;
-			lpFoc->Vq *= temp;
-		}
+	if (Usref > SQRT3_DIV2) {
+		scale = SQRT3_DIV2 / Usref;
+		lpFoc->Vd *= scale;
+		lpFoc->Vq *= scale;
 	}
 }
 
@@ -511,7 +505,7 @@ void mcFocSPWM(LP_MC_FOC lpFoc) // ???
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
 	float Tpwm = 100.0f * 0.5f;
-	float vmin, vmax, Vref, X, Y, Z, temp;
+	float vmin, vmax, Vcom, X, Y, Z, temp;
 
 	if (lpFoc->Va > lpFoc->Vb) {
 		vmax = lpFoc->Va;
@@ -531,10 +525,10 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 		}
 	}
 
-	Vref = (vmax + vmin) * 0.5f;
-	X = (lpFoc->Va - Vref) * 1.1547f;
-	Y = (lpFoc->Vb - Vref) * 1.1547f;
-	Z = (lpFoc->Vc - Vref) * 1.1547f;
+	Vcom = (vmax + vmin) * 0.5f;
+	X = (lpFoc->Va - Vcom); // *1.1547f;
+	Y = (lpFoc->Vb - Vcom); // *1.1547f;
+	Z = (lpFoc->Vc - Vcom); // *1.1547f;
 
 	//////////////////////////////////////////////////////////////////////////////
 	/*
@@ -561,20 +555,20 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // ---  ???
 {
 	float Tpwm = 100.0f / 2.0f;
-	float V, Vref, X, Y, Z;
+	float V, Vcom, X, Y, Z;
 
 	V = sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd);// / 1.5f;
 
 	/*
 		"sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));" -> !!! foc_deg_to_rad(90) = ? if lpFoc.Vd != 0 !!!
 	*/
-	//Vref = ( V / 6.0f ) * sinf(foc_deg_to_rad( 3.0f * lpFoc->angle ) - foc_deg_to_rad( 90.0f ));
+	//Vcom = ( V / 6.0f ) * sinf(foc_deg_to_rad( 3.0f * lpFoc->angle ) - foc_deg_to_rad( 90.0f ));
 
-	Vref = -(V/6) * svpwm_sin_table[(int)(lpFoc->angle)];
+	Vcom = -(V/6) * svpwm_sin_table[(int)(lpFoc->angle)];
 
-	X = (lpFoc->Va + Vref) * 1.1547f;
-	Y = (lpFoc->Vb + Vref) * 1.1547f;
-	Z = (lpFoc->Vc + Vref) * 1.1547f;
+	X = (lpFoc->Va + Vcom) *1.1547f;
+	Y = (lpFoc->Vb + Vcom) * 1.1547f;
+	Z = (lpFoc->Vc + Vcom) * 1.1547f;
 
 	lpFoc->PWM1 = Tpwm - (X * Tpwm);
 	lpFoc->PWM2 = Tpwm - (Y * Tpwm);
@@ -597,17 +591,15 @@ void svpwmInitSinTable(void)
 
 float fLimitValue(float value, float limit)
 {
-	float temp;
-	
-	//limit = 0.5;
+	//float temp;
 
 	if (value > limit) {
-		temp = limit / value;
+		//temp = limit / value;
 		//value *= temp;
 		value = limit;
 	} else {
 		if (value < -limit) {
-			temp = -limit / value;
+			//temp = -limit / value;
 			//value *= temp
 			value = -limit;
 		}
