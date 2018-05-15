@@ -125,15 +125,39 @@ void mcInvClark(LP_MC_FOC lpFoc)
 
 void mcUsrefLimit(LP_MC_FOC lpFoc)
 {
-	float Usref, scale;
+	const float limit = 0.999f; SQRT3_DIV2;
+	float Usref, scale, test;
 
 	Usref = sqrtf(lpFoc->Vd * lpFoc->Vd + lpFoc->Vq * lpFoc->Vq);
 
-	if (Usref > SQRT3_DIV2) {
-		scale = SQRT3_DIV2 / Usref;
+	if (Usref > limit) {
+		scale = limit / Usref;
 		lpFoc->Vd *= scale;
 		lpFoc->Vq *= scale;
+
+		test = sqrtf(lpFoc->Vd * lpFoc->Vd + lpFoc->Vq * lpFoc->Vq);
+		test *= 1.0f;
 	}
+}
+
+float fLimitValue(float value, float limit)
+{
+	//float temp;
+
+	if (value > limit) {
+		//temp = limit / value;
+		//value *= temp;
+		value = limit;
+	}
+	else {
+		if (value < -limit) {
+			//temp = -limit / value;
+			//value *= temp
+			value = -limit;
+		}
+	}
+
+	return value;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -526,16 +550,14 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 	}
 
 	Vcom = (vmax + vmin) * 0.5f;
-	X = (lpFoc->Va - Vcom); // *1.1547f;
-	Y = (lpFoc->Vb - Vcom); // *1.1547f;
-	Z = (lpFoc->Vc - Vcom); // *1.1547f;
+	X = (lpFoc->Va - Vcom) * 1.1547f;
+	Y = (lpFoc->Vb - Vcom) * 1.1547f;
+	Z = (lpFoc->Vc - Vcom) * 1.1547f;
 
 	//////////////////////////////////////////////////////////////////////////////
-	/*
 	X = fLimitValue( X, 0.999 );
 	Y = fLimitValue( Y, 0.999 );
 	Z = fLimitValue( Z, 0.999 );
-	*/
 	//////////////////////////////////////////////////////////////////////////////
 
 	lpFoc->PWM1 = Tpwm - (X * Tpwm); // Tpwm - (Vref * Tpwm);
@@ -566,7 +588,7 @@ void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // ---  ???
 
 	Vcom = -(V/6) * svpwm_sin_table[(int)(lpFoc->angle)];
 
-	X = (lpFoc->Va + Vcom) *1.1547f;
+	X = (lpFoc->Va + Vcom) * 1.1547f;
 	Y = (lpFoc->Vb + Vcom) * 1.1547f;
 	Z = (lpFoc->Vc + Vcom) * 1.1547f;
 
@@ -587,23 +609,4 @@ void svpwmInitSinTable(void)
 	for (angle = 0; angle <= 360; angle++) {
 		svpwm_sin_table[angle] = sinf(foc_deg_to_rad(3.0f * (float)angle) + foc_deg_to_rad(90));
 	}
-}
-
-float fLimitValue(float value, float limit)
-{
-	//float temp;
-
-	if (value > limit) {
-		//temp = limit / value;
-		//value *= temp;
-		value = limit;
-	} else {
-		if (value < -limit) {
-			//temp = -limit / value;
-			//value *= temp
-			value = -limit;
-		}
-	}
-
-	return value;
 }

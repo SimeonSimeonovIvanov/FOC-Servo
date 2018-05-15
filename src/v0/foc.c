@@ -152,12 +152,13 @@ void mcInvClark(LP_MC_FOC lpFoc)
 
 void mcUsrefLimit(LP_MC_FOC lpFoc)
 {
+	const float limit = 0.999f; //SQRT3_DIV2;
 	float Usref, scale;
 
 	Usref = sqrtf( lpFoc->Vd * lpFoc->Vd + lpFoc->Vq * lpFoc->Vq );
 
-	if( Usref > SQRT3_DIV2 ) {
-		scale = SQRT3_DIV2 / Usref;
+	if( Usref > limit ) {
+		scale = limit / Usref;
 		lpFoc->Vd *= scale;
 		lpFoc->Vq *= scale;
 	}

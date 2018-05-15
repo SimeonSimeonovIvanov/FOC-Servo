@@ -1973,7 +1973,7 @@ OUTPUT(main.elf elf32-littlearm)
  .comment       0x0000007f       0x80 ..\obj\pid.o
  .comment       0x0000007f       0x80 ..\obj\stm32f4xx_tim.o
 
-.debug_info     0x00000000    0x16a35
+.debug_info     0x00000000    0x16a47
  .debug_info    0x00000000      0x2c1 ..\obj\stm32f4xx_syscfg.o
  .debug_info    0x000002c1      0xf3d ..\obj\mb.o
  .debug_info    0x000011fe      0xad5 ..\obj\mbfuncdisc.o
@@ -1987,26 +1987,26 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_info    0x000054af     0x1021 ..\obj\main.o
  .debug_info    0x000064d0      0x191 ..\obj\mbcrc.o
  .debug_info    0x00006661      0xca3 ..\obj\stm32f4xx_rcc.o
- .debug_info    0x00007304     0x1db5 ..\obj\foc.o
- .debug_info    0x000090b9      0xc7e ..\obj\stm32f4xx_adc.o
- .debug_info    0x00009d37      0xac6 ..\obj\mbfuncinput.o
- .debug_info    0x0000a7fd     0x177c ..\obj\encoder.o
- .debug_info    0x0000bf79      0x712 ..\obj\stm32f4xx_gpio.o
- .debug_info    0x0000c68b      0x836 ..\obj\porttimer.o
- .debug_info    0x0000cec1      0xf30 ..\obj\mbrtu.o
- .debug_info    0x0000ddf1      0x5e9 ..\obj\system_stm32f4xx.o
- .debug_info    0x0000e3da      0x732 ..\obj\stm32f4xx_dma.o
- .debug_info    0x0000eb0c      0xca1 ..\obj\portserial.o
- .debug_info    0x0000f7ad      0xc54 ..\obj\mbfunccoils.o
- .debug_info    0x00010401      0x365 ..\obj\stm32f4xx_exti.o
- .debug_info    0x00010766      0x54d ..\obj\misc.o
- .debug_info    0x00010cb3     0x1ecd ..\obj\svpwm.o
- .debug_info    0x00012b80      0x15e ..\obj\filter.o
- .debug_info    0x00012cde     0x111e ..\obj\mbascii.o
- .debug_info    0x00013dfc      0xc2c ..\obj\pid.o
- .debug_info    0x00014a28     0x200d ..\obj\stm32f4xx_tim.o
+ .debug_info    0x00007304     0x1dc7 ..\obj\foc.o
+ .debug_info    0x000090cb      0xc7e ..\obj\stm32f4xx_adc.o
+ .debug_info    0x00009d49      0xac6 ..\obj\mbfuncinput.o
+ .debug_info    0x0000a80f     0x177c ..\obj\encoder.o
+ .debug_info    0x0000bf8b      0x712 ..\obj\stm32f4xx_gpio.o
+ .debug_info    0x0000c69d      0x836 ..\obj\porttimer.o
+ .debug_info    0x0000ced3      0xf30 ..\obj\mbrtu.o
+ .debug_info    0x0000de03      0x5e9 ..\obj\system_stm32f4xx.o
+ .debug_info    0x0000e3ec      0x732 ..\obj\stm32f4xx_dma.o
+ .debug_info    0x0000eb1e      0xca1 ..\obj\portserial.o
+ .debug_info    0x0000f7bf      0xc54 ..\obj\mbfunccoils.o
+ .debug_info    0x00010413      0x365 ..\obj\stm32f4xx_exti.o
+ .debug_info    0x00010778      0x54d ..\obj\misc.o
+ .debug_info    0x00010cc5     0x1ecd ..\obj\svpwm.o
+ .debug_info    0x00012b92      0x15e ..\obj\filter.o
+ .debug_info    0x00012cf0     0x111e ..\obj\mbascii.o
+ .debug_info    0x00013e0e      0xc2c ..\obj\pid.o
+ .debug_info    0x00014a3a     0x200d ..\obj\stm32f4xx_tim.o
 
-.debug_abbrev   0x00000000     0x427a
+.debug_abbrev   0x00000000     0x4289
  .debug_abbrev  0x00000000      0x173 ..\obj\stm32f4xx_syscfg.o
  .debug_abbrev  0x00000173      0x2f7 ..\obj\mb.o
  .debug_abbrev  0x0000046a      0x238 ..\obj\mbfuncdisc.o
@@ -2020,24 +2020,24 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_abbrev  0x00001300      0x2db ..\obj\main.o
  .debug_abbrev  0x000015db       0xc9 ..\obj\mbcrc.o
  .debug_abbrev  0x000016a4      0x21c ..\obj\stm32f4xx_rcc.o
- .debug_abbrev  0x000018c0      0x3e9 ..\obj\foc.o
- .debug_abbrev  0x00001ca9      0x205 ..\obj\stm32f4xx_adc.o
- .debug_abbrev  0x00001eae      0x238 ..\obj\mbfuncinput.o
- .debug_abbrev  0x000020e6      0x34b ..\obj\encoder.o
- .debug_abbrev  0x00002431      0x1ff ..\obj\stm32f4xx_gpio.o
- .debug_abbrev  0x00002630      0x1be ..\obj\porttimer.o
- .debug_abbrev  0x000027ee      0x2c1 ..\obj\mbrtu.o
- .debug_abbrev  0x00002aaf      0x17b ..\obj\system_stm32f4xx.o
- .debug_abbrev  0x00002c2a      0x1af ..\obj\stm32f4xx_dma.o
- .debug_abbrev  0x00002dd9      0x210 ..\obj\portserial.o
- .debug_abbrev  0x00002fe9      0x252 ..\obj\mbfunccoils.o
- .debug_abbrev  0x0000323b      0x206 ..\obj\stm32f4xx_exti.o
- .debug_abbrev  0x00003441      0x17f ..\obj\misc.o
- .debug_abbrev  0x000035c0      0x33a ..\obj\svpwm.o
- .debug_abbrev  0x000038fa       0xd7 ..\obj\filter.o
- .debug_abbrev  0x000039d1      0x352 ..\obj\mbascii.o
- .debug_abbrev  0x00003d23      0x292 ..\obj\pid.o
- .debug_abbrev  0x00003fb5      0x2c5 ..\obj\stm32f4xx_tim.o
+ .debug_abbrev  0x000018c0      0x3f8 ..\obj\foc.o
+ .debug_abbrev  0x00001cb8      0x205 ..\obj\stm32f4xx_adc.o
+ .debug_abbrev  0x00001ebd      0x238 ..\obj\mbfuncinput.o
+ .debug_abbrev  0x000020f5      0x34b ..\obj\encoder.o
+ .debug_abbrev  0x00002440      0x1ff ..\obj\stm32f4xx_gpio.o
+ .debug_abbrev  0x0000263f      0x1be ..\obj\porttimer.o
+ .debug_abbrev  0x000027fd      0x2c1 ..\obj\mbrtu.o
+ .debug_abbrev  0x00002abe      0x17b ..\obj\system_stm32f4xx.o
+ .debug_abbrev  0x00002c39      0x1af ..\obj\stm32f4xx_dma.o
+ .debug_abbrev  0x00002de8      0x210 ..\obj\portserial.o
+ .debug_abbrev  0x00002ff8      0x252 ..\obj\mbfunccoils.o
+ .debug_abbrev  0x0000324a      0x206 ..\obj\stm32f4xx_exti.o
+ .debug_abbrev  0x00003450      0x17f ..\obj\misc.o
+ .debug_abbrev  0x000035cf      0x33a ..\obj\svpwm.o
+ .debug_abbrev  0x00003909       0xd7 ..\obj\filter.o
+ .debug_abbrev  0x000039e0      0x352 ..\obj\mbascii.o
+ .debug_abbrev  0x00003d32      0x292 ..\obj\pid.o
+ .debug_abbrev  0x00003fc4      0x2c5 ..\obj\stm32f4xx_tim.o
 
 .debug_loc      0x00000000     0x748d
  .debug_loc     0x00000000       0x97 ..\obj\stm32f4xx_syscfg.o
