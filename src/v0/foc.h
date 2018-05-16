@@ -38,10 +38,9 @@
 #define ADC1_DR					((uint32_t)0x4001204C)
 
 typedef struct {
-	float angle;
-	float fSinAngle, fCosAngle;
+	float angle, fSinAngle, fCosAngle;
 
-	int enable, main_state;
+	int enable, main_state, sector;
 
 	int16_t current_a, current_b;
 	int16_t current_a_offset, current_b_offset;
@@ -59,9 +58,11 @@ typedef struct {
 	float Valpha, Vbeta;
 	float Va, Vb, Vc;
 
-	float vbus_voltage;
+	float Ubus;		// Const: 320 VDC
+	float Us;		// Const: 200 VAC
+	float Usmax;	// |Usmax| = 2/3 * Udc = 2/3 * 320VDC = 213.33
+	float m;		// Modulation ratio: m = |Us| / Usmax = 200 / 213.33 = 0.9375
 
-	int sector;
 	int PWM1, PWM2, PWM3;
 
 	float fMaxRPM, fMaxRPMforCW, fMaxRPMforCCW;

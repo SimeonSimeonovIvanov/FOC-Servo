@@ -36,6 +36,14 @@ void focInit(LP_MC_FOC lpFocExt)
 
 	lpFoc->fMaxRPM = 3000.0f;
 
+	lpFoc->Ubus = 320;
+	lpFoc->Us = 200.0f;
+
+	lpFoc->Usmax = ( 2.0f / 3.0f ) * lpFoc->Ubus;
+	lpFoc->m = lpFoc->Us / lpFoc->Usmax;
+
+	///////////////////////////////////////////////////////////////////////////
+
 	sp_pos = 0;
 	pv_pos = 0;
 	sp_speed = 0;
@@ -43,7 +51,6 @@ void focInit(LP_MC_FOC lpFocExt)
 	sp_counter = 0;
 
 	///////////////////////////////////////////////////////////////////////////
-
 	/*        EATON Wiring Manual | 2011
 	 * "The rotation direction of a motor is always
 	 * determined by directly looking at the drive
@@ -152,7 +159,7 @@ void mcInvClark(LP_MC_FOC lpFoc)
 
 void mcUsrefLimit(LP_MC_FOC lpFoc)
 {
-	const float limit = SQRT3_DIV2; //SQRT3_DIV2;
+	float limit = lpFoc->m;
 	float Usref, scale;
 
 	Usref = sqrtf( lpFoc->Vd * lpFoc->Vd + lpFoc->Vq * lpFoc->Vq );
@@ -181,7 +188,7 @@ void ADC_IRQHandler( void )
 
 #ifdef FOC_ADC_DualMode_RegSimult_InjecSimult
 		lpFoc->current_a = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_1 );
-		lpFoc->vbus_voltage = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_2 );
+		lpFoc->Ubus = ADC_GetInjectedConversionValue( ADC1, ADC_InjectedChannel_2 );
 #endif
 	}
 
