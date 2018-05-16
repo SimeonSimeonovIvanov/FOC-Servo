@@ -5,7 +5,7 @@
 #define __AI1_SET_SPEED__           1 // +++ ?
 #define __POS_AND_SPEED_CONTROL__   2 // +++ ?
 
-#define __CONTROL_MODE__            __POS_AND_SPEED_CONTROL__
+#define __CONTROL_MODE__            __AI1_SET_SPEED__
 
 const float P = 8192.0f;
 const float Ts = 0.00125f;
@@ -152,7 +152,7 @@ void mcInvClark(LP_MC_FOC lpFoc)
 
 void mcUsrefLimit(LP_MC_FOC lpFoc)
 {
-	const float limit = 0.999f; //SQRT3_DIV2;
+	const float limit = SQRT3_DIV2; //SQRT3_DIV2;
 	float Usref, scale;
 
 	Usref = sqrtf( lpFoc->Vd * lpFoc->Vd + lpFoc->Vq * lpFoc->Vq );
