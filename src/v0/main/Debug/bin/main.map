@@ -2164,7 +2164,7 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_ranges  0x00000b00       0x40 ..\obj\pid.o
  .debug_ranges  0x00000b40      0x300 ..\obj\stm32f4xx_tim.o
 
-.debug_line     0x00000000     0x88bb
+.debug_line     0x00000000     0x88bd
  .debug_line    0x00000000      0x307 ..\obj\stm32f4xx_syscfg.o
  .debug_line    0x00000307      0x5ac ..\obj\mb.o
  .debug_line    0x000008b3      0x423 ..\obj\mbfuncdisc.o
@@ -2191,11 +2191,11 @@ OUTPUT(main.elf elf32-littlearm)
  .debug_line    0x000061fc      0x497 ..\obj\mbfunccoils.o
  .debug_line    0x00006693      0x337 ..\obj\stm32f4xx_exti.o
  .debug_line    0x000069ca      0x2ef ..\obj\misc.o
- .debug_line    0x00006cb9      0x626 ..\obj\svpwm.o
- .debug_line    0x000072df      0x246 ..\obj\filter.o
- .debug_line    0x00007525      0x59d ..\obj\mbascii.o
- .debug_line    0x00007ac2      0x278 ..\obj\pid.o
- .debug_line    0x00007d3a      0xb81 ..\obj\stm32f4xx_tim.o
+ .debug_line    0x00006cb9      0x628 ..\obj\svpwm.o
+ .debug_line    0x000072e1      0x246 ..\obj\filter.o
+ .debug_line    0x00007527      0x59d ..\obj\mbascii.o
+ .debug_line    0x00007ac4      0x278 ..\obj\pid.o
+ .debug_line    0x00007d3c      0xb81 ..\obj\stm32f4xx_tim.o
 
 .debug_str      0x00000000     0x5510
  .debug_str     0x00000000      0x2fc ..\obj\stm32f4xx_syscfg.o

@@ -515,6 +515,7 @@ void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
 /*
  *	Triangular Third Harmonic Injection ( TTHI )
  *	http://www.cnblogs.com/nixianmin/p/4791428.html
+ *	http://www.e-driveonline.com/main/wp-content/uploads/2015/03/Techincal_paper_Motors_and_drives_Systems_2015_Suda_and_David-2.pdf
  */
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 {
@@ -537,6 +538,15 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 		}
 	}
 
+	/*
+	 * Techincal_paper_Motors_and_drives_Systems_2015_Suda_and_David-2.pdf
+	 *
+	 * "...0.866, which is the peak of resultant
+	 * waveform with third harmonic. This gives us a
+	 * modulation factor of 1/0.866, i.e, 1.1547, giving 15.47%
+	 * more DC bus utilization."
+	 *
+	 */
 	Vcom = ( vmax + vmin ) * -0.5f;
 	X = ( lpFoc->Va + Vcom ) * 1.1547f;
 	Y = ( lpFoc->Vb + Vcom ) * 1.1547f;

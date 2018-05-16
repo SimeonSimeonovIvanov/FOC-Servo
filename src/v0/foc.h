@@ -58,6 +58,10 @@ typedef struct {
 	float Valpha, Vbeta;
 	float Va, Vb, Vc;
 
+	/*
+	 * Chapter 2 - Inverter Control with Space Vector Modulation
+	 * https://www.springer.com/cda/content/document/cda_downloaddocument/9783662469149-c2.pdf?SGWID=0-0-45-1507483-p177337582
+	 */
 	float Ubus;		// Const: 320 VDC
 	float Us;		// Const: 200 VAC
 	float Usmax;	// |Usmax| = 2/3 * Udc = 2/3 * 320VDC = 213.33
