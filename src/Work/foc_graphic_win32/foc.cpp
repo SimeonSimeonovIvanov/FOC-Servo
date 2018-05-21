@@ -497,29 +497,16 @@ void mcFocSPWM(LP_MC_FOC lpFoc) // ???
 	lpFoc->PWM2 = vb_int*50;
 	lpFoc->PWM3 = vc_int*50;*/
 
-	//#define PHASE_CHANGE
-
 	int Tpwm, T_2, T_4;
 
-	Tpwm = PWM_PERIOD;
+	Tpwm = 100;
 	T_2 = Tpwm * 0.50f;
-	T_4 = Tpwm * 0.25f;
 
 	mcInvClark(lpFoc);
 
-#ifndef PHASE_CHANGE
-	//lpFoc->Vb = -lpFoc->Vb;
-#endif
-
-	lpFoc->PWM1 = T_2 + (lpFoc->Va * T_2);
-
-#ifndef PHASE_CHANGE
-	lpFoc->PWM2 = T_2 + (lpFoc->Vb * T_2);
-	lpFoc->PWM3 = T_2 + (lpFoc->Vc * T_2);
-#else
-	lpFoc->PWM3 = T_2 + (lpFoc->Vb * T_4);
-	lpFoc->PWM2 = T_2 + (lpFoc->Vc * T_4);
-#endif
+	lpFoc->PWM1 = T_2 + (lpFoc->Va * -T_2);
+	lpFoc->PWM2 = T_2 + (lpFoc->Vb * -T_2);
+	lpFoc->PWM3 = T_2 + (lpFoc->Vc * -T_2);
 }
 
 /*
