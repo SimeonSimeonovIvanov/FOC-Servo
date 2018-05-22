@@ -396,8 +396,21 @@ void ADC_IRQHandler( void )
 	//lpFoc->Iq_des = 0;
 #endif
 	///////////////////////////////////////////////////////////////////////////
+//#define __ACIM_VF_TEST__
+
+#ifdef __ACIM_VF_TEST__
+	static float a = 0;
+
+	a += (25.0f / 16000.0f );
+	if( a > 0.999 ) {
+		a = 0;
+	}
+	angle = (int)( ( a * 360.0f ) * 11.370f );
+#else
 	//angle = readSanyoWareSaveEncoder();
 	angle = readRawEncoderWithUVW();
+#endif
+
 	mcFocSetAngle( lpFoc, angle );
 	mcFocCalcCurrent( lpFoc );
 	///////////////////////////////////////////////////////////////////////////
@@ -405,6 +418,10 @@ void ADC_IRQHandler( void )
 	mcPark( lpFoc );
 	///////////////////////////////////////////////////////////////////////////
 	if( lpFoc->enable ) {
+#ifdef __ACIM_VF_TEST__
+		lpFoc->Vd = 0;
+		lpFoc->Vq = 0.25 + 0.1f;
+#else
 		static volatile float temp = 0;
 
 		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.99 );
@@ -415,6 +432,7 @@ void ADC_IRQHandler( void )
 
 		lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
 		lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
+#endif
 	}
 	///////////////////////////////////////////////////////////////////////////
 	mcUsrefLimit(lpFoc);
