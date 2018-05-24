@@ -83,6 +83,11 @@ void svpwmInitTIM( void )
 	TIM_Cmd( TIM1, ENABLE );
 }
 
+uint16_t svpwmGetFrq( void )
+{
+	return PWM_FREQ;
+}
+
 void svpwmInitGPIO( void )
 {
 	GPIO_InitTypeDef GPIO_InitStructure;

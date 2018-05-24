@@ -62,6 +62,13 @@ void focInit(LP_MC_FOC lpFocExt)
 	lpFoc->fMaxRPMforCW  = 3000.00; // FWD - forward run ( +, clockwise rotation field )
 	lpFoc->fMaxRPMforCCW = 3000.00; // REV - reverse run ( -, anticlockwise rotation field active )
 
+	if( lpFoc->fMaxRPMforCW > lpFoc->fMaxRPM ) {
+		lpFoc->fMaxRPMforCW = lpFoc->fMaxRPM;
+	}
+
+	if( lpFoc->fMaxRPMforCCW > lpFoc->fMaxRPM ) {
+		lpFoc->fMaxRPMforCCW = lpFoc->fMaxRPM;
+	}
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
@@ -155,6 +162,28 @@ void mcInvClark(LP_MC_FOC lpFoc)
 	lpFoc->Vb = lpFoc->Vbeta;
 	lpFoc->Va = ( -lpFoc->Vbeta + ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
 	lpFoc->Vc = ( -lpFoc->Vbeta - ( SQRT3 * lpFoc->Valpha ) ) * 0.5f;
+}
+
+void mcPMSM_QD_PID(LP_MC_FOC lpFoc)
+{
+	if( lpFoc->enable ) {
+		FirstOrderLagFilter( &lpFoc->Iq_des_filter, lpFoc->Iq_des, 0.99 );
+		lpFoc->Iq_des = lpFoc->Iq_des_filter;
+
+		if( lpFoc->Iq_des >  1575.0f ) lpFoc->Iq_des =  1575.0f;
+		if( lpFoc->Iq_des < -1575.0f ) lpFoc->Iq_des = -1575.0f;
+
+		lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
+		lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
+	} else {
+		lpFoc->pid_d.sumError = 0.0f;
+		lpFoc->pid_q.sumError = 0.0f;
+
+		lpFoc->Iq_des_filter = 0;
+
+		lpFoc->Vd = 0.0f;
+		lpFoc->Vq = 0.0f;
+	}
 }
 
 void mcUsrefLimit(LP_MC_FOC lpFoc)
@@ -370,10 +399,7 @@ void ADC_IRQHandler( void )
 		sp_pos = 0;
 
 		lpFoc->Id_des = lpFoc->Id = 0;
-		lpFoc->Vd = lpFoc->Vq = 0.0f;
 
-		lpFoc->pid_d.sumError = 0.0f;
-		lpFoc->pid_q.sumError = 0.0f;
 		pidSpeed.sumError = 0.0f;
 		pidPos.sumError = 0.0f;
 	}
@@ -399,13 +425,21 @@ void ADC_IRQHandler( void )
 //#define __ACIM_VF_TEST__
 
 #ifdef __ACIM_VF_TEST__
-	static float a = 0;
+	sp_speed = 200;
 
-	a += (25.0f / 16000.0f );
-	if( a > 0.999 ) {
-		a = 0;
+	static float angle_int = 0;
+	float mos_sp_speed = ( fabs( sp_speed ) / 1360 );
+
+	angle_int += ( ( 50.0f * mos_sp_speed ) / (float)svpwmGetFrq() );
+	if( angle_int > 0.999 ) {
+		angle_int = 0;
 	}
-	angle = (int)( ( a * 360.0f ) * 11.370f );
+
+	angle = (int)( ( angle_int * 360.0f ) * 11.375f );
+	if( sp_speed < 0 ) {
+		angle = 4095 - angle;
+	}
+
 #else
 	//angle = readSanyoWareSaveEncoder();
 	angle = readRawEncoderWithUVW();
@@ -417,23 +451,19 @@ void ADC_IRQHandler( void )
 	mcClark( lpFoc );
 	mcPark( lpFoc );
 	///////////////////////////////////////////////////////////////////////////
-	if( lpFoc->enable ) {
 #ifdef __ACIM_VF_TEST__
+	if( lpFoc->enable ) {
 		lpFoc->Vd = 0;
-		lpFoc->Vq = 0.25 + 0.1f;
-#else
-		static volatile float temp = 0;
 
-		FirstOrderLagFilter( &temp, lpFoc->Iq_des, 0.99 );
-		lpFoc->Iq_des = temp;
+		lpFoc->Vq = mos_sp_speed;
 
-		if( lpFoc->Iq_des >  1575.0f ) lpFoc->Iq_des =  1575.0f;
-		if( lpFoc->Iq_des < -1575.0f ) lpFoc->Iq_des = -1575.0f;
-
-		lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
-		lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
-#endif
+		if(lpFoc->Vq < 0.1) {
+			lpFoc->Vq += 0.1f;
+		}
 	}
+#else
+	mcPMSM_QD_PID( lpFoc );
+#endif
 	///////////////////////////////////////////////////////////////////////////
 	mcUsrefLimit(lpFoc);
 	///////////////////////////////////////////////////////////////////////////
@@ -455,8 +485,10 @@ void ADC_IRQHandler( void )
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, pv_speed * 0.5f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_speed * 0.5f + 2047, lpFoc->angle + 2047 );
 
+	DAC_SetDualChannelData( DAC_Align_12b_R, 0, lpFoc->angle );
+
 	//DAC_SetDualChannelData( DAC_Align_12b_R, (sp_pos - pv_pos) * 1.0f + 2047, pv_speed_filter * 0.5f + 2047 );
-	DAC_SetDualChannelData( DAC_Align_12b_R, sp_pos * 0.5f + 2047, pv_pos * 0.5f + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R, sp_pos * 0.5f + 2047, pv_pos * 0.5f + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Is + 2047, lpFoc->f_rpm_mt_filtered_value + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Id + 2047, lpFoc->Iq + 2047 );
@@ -467,6 +499,8 @@ void ADC_IRQHandler( void )
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Is*0.9f + 2047, lpFoc->Iq_des*0.9f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq*0.9f + 2047, lpFoc->Iq_des*0.9f + 2047 );
+
+	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq*0.9f + 2047, lpFoc->Id*0.9f + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Ia * 0.5f + 2047, lpFoc->Ib * 0.5f + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->PWM1, lpFoc->PWM2 );
