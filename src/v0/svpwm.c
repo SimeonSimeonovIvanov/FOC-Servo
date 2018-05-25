@@ -517,6 +517,15 @@ void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
 	lpFoc->PWM3 = PWM2 * (float)PWM_PERIOD;
 }
 
+void mcFocSPWM(LP_MC_FOC lpFoc) // +++
+{
+	int Tpwm = (float)PWM_PERIOD * 0.5f;
+
+	lpFoc->PWM1 = Tpwm + ( lpFoc->Va * - Tpwm );
+	lpFoc->PWM2 = Tpwm + ( lpFoc->Vb * - Tpwm );
+	lpFoc->PWM3 = Tpwm + ( lpFoc->Vc * - Tpwm );
+}
+
 /*
  *	Triangular Third Harmonic Injection ( TTHI )
  *	http://www.cnblogs.com/nixianmin/p/4791428.html
