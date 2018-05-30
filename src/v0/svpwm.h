@@ -12,7 +12,7 @@
 #include "foc.h"
 
 #define CKTIM			( 168000000>>1 )
-#define PWM_FREQ		( 16000 )
+#define PWM_FREQ		( 4000 )
 
 #define PWM_PRSC		( (u8)0 )
 /* Resolution: 1Hz */
@@ -27,6 +27,7 @@ void mcFocSVPWM_ST2_TTHI(LP_MC_FOC lpFoc);
 void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc);
 void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc);
 void mcFocSVPWM_STHI(LP_MC_FOC lpFoc);
+void SPWM( LP_MC_FOC lpFoc, float A, uint16_t angle );
 
 void DMAInit(void);
 void svpwmInitADC( void );

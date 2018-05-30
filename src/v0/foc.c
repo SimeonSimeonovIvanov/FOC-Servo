@@ -426,10 +426,24 @@ void ADC_IRQHandler( void )
 //#define __ACIM_VF_TEST__
 
 #ifdef __ACIM_VF_TEST__
-	sp_speed = 1360/1;( ai0 - 2047 );// * (fabs(lpFoc->Id));
+	sp_speed = 120;( ai0 - 2047 );// * ();
+
+	static float limit = 1;
+
+	if( lpFoc->Is >= 2200 ) {
+		if( limit < sp_speed ) limit+= 1;
+	} else {
+		if( limit>1 ) limit -= 1;
+	}
+
+	if(sp_speed) {
+		sp_speed = sp_speed - limit;
+	} else {
+		sp_speed = -sp_speed - limit;
+	}
 
 	static float angle_int = 0;
-	float mos_sp_speed = ( fabs( sp_speed ) / 1360 );
+	float mos_sp_speed = ( fabs( sp_speed ) / 1385 );
 
 	angle_int += ( ( 50.0f * mos_sp_speed ) / (float)svpwmGetFrq() );
 	if( angle_int > 0.999 ) {
@@ -454,11 +468,11 @@ void ADC_IRQHandler( void )
 	///////////////////////////////////////////////////////////////////////////
 #ifdef __ACIM_VF_TEST__
 	if( lpFoc->enable ) {
-		lpFoc->Vd = 0;
-		lpFoc->Vq = mos_sp_speed;
+		lpFoc->Vd = 0;//mos_sp_speed * 0.;// * 1/(limit/3000);
+		lpFoc->Vq = mos_sp_speed * 0.5;// * 1/(limit/3000);
 
 		if(lpFoc->Vq < 0.05) {
-			lpFoc->Vq += 0.05f;
+			//lpFoc->Vq += 0.05f;
 		}
 	}
 #else
@@ -476,6 +490,8 @@ void ADC_IRQHandler( void )
 	//mcFocSPWM( lpFoc );
 	mcFocSVPWM_TTHI( lpFoc );
 	//mcFocSVPWM_STHI( lpFoc );
+
+	//SPWM( lpFoc, (float)0.99f, angle);
 	///////////////////////////////////////////////////////////////////////////
 	TIM_SetCompare1( TIM1, lpFoc->PWM1 );
 	TIM_SetCompare2( TIM1, lpFoc->PWM2 );
@@ -499,7 +515,7 @@ void ADC_IRQHandler( void )
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq + 2047, pv_speed_filter*0.5 + 2047 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq + 2047, sp_speed*0.5 + 2047);
 
-	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Is*0.9f + 2047, lpFoc->Iq_des*0.9f + 2047 );
+	//DAC_SetDualChannelData( DAC_Align_12b_R,  lpFoc->PWM1, lpFoc->PWM2 );
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq*0.9f + 2047, lpFoc->Iq_des*0.9f + 2047 );
 
 	//DAC_SetDualChannelData( DAC_Align_12b_R, lpFoc->Iq*0.9f + 2047, lpFoc->Id*0.9f + 2047 );

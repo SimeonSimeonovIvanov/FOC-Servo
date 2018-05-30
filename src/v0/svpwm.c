@@ -517,13 +517,31 @@ void mcFocSVPWM0_TTHI(LP_MC_FOC lpFoc) // +++ ?
 	lpFoc->PWM3 = PWM2 * (float)PWM_PERIOD;
 }
 
+void SPWM( LP_MC_FOC lpFoc, float A, uint16_t angle )
+{
+	float Tpwm = (float)PWM_PERIOD * 0.5f;
+
+	const float k = 360.0f / 4096.0f;
+
+	A=0.5f;
+	volatile float u = sinf( foc_deg_to_rad( ((float)angle * k) + 0 ) );
+	volatile float v = A * sinf( foc_deg_to_rad( ((float)angle * k) + 120) );
+	volatile float w = A * sinf( foc_deg_to_rad( ((float)angle * k) + 240) );
+
+	DAC_SetDualChannelData( DAC_Align_12b_R,  u*1000+1000, lpFoc->PWM2/4 );
+
+	lpFoc->PWM1 = Tpwm + ( u * Tpwm );
+	lpFoc->PWM2 = Tpwm + ( v * Tpwm );
+	lpFoc->PWM3 = Tpwm + ( w * Tpwm );
+}
+
 void mcFocSPWM(LP_MC_FOC lpFoc) // +++
 {
 	int Tpwm = (float)PWM_PERIOD * 0.5f;
 
-	lpFoc->PWM1 = Tpwm + ( lpFoc->Va * - Tpwm );
-	lpFoc->PWM2 = Tpwm + ( lpFoc->Vb * - Tpwm );
-	lpFoc->PWM3 = Tpwm + ( lpFoc->Vc * - Tpwm );
+	lpFoc->PWM1 = Tpwm + ( lpFoc->Va * Tpwm );
+	lpFoc->PWM2 = Tpwm + ( lpFoc->Vb * Tpwm );
+	lpFoc->PWM3 = Tpwm + ( lpFoc->Vc * Tpwm );
 }
 
 /*
