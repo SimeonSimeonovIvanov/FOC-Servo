@@ -1,13 +1,11 @@
 #include "encoder.h"
 
 //#define __TIM8_ENCODER__
-
 #ifndef __TIM8_ENCODER__
 	#define __TIM8_STEP_DIR__
 #endif
 
-//static float arr_sin[361], arr_cos[361];
-static float arr_sin[4096], arr_cos[4096];
+static float arr_sin[ ROTOR_ENCODER_PERIOD + 1 ], arr_cos[ ROTOR_ENCODER_PERIOD + 1 ];
 
 uint32_t uwTIM10PulseLength = 0;
 int16_t tim8_overflow = 0;
@@ -62,7 +60,7 @@ void initEncoder(void)
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit( TIM2, &TIM_TimeBaseStructure );
 
-	TIM_TimeBaseStructure.TIM_Period = ( 4096 - 1 );
+	TIM_TimeBaseStructure.TIM_Period = ROTOR_ENCODER_PERIOD;
 	TIM_TimeBaseInit( TIM3, &TIM_TimeBaseStructure );
 
 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
@@ -186,7 +184,7 @@ int32_t iEncoderGetAbsPos(void)
 uint16_t read360(void)
 {
 	uint16_t encoder;
-	encoder = (float)( TIM3->ARR - TIM3->CNT ) * 0.0878906f;
+	encoder = (float)( ROTOR_ENCODER_PERIOD - TIM3->CNT ) * ( 360.f / (float)ROTOR_ENCODER_PERIOD );
 	return encoder;
 }
 
@@ -261,15 +259,13 @@ uint16_t readSanyoWareSaveEncoder(void) // ---
 	return TIM3->ARR - TIM3->CNT;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
 void EXTI15_10_IRQHandler(void)
 {
 	static uint32_t first_run = 1;
 	if( RESET != EXTI_GetITStatus( EXTI_Line15 ) ) {
-		if(first_run) {
+		if( first_run ) {
 			//TIM3->CNT = 1364;
-			//first_run = 0;
+			first_run = 0;
 		}
     	EXTI_ClearITPendingBit( EXTI_Line15 );
     }
@@ -277,6 +273,7 @@ void EXTI15_10_IRQHandler(void)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// 4096 Импулса за половин оборот (180 мех.градуса) на енкодер = 360 ел.градуса ( 4 полюсен мотор ):
 uint16_t readRawEncoderWithUVW(void) // !!!
 {
 	static uint32_t hall_old = 0;
@@ -307,13 +304,12 @@ uint16_t readRawEncoderWithUVW(void) // !!!
 		hall_old = hall;
 	}
 
-	// 4000 Импулса за половин оборот (180 мех.градуса) на енкодер = 360 ел.градуса ( 4 полюсен мотор ):
-	encoder = TIM3->ARR - TIM3->CNT;
+	encoder = ROTOR_ENCODER_PERIOD - TIM3->CNT;
 
 	if( !hall_old ) {
-		encoder = 11.375f * encoderAddOffset( encoder * 0.0879120879f, 30 );
+		encoder = ( (float)ROTOR_ENCODER_PERIOD / 360.0f ) * encoderAddOffset( encoder * ( 360.0f / (float)ROTOR_ENCODER_PERIOD ), 30 );
 	} else {
-		//encoder = 11.375f * encoderAddOffset( encoder * 0.0878906f, -15 );
+		//encoder = ( (float)ROTOR_ENCODER_PERIOD / 360.0f ) * encoderAddOffset( encoder * ( 360.0f / (float)ROTOR_ENCODER_PERIOD ), 0 );
 	}
 
 	return encoder;
@@ -344,15 +340,17 @@ uint16_t read360uvw(void)
 			}
 		}
 
-		hall_angle = 11.375f * hall_angle;
+		hall_angle = ( (float)ROTOR_ENCODER_PERIOD / 360.0f ) * hall_angle;
 		TIM3->CNT = hall_angle;
 	}
 
 	// 4000 Импулса за половин оборот (180 мех.градуса) на енкодер = 360 ел.градуса ( 4 полюсен мотор ):
-	encoder = TIM3->CNT * 0.0879120879f;
+	encoder = TIM3->CNT * ( 360.f / (float)ROTOR_ENCODER_PERIOD );
 
 	if( !hall_old ) {
 		encoder = encoderAddOffset( encoder, 30 );
+	} else {
+		encoder = encoderAddOffset( encoder, 0 );
 	}
 
 	hall_old = hall;
@@ -395,15 +393,9 @@ uint16_t readRawHallInput( void )
 
 void createSinCosTable(void)
 {
-	for( int i = 0; i < 4096; i++ ) {
-		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * 0.0879120879f ) );
-		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * 0.0879120879f ) );
-	}
-	return;
-
-	for( int i = 0; i <= 360; i++) {
-		arr_sin[i] = sinf( foc_deg_to_rad( (float)i ) );
-		arr_cos[i] = cosf( foc_deg_to_rad( (float)i ) );
+	for( int i = 0; i <= ROTOR_ENCODER_PERIOD; i++ ) {
+		arr_sin[i] = sinf( foc_deg_to_rad( (float)i * ( 360.0f / (float)ROTOR_ENCODER_PERIOD ) ) );
+		arr_cos[i] = cosf( foc_deg_to_rad( (float)i * ( 360.0f / (float)ROTOR_ENCODER_PERIOD ) ) );
 	}
 }
 

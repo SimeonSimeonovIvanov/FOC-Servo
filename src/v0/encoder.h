@@ -8,7 +8,9 @@
 #include "stm32f4xx_exti.h"
 #include "stm32f4xx_syscfg.h"
 
-#define foc_deg_to_rad( deg ) ( deg * ( 3.14159265359f / 180.0f ) )
+#define ROTOR_ENCODER_PERIOD	( 4095 ) // TIM3->ARR
+
+#define foc_deg_to_rad( deg )	( (float)deg * ( 3.14159265359f / 180.0f ) )
 
 void initEncoder(void);
 void encoderInitZ(void);

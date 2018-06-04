@@ -5,11 +5,13 @@
 #define __AI1_SET_SPEED__           1 // +++ ?
 #define __POS_AND_SPEED_CONTROL__   2 // +++ ?
 
-#define __CONTROL_MODE__            __AI1_SET_SPEED__
+#define __CONTROL_MODE__            __POS_AND_SPEED_CONTROL__
 
 const float P = 8192.0f;
-const float Ts = 0.00125f;
 const float fc = 3*4000000.0f;
+
+const int Ts_rep_counter = 20;
+float Ts;
 
 extern uint32_t uwTIM10PulseLength;
 extern int16_t tim8_overflow;
@@ -73,7 +75,7 @@ void focInit(LP_MC_FOC lpFocExt)
 	///////////////////////////////////////////////////////////////////////////
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ || __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-	pidInit( &pidSpeed, 1.2f, 0.0091f, 0.0f, 1.0f );
+	pidInit( &pidSpeed, 1.1f, 0.0091f, 0.0f, 1.0f );
 
 	pidSetOutLimit( &pidSpeed, 0.999f, -0.999f );
 	pidSetIntegralLimit( &pidSpeed, 0.999f );
@@ -81,19 +83,19 @@ void focInit(LP_MC_FOC lpFocExt)
 #endif
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
-	pidInit_test( &pidPos, 0.5f, 0.002f, 0.0f, 1.0f );
+	pidInit_test( &pidPos, 0.5f, 0.001f, 0.0f, 1.0f );
 
 	pidSetIntegralLimit_test( &pidPos, 3000.0f );
 	pidSetOutLimit_test( &pidPos, 3000.0f, -3000.0f );
 #endif
 
 	///////////////////////////////////////////////////////////////////////////
-	pidInit( &lpFoc->pid_d, 0.12f, 0.0024f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_d, 0.12f, 0.00104f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_d, 0.99f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_d, 0.25f );
 	pidSetInputRange( &lpFoc->pid_d, 2047.0f );
 
-	pidInit( &lpFoc->pid_q, 0.12f, 0.0024f, 0.0f, 1.00006f );
+	pidInit( &lpFoc->pid_q, 0.12f, 0.00104f, 0.0f, 1.00006f );
 	pidSetOutLimit( &lpFoc->pid_q, 0.999f, -0.999f );
 	pidSetIntegralLimit( &lpFoc->pid_q, 0.25f );
 	pidSetInputRange( &lpFoc->pid_q, 2047.0f );
@@ -103,6 +105,8 @@ void focInit(LP_MC_FOC lpFocExt)
 	initEncoder();
 	svpwmInit();
 	initDAC();
+
+	Ts = Ts_rep_counter * ( 1.0f / (float)svpwmGetFrq() );
 }
 
 void initDAC(void)
@@ -250,7 +254,7 @@ void ADC_IRQHandler( void )
 	}
 
 	enc_delta = TIM4->CNT;
-	if( 40 == ++counter_get_speed ) {
+	if( Ts_rep_counter == ++counter_get_speed ) {
 		volatile float rpm_m, rpm_t;
 
 		TIM4->CNT = 0;
@@ -288,7 +292,7 @@ void ADC_IRQHandler( void )
 		if( vel < 2000 ) vel = -vel;
 		else vel = vel - 4095;
 
-		vel = vel * ( 60.0f / ( 8192.0f * 0.0025f ) );
+		vel = vel * ( 60.0f / ( 8192.0f * Ts ) );
 	} else {
 		static int16_t enc_delta_old = 0, uwTIM10PulseLength_old = 0;
 
@@ -312,7 +316,7 @@ void ADC_IRQHandler( void )
 		enc_delta_old = enc_delta;
 	}
 
-	lpFoc->f_rpm_mt *= 0.740;
+	//lpFoc->f_rpm_mt *= 0.740;
 	pv_speed = lpFoc->f_rpm_mt;
 	pv_speed = ffilter( (float)pv_speed, arrSpeedFB, 2 );
 
@@ -320,10 +324,10 @@ void ADC_IRQHandler( void )
 	sp_counter = ( ( 0xffff * tim8_overflow ) + TIM8->CNT ) * 10;
 	//sp_counter = ( ( ( 8192.0f - 1.0f ) / 2000.0f ) * (float)sp_counter ) * -1.0f;
 
-	pv_pos = iEncoderGetAbsPos();
+	pv_pos = -iEncoderGetAbsPos();
 
 #if ( __CONTROL_MODE__ == __AI1_SET_SPEED__ )
-	sp_speed = 2900;2.0f * ( ai0_filtered_value - 2047.0f );
+	sp_speed = 2.0f * ( ai0_filtered_value - 2047.0f );
 	if( ( GPIO_ReadInputData( GPIOB ) & GPIO_Pin_13 ) ? 1 : 0 ) {
 		//sp_speed = -sp_speed;
 	}
@@ -341,7 +345,6 @@ void ADC_IRQHandler( void )
 		//sp_pos = ai0_filtered_value - 2047.0f;
 		//sp_pos = counter02;
 		sp_pos = sp_counter;
-
 #endif
 
 #if ( __CONTROL_MODE__ == __POS_AND_SPEED_CONTROL__ )
@@ -549,15 +552,15 @@ void adc_current_filter( uint16_t *current_a, uint16_t *current_b )
 	arrIb[1] = arrIb[0];	arrIb[0] = *current_b;
 
 	*current_a = (int32_t)(
-		arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3]// + arrIa[4]// +
+		arrIa[0] + arrIa[1] + arrIa[2] + arrIa[3] + arrIa[4]// +
 		//arrIa[5] + arrIa[6] + arrIa[7]  + arrIa[8] + arrIa[9]// +
 		//arrIa[10]  + arrIa[11] + arrIa[12] + arrIa[13] + arrIa[14] + arrIa[15]
 	) * ( 1.0f / 4.0f );
 	*current_b = (int32_t)(
-		arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3]// + arrIb[4]// +
+		arrIb[0] + arrIb[1] + arrIb[2] + arrIb[3] + arrIb[4]// +
 		//arrIb[5] + arrIb[6]  + arrIb[7] + arrIb[8] + arrIb[9]// +
 		//arrIb[10] + arrIb[11]  + arrIb[12] + arrIb[13] + arrIb[14] + arrIb[15]
-	) * ( 1.0f / 4.0f );
+	) * ( 1.0f / 5.0f );
 }
 
 float fLimitValue(float value, float limit)
