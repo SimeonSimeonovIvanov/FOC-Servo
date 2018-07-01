@@ -16,13 +16,13 @@
 </folder>
 </info>
 </editorArea>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="11" selectionOffset="3174" selectionTopPixel="1290"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="pid.c" partName="pid.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/pid/pid.c" title="pid.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/pid/pid.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/pid/pid.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1139" selectionTopPixel="830"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="svpwm.h" partName="svpwm.h" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/svpwm.h" title="svpwm.h" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/svpwm.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/include/svpwm.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="218" selectionTopPixel="0"/>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="6170"/>
 </editor>
 </editors>
 <views>
@@ -46,7 +46,7 @@
 <element path="/main/foc/source/pid"/>
 </expanded>
 <selection>
-<element path="/main/foc/include/svpwm.h"/>
+<element path="/main/foc/source/foc.c"/>
 </selection>
 </viewState>
 </view>
@@ -274,160 +274,165 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/svpwm.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/include/svpwm.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/include/encoder.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/pid/pid.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/encoder.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/pid/pid.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/main/foc/source/foc.c"/>
 </editors>
-<item historyLabel="svpwm.h" index="2">
-<position info="not_deleted" x="902" y="0"/>
-</item>
-<item historyLabel="svpwm.c" index="1">
-<position info="not_deleted" x="2906" y="28"/>
-</item>
-<item historyLabel="svpwm.h" index="2">
-<position info="not_deleted" x="902" y="0"/>
-</item>
-<item historyLabel="foc.c" index="0">
-<position info="not_deleted" x="9185" y="0"/>
-</item>
-<item historyLabel="svpwm.h" index="2">
-<position info="not_deleted" x="902" y="0"/>
-</item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="9183" y="0"/>
 </item>
-<item historyLabel="svpwm.h" index="2">
-<position info="not_deleted" x="292" y="0"/>
-</item>
-<item historyLabel="foc.c" index="0">
-<position info="not_deleted" x="9183" y="0"/>
-</item>
-<item historyLabel="svpwm.h" index="2">
-<position info="not_deleted" x="473" y="0"/>
-</item>
-<item historyLabel="foc.c" index="0">
-<position info="not_deleted" x="3181" y="0"/>
-</item>
-<item historyLabel="svpwm.h" index="2">
-<position info="not_deleted" x="473" y="0"/>
-</item>
-<item historyLabel="foc.c" index="0">
-<position info="not_deleted" x="9183" y="0"/>
-</item>
-<item historyLabel="svpwm.h" index="2">
+<item historyLabel="svpwm.h" index="1">
 <position info="not_deleted" x="473" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="2611" y="0"/>
 </item>
-<item historyLabel="svpwm.h" index="2">
+<item historyLabel="svpwm.h" index="1">
 <position info="not_deleted" x="357" y="10"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="16970" y="0"/>
 </item>
-<item historyLabel="svpwm.h" index="2">
+<item historyLabel="svpwm.h" index="1">
 <position info="not_deleted" x="357" y="10"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="16970" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="12576" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="12532" y="21"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="12521" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
-<item historyLabel="encoder.h" index="4">
+<item historyLabel="encoder.h" index="3">
 <position info="not_deleted" x="839" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
-<item historyLabel="encoder.h" index="4">
+<item historyLabel="encoder.h" index="3">
 <position info="not_deleted" x="212" y="20"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
-<item historyLabel="encoder.h" index="4">
+<item historyLabel="encoder.h" index="3">
 <position info="not_deleted" x="212" y="20"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="8885" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="288" y="11"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="8885" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="5969" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="9128" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="5935" y="17"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="1309" y="0"/>
 </item>
-<item historyLabel="encoder.c" index="3">
+<item historyLabel="encoder.c" index="2">
 <position info="not_deleted" x="5935" y="17"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="1309" y="0"/>
 </item>
-<item historyLabel="svpwm.h" index="2">
+<item historyLabel="svpwm.h" index="1">
 <position info="not_deleted" x="292" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="430" y="0"/>
 </item>
-<item historyLabel="svpwm.h" index="2">
+<item historyLabel="svpwm.h" index="1">
 <position info="not_deleted" x="292" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="3174" y="11"/>
 </item>
-<item historyLabel="svpwm.h" index="2">
+<item historyLabel="svpwm.h" index="1">
 <position info="not_deleted" x="478" y="0"/>
 </item>
 <item historyLabel="foc.c" index="0">
 <position info="not_deleted" x="3174" y="11"/>
 </item>
-<item active="true" historyLabel="svpwm.h" index="2">
-<position info="not_deleted" x="478" y="0"/>
+<item historyLabel="svpwm.h" index="1">
+<position info="not_deleted" x="918" y="0"/>
+</item>
+<item historyLabel="pid.c" index="4">
+<position info="not_deleted" x="1278" y="0"/>
+</item>
+<item historyLabel="encoder.c" index="5">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="foc.c" index="6">
+<position info="not_deleted" x="12536" y="21"/>
+</item>
+<item historyLabel="encoder.c" index="5">
+<position info="not_deleted" x="8743" y="0"/>
+</item>
+<item historyLabel="foc.c" index="6">
+<position info="not_deleted" x="12536" y="21"/>
+</item>
+<item historyLabel="svpwm.h" index="1">
+<position info="not_deleted" x="1098" y="0"/>
+</item>
+<item historyLabel="foc.c" index="6">
+<position info="not_deleted" x="12536" y="21"/>
+</item>
+<item historyLabel="encoder.c" index="5">
+<position info="not_deleted" x="8743" y="0"/>
+</item>
+<item historyLabel="foc.c" index="7">
+<position info="not_deleted" x="11835" y="0"/>
+</item>
+<item historyLabel="pid.c" index="8">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item active="true" historyLabel="foc.c" index="9">
+<position info="not_deleted" x="0" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -436,14 +441,17 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="svpwm.h" tooltip="main/foc/include/svpwm.h">
-<persistable path="/main/foc/include/svpwm.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" tooltip="main/foc/source/foc.c">
+<persistable path="/main/foc/source/foc.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="pid.c" tooltip="main/foc/source/pid/pid.c">
+<persistable path="/main/foc/source/pid/pid.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.c" tooltip="main/foc/source/encoder.c">
 <persistable path="/main/foc/source/encoder.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" tooltip="main/foc/source/foc.c">
-<persistable path="/main/foc/source/foc.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="svpwm.h" tooltip="main/foc/include/svpwm.h">
+<persistable path="/main/foc/include/svpwm.h"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="encoder.h" tooltip="main/foc/include/encoder.h">
 <persistable path="/main/foc/include/encoder.h"/>
@@ -459,9 +467,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.h" tooltip="main/foc/include/foc.h">
 <persistable path="/main/foc/include/foc.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="pid.c" tooltip="main/foc/source/pid/pid.c">
-<persistable path="/main/foc/source/pid/pid.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f4xx_adc.h" tooltip="main/cmsis_lib/include/stm32f4xx_adc.h">
 <persistable path="/main/cmsis_lib/include/stm32f4xx_adc.h"/>

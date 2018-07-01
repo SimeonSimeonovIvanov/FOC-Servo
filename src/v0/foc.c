@@ -429,15 +429,15 @@ void ADC_IRQHandler( void )
 //#define __ACIM_VF_TEST__
 
 #ifdef __ACIM_VF_TEST__
-	sp_speed = 120;( ai0 - 2047 );// * ();
+	sp_speed = 200;( ai0 - 2047 );// * ();
 
 	static float limit = 1;
 
-	if( lpFoc->Is >= 2200 ) {
+	/*if( lpFoc->Is >= 2200 ) {
 		if( limit < sp_speed ) limit+= 1;
 	} else {
 		if( limit>1 ) limit -= 1;
-	}
+	}*/
 
 	if(sp_speed) {
 		sp_speed = sp_speed - limit;
@@ -446,9 +446,9 @@ void ADC_IRQHandler( void )
 	}
 
 	static float angle_int = 0;
-	float mos_sp_speed = ( fabs( sp_speed ) / 1385 );
+	float vf_q = ( fabs( sp_speed ) / 1385 );
 
-	angle_int += ( ( 50.0f * mos_sp_speed ) / (float)svpwmGetFrq() );
+	angle_int += ( ( 50.0f * vf_q ) / (float)svpwmGetFrq() );
 	if( angle_int > 0.999 ) {
 		angle_int = 0;
 	}
@@ -472,7 +472,9 @@ void ADC_IRQHandler( void )
 #ifdef __ACIM_VF_TEST__
 	if( lpFoc->enable ) {
 		lpFoc->Vd = 0;//mos_sp_speed * 0.;// * 1/(limit/3000);
-		lpFoc->Vq = mos_sp_speed * 0.5;// * 1/(limit/3000);
+		lpFoc->Vq = vf_q * ( 220.0f / 270.0f )*0.5;
+
+		lpFoc->Vd = lpFoc->Vq;
 
 		if(lpFoc->Vq < 0.05) {
 			//lpFoc->Vq += 0.05f;
