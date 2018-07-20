@@ -11,13 +11,13 @@
 //#define FOC_ADC_Mode_Independent
 #define FOC_ADC_DualMode_RegSimult_InjecSimult
 
-#define SQRT3			1.732050807568877f
+#define SQRT3			( 1.732050807568877f )
 #define divSQRT3		( 1.0f / SQRT3 )		// 0.57735026918f
 #define SQRT3_DIV2		( SQRT3 * 0.5f )		// 0.86602540378f
 
 //#define TWO_BY_SQRT3	( 2.0f * SQRT3 )
 
-// -------------------------------------------------------=====================
+// ----------------------------------------------------------------------------
 // ADC1
 // Injected Channel:
 #define PHASE_A_ADC_CHANNEL		ADC_Channel_8		// PB0
@@ -26,12 +26,12 @@
 // Regular Channel:
 #define AIN1_ADC_CHANNEL		ADC_Channel_14		// PC4
 #define AIN2_ADC_CHANNEL		ADC_Channel_15		// PC5
-// -------------------------------------------------------=====================
+// ----------------------------------------------------------------------------
 // ADC2
 // Injected Channel:
 #define PHASE_B_ADC_CHANNEL		ADC_Channel_9		// PB1
 #define AIN0_ADC_CHANNEL		ADC_Channel_12		// PC2
-// -------------------------------------------------------=====================
+// ----------------------------------------------------------------------------
 #define SAMPLING_TIME_CK		ADC_SampleTime_15Cycles
 
 #define ARRAYSIZE				( 2 * 4 )
