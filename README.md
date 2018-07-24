@@ -4,4 +4,4 @@
 [FOC Servo (youtube.com)](https://www.youtube.com/watch?v=d91JvBRgOYI&list=PLE616v1yP137koahQjisksADdZlHxYS2S)<br>
 [Images (photos.google.com)](https://goo.gl/photos/JQcb6tujQgFE7cGe8)<br>
 [AC Servo (photos.google.com)](https://photos.app.goo.gl/785x7djrvYAcP9JZ6)<br>
-[AC Servo (Work, photos.google.com)](https://photos.app.goo.gl/srzg5DDZzGg4B8dc7)<br>
+[AC Servo ( Work ) (photos.google.com)](https://photos.app.goo.gl/srzg5DDZzGg4B8dc7)<br>
