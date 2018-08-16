@@ -14,7 +14,7 @@ extern uint16_t sanyo_uvw;
 extern float ai0_filtered_value;
 extern uint16_t ai0, ai1;
 
-extern float vel;
+extern int enc_delta_temp;
 
 volatile MC_FOC stFoc;
 
@@ -134,16 +134,11 @@ int main(void)
 		usRegHoldingBuf[18] = (int)pidPos.error;
 		usRegHoldingBuf[19] = (int)pidPos.error>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		// temp:
-		int temp;
-
-		temp = (int)(vel*100.0f);
-
-		usRegHoldingBuf[20] = (int)(temp);
-		usRegHoldingBuf[21] = (int)(temp>>16);
+		usRegHoldingBuf[20] = (int)(enc_delta_temp*100.0f);
+		usRegHoldingBuf[21] = (int)(enc_delta_temp*100.0f)>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[22] = (int)(stFoc.f_rpm_mt*100.0f);
-		usRegHoldingBuf[23] = (int)(stFoc.f_rpm_mt*100.0f)>>16;
+		usRegHoldingBuf[22] = (int)(stFoc.f_rpm_mt_filtered_value*100.0f);
+		usRegHoldingBuf[23] = (int)(stFoc.f_rpm_mt_filtered_value*100.0f)>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[24] = (int)(sp_speed*100.0f);
 		usRegHoldingBuf[25] = (int)(sp_speed*100.0f)>>16;

@@ -5,7 +5,7 @@
 #define __AI1_SET_SPEED__           1 // +++ ?
 #define __POS_AND_SPEED_CONTROL__   2 // +++ ?
 
-#define __CONTROL_MODE__            __AI1_SET_SPEED__//__POS_AND_SPEED_CONTROL__
+#define __CONTROL_MODE__            __AI1_SET_SPEED__
 
 const float P = 8192.0f;
 const float fc = 3*4000000.0f;
@@ -16,7 +16,7 @@ float Ts;
 extern uint32_t uwTIM10PulseLength;
 extern int16_t tim8_overflow;
 
-float vel;
+int enc_delta_temp;
 
 int32_t sp_pos, pv_pos, sp_counter;
 float sp_speed, pv_speed;
@@ -207,6 +207,8 @@ void mcUsrefLimit(LP_MC_FOC lpFoc)
 
 void ADC_IRQHandler( void )
 {
+	static float angle_old;
+
 	static int32_t counter_pos_reg = 0, counter_speed_reg = 0;
 	static int32_t counter_get_speed = 0;
 	static float arrSpeedFB[10] = { 0 };
@@ -253,11 +255,25 @@ void ADC_IRQHandler( void )
 		return;
 	}
 
-	enc_delta = TIM4->CNT;
+	//enc_delta = TIM4->CNT;
 	if( Ts_rep_counter == ++counter_get_speed ) {
 		volatile float rpm_m, rpm_t;
+		static int16_t lastpos = 0;
+		int16_t pos;
 
-		TIM4->CNT = 0;
+		//TIM4->CNT = 0;
+
+		///////////////////////////////////////////////////////////////////////
+		pos = TIM3->CNT;
+		enc_delta_temp = ( ( pos - lastpos + TIM3->ARR ) % ( TIM3->ARR ) );
+		lastpos = pos;
+
+		if( enc_delta_temp >= 1000 ) {
+			enc_delta_temp = enc_delta_temp - TIM3->ARR;
+		}
+
+		enc_delta = enc_delta_temp;
+		///////////////////////////////////////////////////////////////////////
 
 		rpm_m = (float)enc_delta;
 		rpm_t = (float)uwTIM10PulseLength;
@@ -280,23 +296,10 @@ void ADC_IRQHandler( void )
 		}
 
 		counter_get_speed = 0;
-
-		////////////////////////////////////////////
-		static int16_t lastpos = 0;
-		int16_t pos;
-
-		pos = TIM3->CNT;
-		vel = ( ( pos - lastpos + 4095 ) % 4096 );
-		lastpos = pos;
-
-		if( vel < 2000 ) vel = -vel;
-		else vel = vel - 4095;
-
-		vel = vel * ( 60.0f / ( 8192.0f * Ts ) );
 	} else {
-		static int16_t enc_delta_old = 0, uwTIM10PulseLength_old = 0;
+		static uwTIM10PulseLength_old = 0;
 
-		if( ( enc_delta != enc_delta_old ) || ( uwTIM10PulseLength != uwTIM10PulseLength_old ) ) {
+		if( uwTIM10PulseLength != uwTIM10PulseLength_old ) {
 			float rpm_t = (float)uwTIM10PulseLength;
 
 			if( rpm_t ) {
@@ -313,7 +316,6 @@ void ADC_IRQHandler( void )
 		}
 
 		uwTIM10PulseLength_old = uwTIM10PulseLength;
-		enc_delta_old = enc_delta;
 	}
 
 	//lpFoc->f_rpm_mt *= 0.740;

@@ -28,17 +28,20 @@ void initEncoder(void)
 
 	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM2, ENABLE );
 	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM3, ENABLE );
-	RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM4, ENABLE );
+	//RCC_APB1PeriphClockCmd( RCC_APB1Periph_TIM4, ENABLE );
 	RCC_APB2PeriphClockCmd( RCC_APB2Periph_TIM8, ENABLE );
 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_0;
 	GPIO_Init( GPIOA, &GPIO_InitStructure );
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6 | GPIO_Pin_5 | GPIO_Pin_4;
+
+	GPIO_InitStructure.GPIO_Pin = /*GPIO_Pin_7 | GPIO_Pin_6 |*/ GPIO_Pin_5 | GPIO_Pin_4;
 	GPIO_Init( GPIOB, &GPIO_InitStructure );
+
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6;
 	GPIO_Init( GPIOC, &GPIO_InitStructure );
+
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_5;
 	GPIO_Init( GPIOE, &GPIO_InitStructure );
 
@@ -48,8 +51,8 @@ void initEncoder(void)
 	GPIO_PinAFConfig( GPIOB, GPIO_PinSource4, GPIO_AF_TIM3 );
 	GPIO_PinAFConfig( GPIOB, GPIO_PinSource5, GPIO_AF_TIM3 );
 
-	GPIO_PinAFConfig( GPIOB, GPIO_PinSource6, GPIO_AF_TIM4 );
-	GPIO_PinAFConfig( GPIOB, GPIO_PinSource7, GPIO_AF_TIM4 );
+	//GPIO_PinAFConfig( GPIOB, GPIO_PinSource6, GPIO_AF_TIM4 );
+	//GPIO_PinAFConfig( GPIOB, GPIO_PinSource7, GPIO_AF_TIM4 );
 
 	GPIO_PinAFConfig( GPIOC, GPIO_PinSource6, GPIO_AF_TIM8 );
 	GPIO_PinAFConfig( GPIOC, GPIO_PinSource7, GPIO_AF_TIM8 );
@@ -64,7 +67,7 @@ void initEncoder(void)
 	TIM_TimeBaseInit( TIM3, &TIM_TimeBaseStructure );
 
 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
-	TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
+	//TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
 
 #ifdef __TIM8_STEP_DIR__
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x01;
@@ -73,7 +76,7 @@ void initEncoder(void)
 
 	TIM_EncoderInterfaceConfig( TIM2, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 	TIM_EncoderInterfaceConfig( TIM3, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
-	TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
+	//TIM_EncoderInterfaceConfig( TIM4, TIM_EncoderMode_TI12, TIM_ICPolarity_Rising, TIM_ICPolarity_Rising );
 
 #ifdef __TIM8_STEP_DIR__
 	TIM_EncoderInterfaceConfig( TIM8, TIM_EncoderMode_TI1, TIM_ICPolarity_Rising, TIM_ICPolarity_BothEdge );
@@ -88,13 +91,13 @@ void initEncoder(void)
 	TIM_ICInitStruct.TIM_ICPrescaler = TIM_ICPSC_DIV1;
 	TIM_ICInit( TIM2, &TIM_ICInitStruct );
 	TIM_ICInit( TIM3, &TIM_ICInitStruct );
-	TIM_ICInit( TIM4, &TIM_ICInitStruct );
+	//TIM_ICInit( TIM4, &TIM_ICInitStruct );
 	TIM_ICInit( TIM8, &TIM_ICInitStruct );
 
 	TIM_ICInitStruct.TIM_Channel = TIM_Channel_2;
 	TIM_ICInit( TIM2, &TIM_ICInitStruct );
 	TIM_ICInit( TIM3, &TIM_ICInitStruct );
-	TIM_ICInit( TIM4, &TIM_ICInitStruct );
+	//TIM_ICInit( TIM4, &TIM_ICInitStruct );
 
 #ifdef __TIM8_STEP_DIR__
 	TIM_ICInitStruct.TIM_ICSelection = TIM_ICSelection_IndirectTI;
@@ -105,12 +108,12 @@ void initEncoder(void)
 	TIM_Cmd( TIM2, ENABLE );
 	/* 16 bits. Rotor Abs. Pos Timer3 */
 	TIM_Cmd( TIM3, ENABLE );
-	TIM_Cmd( TIM4, ENABLE );
+	//TIM_Cmd( TIM4, ENABLE );
 	TIM_Cmd( TIM8, ENABLE );
 
 	TIM2->CNT = 0; // Abs. Pos Timer2 ( 32 bits. )
-	TIM3->CNT = 0; // Rotor Abs. Pos ( 16 bits. )
-	TIM4->CNT = 0; // Speed counter ( 16 bits. )
+	TIM3->CNT = 0; // Rotor Abs. Pos ( 16 bits. ) && Speed counter ( enc_delta )
+	//TIM4->CNT = 0; // Speed counter ( 16 bits. )
 	TIM8->CNT = 0; // Step / Dir Interface ( 16 bits. + Soft Ext. to 32 bits. )
 
 	encoderInitZ();
