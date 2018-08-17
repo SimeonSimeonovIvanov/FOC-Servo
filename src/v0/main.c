@@ -65,7 +65,7 @@ int main(void)
 		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
 		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
 		FirstOrderLagFilter( &dc_bus_filtered_value, stFoc.Ubus, 0.0002f );
-		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.009f );
+		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.0009f );
 
 		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.0005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_m_filtered_value, stFoc.f_rpm_m, 0.0005f );

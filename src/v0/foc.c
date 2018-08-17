@@ -255,25 +255,29 @@ void ADC_IRQHandler( void )
 		return;
 	}
 
-	//enc_delta = TIM4->CNT;
 	if( Ts_rep_counter == ++counter_get_speed ) {
 		volatile float rpm_m, rpm_t;
-		static int16_t lastpos = 0;
+
+		///////////////////////////////////////////////////////////////////////
+		volatile static int16_t pos_old = 0;
 		int16_t pos;
 
-		//TIM4->CNT = 0;
-
-		///////////////////////////////////////////////////////////////////////
 		pos = TIM3->CNT;
-		enc_delta_temp = ( ( pos - lastpos + TIM3->ARR ) % ( TIM3->ARR ) );
-		lastpos = pos;
+		enc_delta_temp = pos - pos_old;
+		pos_old = pos;
 
-		if( enc_delta_temp >= 1000 ) {
-			enc_delta_temp = enc_delta_temp - TIM3->ARR;
+		if( abs(enc_delta_temp) >= 1000 ) {
+			if( enc_delta_temp > 0 ) {
+				enc_delta_temp = enc_delta_temp - ( TIM3->ARR + 1 );
+			} else {
+				enc_delta_temp = enc_delta_temp + ( TIM3->ARR + 1 );
+			}
 		}
-
-		enc_delta = enc_delta_temp;
 		///////////////////////////////////////////////////////////////////////
+		enc_delta = enc_delta_temp;
+		//enc_delta = TIM4->CNT;
+		///////////////////////////////////////////////////////////////////////
+		TIM4->CNT = 0;
 
 		rpm_m = (float)enc_delta;
 		rpm_t = (float)uwTIM10PulseLength;
@@ -299,7 +303,7 @@ void ADC_IRQHandler( void )
 	} else {
 		static uwTIM10PulseLength_old = 0;
 
-		if( uwTIM10PulseLength != uwTIM10PulseLength_old ) {
+		//if( uwTIM10PulseLength != uwTIM10PulseLength_old ) {
 			float rpm_t = (float)uwTIM10PulseLength;
 
 			if( rpm_t ) {
@@ -313,7 +317,7 @@ void ADC_IRQHandler( void )
 			} else {
 				rpm_t = 0.0f;
 			}
-		}
+		//}
 
 		uwTIM10PulseLength_old = uwTIM10PulseLength;
 	}
