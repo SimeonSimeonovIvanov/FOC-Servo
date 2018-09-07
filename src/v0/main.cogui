@@ -93,7 +93,7 @@
 </viewState>
 </view>
 </views>
-<perspectives activePart="org.eclipse.cdt.ui.editor.CEditor" activePerspective="org.coocox.builder.perspective.CoBuilder">
+<perspectives activePart="org.eclipse.ui.console.ConsoleView" activePerspective="org.coocox.builder.perspective.CoBuilder">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.coocox.builder.ui.PerspectiveCoBuilder" id="org.coocox.builder.perspective.CoBuilder" label="CooCox CoBuilder"/>
 <alwaysOnActionSet id="org.coocox.component.ui.actionSet"/>
@@ -147,7 +147,7 @@
 </folder>
 </info>
 <info part="org.coocox.builder.ui.exampleView" ratio="0.18805657" ratioLeft="359" ratioRight="1550" relationship="2" relative="org.eclipse.ui.internal.ViewStack@127e7c7"/>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@d4f36" ratio="0.7199565" ratioLeft="1324" ratioRight="515" relationship="2" relative="org.coocox.builder.ui.exampleView">
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@d4f36" ratio="0.28442147" ratioLeft="440" ratioRight="1107" relationship="2" relative="org.coocox.builder.ui.exampleView">
 <folder activePageID="org.coocox.coassistant.view.CoAssistantView" appearance="2" expanded="2">
 <page content="org.coocox.component.ui.Help" label="Help"/>
 <page content="org.coocox.coassistant.view.CoAssistantView" label="Peripherals"/>
