@@ -23,7 +23,7 @@
 </editor>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="foc.c" partName="foc.c" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" title="foc.c" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/source/foc.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="146" selectionOffset="5252" selectionTopPixel="1585"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5122" selectionTopPixel="2359"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="foc.h" partName="foc.h" path="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.h" title="foc.h" tooltip="D:/Developments/Elektronika/Motor Control/Projects/FOC Servo/src/v0/foc.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/main/foc/include/foc.h"/>

@@ -173,11 +173,14 @@ void mcInvClark(LP_MC_FOC lpFoc)
 void mcPMSM_QD_PID(LP_MC_FOC lpFoc)
 {
 	if( lpFoc->enable ) {
-		if( lpFoc->Iq_des >  1575.0f ) lpFoc->Iq_des =  1575.0f;
-		if( lpFoc->Iq_des < -1575.0f ) lpFoc->Iq_des = -1575.0f;
+		if( lpFoc->Iq_des >  1900.0f ) lpFoc->Iq_des =  1575.0f;
+		if( lpFoc->Iq_des < -1900.0f ) lpFoc->Iq_des = -1575.0f;
+
+		//FirstOrderLagFilter( &lpFoc->Id_des_filter, lpFoc->Id_des, 0.99 );
+		lpFoc->Id_des_filter = lpFoc->Id_des;
 
 		FirstOrderLagFilter( &lpFoc->Iq_des_filter, lpFoc->Iq_des, 0.99 );
-		//lpFoc->Iq_des_filter = lpFoc->lpFoc->Iq_des;
+		//lpFoc->Iq_des_filter = lpFoc->Iq_des;
 
 		lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des_filter, lpFoc->Id );
 		lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des_filter, lpFoc->Iq );
