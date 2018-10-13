@@ -35,13 +35,10 @@ void initEncoder(void)
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_0;
 	GPIO_Init( GPIOA, &GPIO_InitStructure );
-
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6 | GPIO_Pin_5 | GPIO_Pin_4;
 	GPIO_Init( GPIOB, &GPIO_InitStructure );
-
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7 | GPIO_Pin_6;
 	GPIO_Init( GPIOC, &GPIO_InitStructure );
-
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_5;
 	GPIO_Init( GPIOE, &GPIO_InitStructure );
 
@@ -67,7 +64,7 @@ void initEncoder(void)
 	TIM_TimeBaseInit( TIM3, &TIM_TimeBaseStructure );
 
 	TIM_TimeBaseStructure.TIM_Period = 0xffff;
-	//TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
+	TIM_TimeBaseInit( TIM4, &TIM_TimeBaseStructure );
 
 #ifdef __TIM8_STEP_DIR__
 	TIM_TimeBaseStructure.TIM_Prescaler = 0x01;
@@ -112,7 +109,7 @@ void initEncoder(void)
 	TIM_Cmd( TIM8, ENABLE );
 
 	TIM2->CNT = 0; // Abs. Pos Timer2 ( 32 bits. )
-	TIM3->CNT = 0; // Rotor Abs. Pos ( 16 bits. ) && Speed counter ( enc_delta )
+	TIM3->CNT = 0; // Rotor Abs. Pos ( 16 bits. )
 	TIM4->CNT = 0; // Speed counter ( 16 bits. )
 	TIM8->CNT = 0; // Step / Dir Interface ( 16 bits. + Soft Ext. to 32 bits. )
 

@@ -5,7 +5,7 @@
 #define __AI1_SET_SPEED__           1 // +++ ?
 #define __POS_AND_SPEED_CONTROL__   2 // +++ ?
 
-#define __CONTROL_MODE__            __AI1_SET_SPEED__
+#define __CONTROL_MODE__            __AI1_SET_SPEED__//__POS_AND_SPEED_CONTROL__
 
 const float P = 8192.0f;
 const float fc = 3*4000000.0f;
@@ -16,7 +16,7 @@ float Ts;
 extern uint32_t uwTIM10PulseLength;
 extern int16_t tim8_overflow;
 
-int enc_delta_temp;
+float vel;
 
 int32_t sp_pos, pv_pos, sp_counter;
 float sp_speed, pv_speed;
@@ -36,7 +36,6 @@ void focInit(LP_MC_FOC lpFocExt)
 
 	memset( lpFoc, 0, sizeof( MC_FOC ) );
 
-	lpFoc->Iq_des_filter = 0.0f;
 	lpFoc->fMaxRPM = 3000.0f;
 
 	lpFoc->Ubus = 320;
@@ -44,6 +43,8 @@ void focInit(LP_MC_FOC lpFocExt)
 
 	lpFoc->Usmax = ( 2.0f / 3.0f ) * lpFoc->Ubus;
 	lpFoc->m = lpFoc->Us / lpFoc->Usmax;
+
+	lpFoc->Id_des = 0.0f;
 
 	///////////////////////////////////////////////////////////////////////////
 
@@ -172,19 +173,23 @@ void mcInvClark(LP_MC_FOC lpFoc)
 void mcPMSM_QD_PID(LP_MC_FOC lpFoc)
 {
 	if( lpFoc->enable ) {
-		FirstOrderLagFilter( &lpFoc->Iq_des_filter, lpFoc->Iq_des, 0.99 );
-		lpFoc->Iq_des = lpFoc->Iq_des_filter;
-
 		if( lpFoc->Iq_des >  1575.0f ) lpFoc->Iq_des =  1575.0f;
 		if( lpFoc->Iq_des < -1575.0f ) lpFoc->Iq_des = -1575.0f;
 
-		lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des, lpFoc->Id );
-		lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des, lpFoc->Iq );
+		FirstOrderLagFilter( &lpFoc->Iq_des_filter, lpFoc->Iq_des, 0.99 );
+		//lpFoc->Iq_des_filter = lpFoc->lpFoc->Iq_des;
+
+		lpFoc->Vd = pidTask( &lpFoc->pid_d, lpFoc->Id_des_filter, lpFoc->Id );
+		lpFoc->Vq = pidTask( &lpFoc->pid_q, lpFoc->Iq_des_filter, lpFoc->Iq );
 	} else {
 		lpFoc->pid_d.sumError = 0.0f;
 		lpFoc->pid_q.sumError = 0.0f;
 
+		lpFoc->Id_des_filter = 0;
 		lpFoc->Iq_des_filter = 0;
+
+		lpFoc->Id_des = 0.0f;
+		lpFoc->Iq_des = 0.0f;
 
 		lpFoc->Vd = 0.0f;
 		lpFoc->Vq = 0.0f;
@@ -207,8 +212,6 @@ void mcUsrefLimit(LP_MC_FOC lpFoc)
 
 void ADC_IRQHandler( void )
 {
-	static float angle_old;
-
 	static int32_t counter_pos_reg = 0, counter_speed_reg = 0;
 	static int32_t counter_get_speed = 0;
 	static float arrSpeedFB[10] = { 0 };
@@ -255,28 +258,10 @@ void ADC_IRQHandler( void )
 		return;
 	}
 
+	enc_delta = TIM4->CNT;
 	if( Ts_rep_counter == ++counter_get_speed ) {
 		volatile float rpm_m, rpm_t;
 
-		///////////////////////////////////////////////////////////////////////
-		volatile static int16_t pos_old = 0;
-		int16_t pos;
-
-		pos = TIM3->CNT;
-		enc_delta_temp = pos - pos_old;
-		pos_old = pos;
-
-		if( abs(enc_delta_temp) >= 1000 ) {
-			if( enc_delta_temp > 0 ) {
-				enc_delta_temp = enc_delta_temp - ( TIM3->ARR + 1 );
-			} else {
-				enc_delta_temp = enc_delta_temp + ( TIM3->ARR + 1 );
-			}
-		}
-		///////////////////////////////////////////////////////////////////////
-		enc_delta = enc_delta_temp;
-		//enc_delta = TIM4->CNT;
-		///////////////////////////////////////////////////////////////////////
 		TIM4->CNT = 0;
 
 		rpm_m = (float)enc_delta;
@@ -300,10 +285,23 @@ void ADC_IRQHandler( void )
 		}
 
 		counter_get_speed = 0;
-	} else {
-		static uwTIM10PulseLength_old = 0;
 
-		//if( uwTIM10PulseLength != uwTIM10PulseLength_old ) {
+		////////////////////////////////////////////
+		static int16_t lastpos = 0;
+		int16_t pos;
+
+		pos = TIM3->CNT;
+		vel = ( ( pos - lastpos + 4095 ) % 4096 );
+		lastpos = pos;
+
+		if( vel < 2000 ) vel = -vel;
+		else vel = vel - 4095;
+
+		vel = vel * ( 60.0f / ( 8192.0f * Ts ) );
+	} else {
+		static int16_t enc_delta_old = 0, uwTIM10PulseLength_old = 0;
+
+		if( ( enc_delta != enc_delta_old ) || ( uwTIM10PulseLength != uwTIM10PulseLength_old ) ) {
 			float rpm_t = (float)uwTIM10PulseLength;
 
 			if( rpm_t ) {
@@ -317,9 +315,10 @@ void ADC_IRQHandler( void )
 			} else {
 				rpm_t = 0.0f;
 			}
-		//}
+		}
 
 		uwTIM10PulseLength_old = uwTIM10PulseLength;
+		enc_delta_old = enc_delta;
 	}
 
 	//lpFoc->f_rpm_mt *= 0.740;
@@ -407,8 +406,6 @@ void ADC_IRQHandler( void )
 		counter_pos_reg = 0;
 		sp_speed = 0;
 		sp_pos = 0;
-
-		lpFoc->Id_des = lpFoc->Id = 0;
 
 		pidSpeed.sumError = 0.0f;
 		pidPos.sumError = 0.0f;

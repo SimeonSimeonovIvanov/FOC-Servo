@@ -14,7 +14,7 @@ extern uint16_t sanyo_uvw;
 extern float ai0_filtered_value;
 extern uint16_t ai0, ai1;
 
-extern int enc_delta_temp;
+extern float vel;
 
 volatile MC_FOC stFoc;
 
@@ -65,7 +65,7 @@ int main(void)
 		FirstOrderLagFilter( &Iq_des_filtered_value,  stFoc.Iq_des, 0.00005f );
 		FirstOrderLagFilter( &Iq_filtered_value,  stFoc.Iq, 0.00005f );
 		FirstOrderLagFilter( &dc_bus_filtered_value, stFoc.Ubus, 0.0002f );
-		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.0009f );
+		FirstOrderLagFilter( &ai0_filtered_value, (float)ai0, 0.009f );
 
 		FirstOrderLagFilter( &TIM10PulseLength_filtered_value,  (float)uwTIM10PulseLength,  0.0005f );
 		FirstOrderLagFilter( &stFoc.f_rpm_m_filtered_value, stFoc.f_rpm_m, 0.0005f );
@@ -134,11 +134,16 @@ int main(void)
 		usRegHoldingBuf[18] = (int)pidPos.error;
 		usRegHoldingBuf[19] = (int)pidPos.error>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[20] = (int)(enc_delta_temp*100.0f);
-		usRegHoldingBuf[21] = (int)(enc_delta_temp*100.0f)>>16;
+		// temp:
+		int temp;
+
+		temp = (int)(vel*100.0f);
+
+		usRegHoldingBuf[20] = (int)(temp);
+		usRegHoldingBuf[21] = (int)(temp>>16);
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		usRegHoldingBuf[22] = (int)(stFoc.f_rpm_mt_filtered_value*100.0f);
-		usRegHoldingBuf[23] = (int)(stFoc.f_rpm_mt_filtered_value*100.0f)>>16;
+		usRegHoldingBuf[22] = (int)(stFoc.f_rpm_mt*100.0f);
+		usRegHoldingBuf[23] = (int)(stFoc.f_rpm_mt*100.0f)>>16;
 		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		usRegHoldingBuf[24] = (int)(sp_speed*100.0f);
 		usRegHoldingBuf[25] = (int)(sp_speed*100.0f)>>16;

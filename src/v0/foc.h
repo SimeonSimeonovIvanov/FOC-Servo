@@ -50,7 +50,7 @@ typedef struct {
 
 	float Id, Iq, Is;
 	float Id_des, Iq_des;
-	float Iq_des_filter;
+	float Id_des_filter, Iq_des_filter;
 
 	PID pid_d, pid_q;
 

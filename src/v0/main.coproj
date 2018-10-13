@@ -123,9 +123,9 @@
     <File name="modbus/functions/mbfunccoils.c" path="modbus/functions/mbfunccoils.c" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f4xx.c" path="cmsis_boot/startup/startup_stm32f4xx.c" type="1"/>
     <File name="cmsis_lib/source/stm32f4xx_rcc.c" path="cmsis_lib/source/stm32f4xx_rcc.c" type="1"/>
+    <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
     <File name="foc/include/filter.h" path="filter.h" type="1"/>
     <File name="modbus/functions/mbutils.c" path="modbus/functions/mbutils.c" type="1"/>
-    <File name="cmsis/core_cmInstr.h" path="cmsis/core_cmInstr.h" type="1"/>
     <File name="foc/source/encoder.c" path="encoder.c" type="1"/>
     <File name="foc/include/svpwm.h" path="svpwm.h" type="1"/>
     <File name="modbus/include/mbframe.h" path="modbus/include/mbframe.h" type="1"/>
