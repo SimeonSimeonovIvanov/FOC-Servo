@@ -153,7 +153,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int i, angle = 0;
 		float scale = 2.5f;
 		
-		svpwmInitSinTable();
+		svpwmInitSin3Table();
 		mcFocInitStruct(&stFoc);
 
 		float Ia, Ib, Ic;
@@ -178,8 +178,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			stFoc.Vd = pid( Zero_Sp, stFoc.Id );
 			stFoc.Vq = pid(   Iq_Sp, stFoc.Iq );
 			*/
-			stFoc.Vd = 0.00f;
-			stFoc.Vq = 0.99f;
+			stFoc.Vd = 0.0f;
+			stFoc.Vq = 0.90f;
 			///////////////////////////////////////////////////////////////////
 			mcUsrefLimit(&stFoc);
 			///////////////////////////////////////////////////////////////////
@@ -191,8 +191,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//mcFocSVPWM0(&stFoc);
 			//mcFocSPWM(&stFoc);
 			
-			mcFocSVPWM_TTHI(&stFoc);
-			//mcFocSVPWM_STHI(&stFoc);
+			//mcFocSVPWM_TTHI(&stFoc);
+			mcFocSVPWM_STHI(&stFoc);
 			///////////////////////////////////////////////////////////////////
 			arrGraphic[0][i] = Ia;
 			arrGraphic[1][i] = Ib;

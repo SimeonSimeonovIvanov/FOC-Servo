@@ -6,7 +6,7 @@
 
 #include "foc.h"
 
-float svpwm_sin_table[4096];
+float svpwm_sin3_table[4096];
 
 int run_foc()
 {
@@ -564,16 +564,17 @@ void mcFocSVPWM_TTHI(LP_MC_FOC lpFoc) // +++
 void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // ---  ???
 {
 	float Tpwm = 100.0f / 2.0f;
-	float V, Vcom, X, Y, Z;
+	float V, Vcom, Sin_W, X, Y, Z;
 
-	V = sqrtf(lpFoc->Vq * lpFoc->Vq + lpFoc->Vd * lpFoc->Vd);// / 1.5f;
+	V = sqrtf(lpFoc->Vd * lpFoc->Vd + lpFoc->Vq * lpFoc->Vq) / 1.5f;
+	Sin_W = lpFoc->Va / V;
 
 	/*
 		"sinf(foc_deg_to_rad(lpFoc->angle * 3) - foc_deg_to_rad(90));" -> !!! foc_deg_to_rad(90) = ? if lpFoc.Vd != 0 !!!
 	*/
-	//Vcom = ( V / 6.0f ) * sinf(foc_deg_to_rad( 3.0f * lpFoc->angle ) - foc_deg_to_rad( 90.0f ));
+	Vcom = -(V / 6) * svpwm_sin3_table[(int)(lpFoc->angle)];
 
-	Vcom = -(V/6) * svpwm_sin_table[(int)(lpFoc->angle)];
+	//Vcom = (V / 6.0f) * ( ( 3.0f * Sin_W ) + ( 4.0 * ( (3.0f/4.0)*Sin_W - (1.0f/4.0f)*Sin_W) ) );
 
 	X = (lpFoc->Va + Vcom) * 1.1547f;
 	Y = (lpFoc->Vb + Vcom) * 1.1547f;
@@ -590,10 +591,10 @@ void mcFocSVPWM_STHI(LP_MC_FOC lpFoc) // ---  ???
 	}
 }
 
-void svpwmInitSinTable(void)
+void svpwmInitSin3Table(void)
 {
 	int angle;
 	for (angle = 0; angle <= 360; angle++) {
-		svpwm_sin_table[angle] = sinf(foc_deg_to_rad(3.0f * (float)angle) + foc_deg_to_rad(90));
+		svpwm_sin3_table[angle] = sinf(foc_deg_to_rad(3.0f * (float)angle) + foc_deg_to_rad(90));
 	}
 }
