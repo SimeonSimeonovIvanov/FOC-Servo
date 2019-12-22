@@ -147,7 +147,7 @@ void svpwmInitADC( void )
 	ADC_CommonInitStruct.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;
 	ADC_CommonInit( &ADC_CommonInitStruct );
 	// ------------------------------------------------------------------------------------------------------------------------
-	ADC_StructInit( &ADC_CommonInitStruct );
+	ADC_StructInit( &ADC_InitStructure );
 	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;
 	ADC_InitStructure.ADC_ScanConvMode = ENABLE;
 	ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
