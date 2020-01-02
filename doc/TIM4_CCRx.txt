@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+
+#define ARR 1000
+
+
+
+int main()
+
+{
+
+    int cnt, cnt_old, delta;
+
+
+   
+ cnt = 0;
+
+    cnt_old = 999;
+
+
+    delta = ( cnt + ( ARR - cnt_old ) ) % ARR;
+
+
+    printf("delta: %d\n", delta);
+
+
+
+    return 0;
+
+}
