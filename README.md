@@ -11,3 +11,10 @@
 
 [AC Servo (photos.google.com)](https://photos.app.goo.gl/785x7djrvYAcP9JZ6)<br>
 [AC Servo ( Work ) (photos.google.com)](https://photos.app.goo.gl/srzg5DDZzGg4B8dc7)<br>
+
+FOC.grf.png:
+![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/FOC.grf.png)<br>
+
+ATAN.grf.png
+![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/atan.grf.png)<br>
+
