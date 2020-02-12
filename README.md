@@ -25,3 +25,6 @@ ATAN.grf.png
 
 Sin/Cos Encoder:
 ![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/src/Work/sin_cos_encoder/sin_cos_encoder.jpg)<br>
+
+Bipolar Analog Output:
+![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/Scheme%20and%20Board/Work/AO/AO0%20(%20New%20).jpg)<br>
