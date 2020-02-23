@@ -6,7 +6,7 @@
 ![Screen Shot](https://lh3.googleusercontent.com/vWZbaQVdAhu1QQO_cTlWY4MgnAb2BmGCg2ht9W3ZADUsB-J3ieZKUOjoW8N4zHFRGdZp8hFGPKCy6uawGKFupMPxBJmIFaj5hGluz3LkEmy5S17hmuiLZEQlVxxbsq9VOWg288KpUEtcyImdLcbH4nJbDOrk7feC0b6LQ1DTAXJD6xIRRkscn5fKtOFiCyshHNf-yYZnXZzY7v92_SR10B9enX9Oa1QhKC0Zo4pFHIeS9buX3Prl2VSoP0p2f9dSjYG3iJzVJJ4cjOTOYSJCoFbktkBBuRvZ9yOYemuwcPBqjm2Aqjuo5mWAgzC-g0u8LBz8_ISS-xWrEu7XkNp3rqmE0j6_iL28L1pHF4nmJSnV0F_0pvuBMTZbZnvaV3lmYf0SQIsa0-76etPjSC5jA3zWO_9prSDMudj7b2m4mwxrd_XN79okazN7x6W9LXKWux-t0f8W2QBu25lEgwM-dTigUHxHYiCUhdcBQTDeFgdGpegSvgsOzxQlizkStA1ZrNoxv37GxwSWOPVyg8SRRRMWrbqQP0fdLs4uiXirrpl6c84sBvOwoKhNLHmpYTo9-d7bUEOs_W8uyZnnRY8boEB0MJfAz7LJxCBVNjXnpN_daKvdNwv219_3wybdyhxH5bj7qB9RDaEJVHH0xf9plpmDgyaLtqyamIorE5iW7Q=w1572-h1179-no)<br>
 ![Screen Shot](https://lh3.googleusercontent.com/k02gDKrigeXRs4gnt29zIekYWgJM7NDDvpPBwwBkn84v4wwCzqt8nw-INf11CDgn7xQ7Py5mxIiK_7V0SbNQoPlOT3bTszP4-zwKSuMI01aGK7_4IhnsZZ5Z7r1dPS8m6I9LZv3YYpQsvTk1K4j1EelQm8jLoi5QNvEOz-FvpGVZwKJkS9vO1XtkHeE4zk9rVJoZjloqsFnxf6_mEEpo1JaTmMSzqUu0BTOOYX97MykgnaL4p3ELG66Kbez4t6Lvg8YSnU9Ltbq5jz9uCMgsXV7kkRO0mRdbd6jPAT2u14GJWXknMUGbn2uqpa3rRhNTl81p2y2OLagABrOaGPtVqzI5KLYQBMGvRb8pLV3gTC-SgxF0fuM8P7-ImlSoCKKW4M-aQfWppRQZcFfsLp-E7-kPCjrrwxV5XEZZyoRGvc7qfGslpKFDynpH2KSDDe61FRB4h4jSAbreOhekBrllv7LVYmnvaclYAikYPAygZMUPMjnbqFKZi_-_RrciDLW16teUsW3NS0HijvG6KOLEbynRKwrUGT3R_amJrg2y10YHOSGbepvXF0Xuh3haF8Pk2yhVCZG2qWtMv-iXLtL526J6DCeSrQHVDLIhtxiESPV2ZTU_wgwGWl188nJnMD6YXfbKLWg5SoCA2hz2HVpunoGfktz3Lt1SIodtHRgSmA=w1572-h1179-no)<br>
 
-http://mcu-bg.com/mcu_site/viewtopic.php?p=226271#p226271:
+http://mcu-bg.com/mcu_site/viewtopic.php?p=226271#p226271:<br>
 "След аналоговото DC-Servo (viewtopic.php?f=22&t=13129) започнах работа по BLDC-Servo. Работих по хардуерен синусоидален контрол на AC Servo motor (PMSM) с три токови ШИМ-а. Успях да постигна токова регулация в 6 стъпкова комутация. Синусоидален режим така и не подкарах напълно. Но в крайна сметка това беше само за упражнение. Целта през цялото време беше векторно управление (FOC) на мотора. Самия мотор претърпя малка реконструкция - изведох сигналите за комутация UVW навън през RS422 предавател.
 
 В крайна сметка стигнах до FOC-Servo. За момента имам реализирано векторно управление на базата на STM32F4. Липсва обратна връзка по скорост. Директно задавам позиция от импулсен генератор. Работи добре, има още какво да се желае.
@@ -15,13 +15,13 @@ http://mcu-bg.com/mcu_site/viewtopic.php?p=226271#p226271:
 
 Продължавам работа по задвижването, изкушавам се да бъде част от бъдещо обновяване на ROBKO-01."
 
-http://mcu-bg.com/mcu_site/viewtopic.php?p=235621#p235621:
+http://mcu-bg.com/mcu_site/viewtopic.php?p=235621#p235621:<br>
 "Вече задвижването се захранвана директно от мрежата ( 220 VAC -> 320 VDC на моста ). Изпитвах доста притеснения в етапа на увеличаване на напрежението. Разбира се имаше и проблеми. Сред които особено неприятна осцилация на GS на полевите транзистори. Успях да затворя и позиционния и скоростния контур. За жалост обратната връзка по скорост все още е прекалено груба и това създава проблеми но все пак работи доста добре.
 
 Файловете на проекта са качени в https://github.com/SimeonSimeonovIvanov/FOC-Servo
 Видео от отделните тестове: youtube.com / FOC Servo"
 
-http://mcu-bg.com/mcu_site/viewtopic.php?p=277382#p277382:
+http://mcu-bg.com/mcu_site/viewtopic.php?p=277382#p277382:<br>
 "Да се похваля :) От проекта за FOC Servo (open source) успях да достигна до нещо много по-истинско: AC Servo. Засега не съм решил дали ще премине към open или close. Отделни схемни решения от него са качени в git: https://github.com/SimeonSimeonovIvanov/"
 
 # AC-Servo
