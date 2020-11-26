@@ -1,6 +1,6 @@
 # FOC-Servo
 
-[FOC Servo (youtube.com)](https://www.youtube.com/watch?v=d91JvBRgOYI&list=PLE616v1yP137koahQjisksADdZlHxYS2S)<br>
+[FOC Servo (youtube.com)](https://www.youtube.com/playlist?list=PLE616v1yP137koahQjisksADdZlHxYS2S)<br>
 [Images (photos.google.com)](https://goo.gl/photos/JQcb6tujQgFE7cGe8)<br>
 
 ![Screen Shot](https://lh3.googleusercontent.com/vWZbaQVdAhu1QQO_cTlWY4MgnAb2BmGCg2ht9W3ZADUsB-J3ieZKUOjoW8N4zHFRGdZp8hFGPKCy6uawGKFupMPxBJmIFaj5hGluz3LkEmy5S17hmuiLZEQlVxxbsq9VOWg288KpUEtcyImdLcbH4nJbDOrk7feC0b6LQ1DTAXJD6xIRRkscn5fKtOFiCyshHNf-yYZnXZzY7v92_SR10B9enX9Oa1QhKC0Zo4pFHIeS9buX3Prl2VSoP0p2f9dSjYG3iJzVJJ4cjOTOYSJCoFbktkBBuRvZ9yOYemuwcPBqjm2Aqjuo5mWAgzC-g0u8LBz8_ISS-xWrEu7XkNp3rqmE0j6_iL28L1pHF4nmJSnV0F_0pvuBMTZbZnvaV3lmYf0SQIsa0-76etPjSC5jA3zWO_9prSDMudj7b2m4mwxrd_XN79okazN7x6W9LXKWux-t0f8W2QBu25lEgwM-dTigUHxHYiCUhdcBQTDeFgdGpegSvgsOzxQlizkStA1ZrNoxv37GxwSWOPVyg8SRRRMWrbqQP0fdLs4uiXirrpl6c84sBvOwoKhNLHmpYTo9-d7bUEOs_W8uyZnnRY8boEB0MJfAz7LJxCBVNjXnpN_daKvdNwv219_3wybdyhxH5bj7qB9RDaEJVHH0xf9plpmDgyaLtqyamIorE5iW7Q=w1572-h1179-no)<br>
