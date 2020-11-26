@@ -25,11 +25,13 @@ http://mcu-bg.com/mcu_site/viewtopic.php?p=277382#p277382:<br>
 "Да се похваля :) От проекта за FOC Servo (open source) успях да достигна до нещо много по-истинско: AC Servo. Засега не съм решил дали ще премине към open или close. Отделни схемни решения от него са качени в git: https://github.com/SimeonSimeonovIvanov/"
 
 # AC-Servo
-
-
 [AC Servo ( MCU v.0.0.1 / IPM v.0.0.2 ) (photos.google.com)](https://photos.app.goo.gl/KCEzDaz5cRpWHHwj6)<br>
 [AC Servo (photos.google.com)](https://photos.app.goo.gl/785x7djrvYAcP9JZ6)<br>
 [AC Servo ( Work ) (photos.google.com)](https://photos.app.goo.gl/srzg5DDZzGg4B8dc7)<br>
+
+![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/Pictures/IMG_20201102_190858.jpg)<br>
+![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/Pictures/IMG_20201118_202425.jpg)<br>
+![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/Pictures/IMG_20201118_202905.jpg)<br>
 
 ![Screen Shot](https://lh3.googleusercontent.com/InO0-X00L5HjlXPxuh1YEjHJFSkUZFtOApBEi4UaxSTPb9P_QFyURlaM9I8N8cGii7pULpo6o4EXxeGouaYiY4lC6Kz6RivBfqiPAh9K2oRpcYkvYIHu17OkECJ6e2FBvHD5CIEYPnccBth1VAMi6_NGUH8vluU_3zfoT785-X81UAu9X3ewuF4Hv4TFzx-BPBHCW2oewmVy1OYqN_RM4jMVyNYgm047YA81ab1-KXVNjyB3TT6EyaVp_5hVKxsnxAwqsmA9SToYOupK6zUkhS5GmJsAwiaa065885K3q9S96F79FyxyqpMNXp9kvOWaOszUekfrR_CrvjRdldlZTlmVMwnjsETIEQ2s5GbruYBjzTjdpzQbDMcVgDvs_bUZGg7GsPLNmPTYXevoz2cMCvbN2Q-9_fhSFlpYpl3opcZ2RupjmNxaqhT3yl_42L_v6f9WMqQT6NlQBk_QC21Ln013LTSn60Qf7zM8eraPTgBrA7T2kTm2WHEvtyGzwhygOm-KNEVWI5vc4HmTfOWSWKSE_RJDDSoxtdrD4LYK1ZHu1DPog4PJUM_owncTiQRPLKI1CUuruEjPLMy4CZy9KJe3nysguwvQm7qaSPnMRbYmxLYDbtbTNJx2IUp1Rz1COHA0BrA35666Xp8BiKKPRK0gXBy38mMYAO1zs7tCIh62oI72LmdtQqa65aXLWokCe901ilnWZ3QXxQAgrQ=w1260-h945-no)<br>
 
