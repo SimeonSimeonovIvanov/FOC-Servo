@@ -38,7 +38,7 @@ http://mcu-bg.com/mcu_site/viewtopic.php?p=277382#p277382:<br>
 
 ![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/Pictures/IMG_20201102_190858.jpg)<br>
 
-Simulation:
+# Simulation:
 
 FOC.grf.png:
 ![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/FOC.grf.png)<br>
