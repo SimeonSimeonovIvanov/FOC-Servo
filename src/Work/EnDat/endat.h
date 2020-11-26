@@ -1,8 +1,10 @@
 /*
+ * Project: STMBL - https://github.com/rene-dev/stmbl
+ * File: https://github.com/rene-dev/stmbl/blob/master/src/comps/endat.c
+ *
  * endat.h
  *
  *  Created on: Nov 23, 2020
- *      Author: Simo
  */
 
 #ifndef INC_ENDAT_H_

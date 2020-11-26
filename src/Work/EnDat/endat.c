@@ -1,8 +1,10 @@
 /*
+ * Project: STMBL - https://github.com/rene-dev/stmbl
+ * File: https://github.com/rene-dev/stmbl/blob/master/src/comps/endat.c
+ *
  * endat.c
  *
  *  Created on: Nov 23, 2020
- *      Author: Simo
  */
 
 #include "endat.h"
