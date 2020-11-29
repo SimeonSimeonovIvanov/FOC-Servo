@@ -6,14 +6,14 @@ MinVersion = 2.5
 OS = Windows NT 6.1 Service Pack 1
 
 [Axes]
-xMin = -1.98709733995674
-xMax = 5.76131244004334
-xTickUnit = 0.2
-xGridUnit = 0.2
-yMin = -3.67018133573203
-yMax = 4.07822844426807
-yTickUnit = 0.5
-yGridUnit = 0.5
+xMin = -3.6114950698919
+xMax = 8.19830493010824
+xTickUnit = 0.5
+xGridUnit = 0.5
+yMin = -5.64784512550536
+yMax = 6.16195487449481
+yTickUnit = 1
+yGridUnit = 1
 AxesColor = clBlue
 GridColor = 0x00FF9999
 ShowLegend = 1
@@ -35,7 +35,7 @@ Color = clLime
 
 [Func3]
 FuncType = 0
-y = atan( sin( x ) / sin( x + deg_to_rad( 90 ) ) )
+y = atan( ( 2028 * sin( x ) / ( 2048 *cos(x) ) ) )
 LegendText = atan( sin( x ) / cos( x ) )
 Style = 1
 Color = clBlack
