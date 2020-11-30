@@ -6,12 +6,12 @@ MinVersion = 2.5
 OS = Windows NT 6.1 Service Pack 1
 
 [Axes]
-xMin = -5.73557483511744
-xMax = 11.8717950288769
+xMin = -1.10638283458448
+xMax = 13.155586755251
 xTickUnit = 0.5
 xGridUnit = 0.5
-yMin = -7.57247155663291
-yMax = 10.0348983073614
+yMin = -5.74279007654748
+yMax = 8.51917951328793
 yTickUnit = 1
 yGridUnit = 1
 AxesColor = clBlue
@@ -23,34 +23,35 @@ Radian = 1
 FuncType = 0
 y = sin(x)
 LegendText = sin( x )
-Style = 1
 Color = clRed
+Size = 2
 
 [Func2]
 FuncType = 0
 y = sin(  x + deg_to_rad( 90 ) )
 LegendText = cos(x)
-Style = 1
 Color = clLime
+Size = 2
 
 [Func3]
 FuncType = 0
 y = atan( ( 2028 * sin( x ) / ( 2048 *cos(x) ) ) )
 LegendText = atan( sin( x ) / cos( x ) )
-Style = 1
-Color = clBlack
+Style = 2
+Color = clFuchsia
+Size = 4
 
 [Func4]
 FuncType = 0
 y = 5+(sin(x)>0)
-Style = 1
-Color = clBlack
+Color = clRed
+Size = 2
 
 [Func5]
 FuncType = 0
 y = 3+(cos(x)>0)
-Style = 1
-Color = clBlack
+Color = clLime
+Size = 2
 
 [Data]
 TextLabelCount = 0
