@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include <math.h>
 #include "endat.h"
+#include "foc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,9 +69,10 @@ volatile int16_t arrADC1[15];
 volatile uint16_t arrOffset[15];
 volatile uint32_t arrOffsetSum[15];
 
-volatile float angle;
+volatile float angle, delta = 0.0f;
 volatile float min = 0, max = 0, angle;
 
+volatile uint16_t tim3;
 volatile uint32_t tim5, upos;
 volatile int32_t pos;
 
@@ -81,6 +83,7 @@ uint8_t main_state = 0;
 uint8_t adc_is_ready = 0;
 uint32_t sin_sum, cos_sum, average_cnt;
 
+MC_FOC stFoc;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,7 +117,6 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -123,17 +125,14 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  for( int i = 0; i < 15; i++ )
-  {
-	  arrOffset[i] = 2048;
-  }
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  focInit( &stFoc );
+  createSinCosTable();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -166,6 +165,8 @@ int main(void)
 	  switch( main_state )
 	  {
 	  case 0:
+		  stFoc.enable = 0;
+
 		  encoder_pwr_en = 0;;
 		  sin_sum = 0;
 		  cos_sum = 0;
@@ -200,8 +201,12 @@ int main(void)
 		  } else {
 			  for( int i = 0; i < 15; i++ )
 			  {
-				  arrOffsetSum[i] /= 8;
+				  arrOffset[i] = arrOffsetSum[i] / 8;
 			  }
+
+			  stFoc.current_a_offset = arrOffset[0];
+			  stFoc.current_b_offset = arrOffset[4];
+			  stFoc.current_c_offset = arrOffset[8];
 			  main_state = 3;
 		  }
 		  break;
@@ -212,6 +217,8 @@ int main(void)
 		  break;
 
 	  case 4:
+		  stFoc.enable = 1;
+
 		  for( int i = 0; i < 15; i++ )
 		  {
 			  arrADC1[i] = arrADC[i] - arrOffset[i];
@@ -220,18 +227,16 @@ int main(void)
 		  if( arrADC1[10] )
 		  {
 			  int32_t temp;
+			  float at;
 
-			  s = arrADC1[6];// * ( 1.0f/2048.0f );
-			  c = arrADC1[10];// * ( 1.0f/2048.0f );
-			  angle = 4095.0f * (( 1.5232 + atan( s / c ) ) / 3.09324f);
+			  s = arrADC1[6];
+			  c = arrADC1[10];
+			  at = 4095.0f - ( 4095.0f * (( 1.5232 + atan( s / c ) ) / 3.09324f) );
 
-			  if( angle > max ) max = angle;
-			  if( angle < min ) min = angle;
-
-			  temp = ((tim5 /*% 1024*/)<<12) + (int)angle;
+			  //temp = ( ( tim5 % 1023 ) << 12) + ( (uint16_t)at & 0x0fff );
+			  temp = ( tim3<<12) + ( (uint16_t)at & 0x0fff );
+			  angle= (float)temp / 4096.0f;
 			  pos = temp;
-
-			  angle= (float)temp / 4095.0f;
 		  }
 
 		  //GPIOD->BSRR |= LED2_Pin;
@@ -884,9 +889,17 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM3_Init 2 */
+  /*
+   * Polzva se Sin-Cos encoder s 512 ppr. Umnojeno po 2: 1024. Stojnostta na APP stava 1023. Obache posledniq "ipmuls"
+   * se otchita ot ATAN( SIN / COS ) - ot 0.0001 do 0.9999. Taka che APP stava: 1024 - 1 - 0.999 = 1022;
+   */
+  htim3.Instance->ARR = 1022;
+  htim3.Instance->SMCR &= ~TIM_ENCODERMODE_TI12;
+  htim3.Instance->SMCR |= TIM_ENCODERMODE_TI2;
+  HAL_TIM_Encoder_Start( &htim3, TIM_CHANNEL_ALL );
+
   HAL_TIM_Encoder_Start( &htim3, TIM_CHANNEL_ALL );
   /* USER CODE END TIM3_Init 2 */
-
 }
 
 /**
@@ -933,6 +946,14 @@ static void MX_TIM5_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM5_Init 2 */
+  //TIM_ENCODERMODE_TI1 (TIM_SMCR_SMS_0) - Quadrature encoder mode 1, x2 mode, counts up/down on TI1FP1 edge depending on TI2FP2 level.
+  //TIM_ENCODERMODE_TI2 (TIM_SMCR_SMS_1) - Quadrature encoder mode 2, x2 mode, counts up/down on TI2FP2 edge depending on TI1FP1 level.
+  //TIM_ENCODERMODE_TI12 (TIM_SMCR_SMS_1 | TIM_SMCR_SMS_0) - Quadrature encoder mode 3, x4 mode, counts up/down on both TI1FP1 and TI2FP2 edges depending on the level of the other input.
+
+  htim5.Instance->SMCR &= ~TIM_ENCODERMODE_TI12;
+  htim5.Instance->SMCR |= TIM_ENCODERMODE_TI2;
+  //htim5.Instance->SMCR |= TIM_ENCODERMODE_TI12; x4
+
   HAL_TIM_Encoder_Start( &htim5, TIM_CHANNEL_ALL );
   /* USER CODE END TIM5_Init 2 */
 
@@ -1180,6 +1201,7 @@ void ADC_IRQHandler(void)
 
 	GPIOC->BSRR |= LED1_Pin;
 
+	tim3 = TIM3->CNT;
 	tim5 = TIM5->CNT;
 
 	tmp1 = __HAL_ADC_GET_FLAG( &hadc1, ADC_FLAG_EOC );
@@ -1240,8 +1262,61 @@ void ADC_IRQHandler(void)
 	}
 
 	adc_is_ready = 1;
+
+	stFoc.current_a = arrADC[0];
+	stFoc.current_b = arrADC[4];
+	stFoc.current_c = arrADC[8];
+	adc_current_filter( (uint16_t*)&stFoc.current_a, (uint16_t*)&stFoc.current_b, (uint16_t*)&stFoc.current_c, 2 );
+
+	if( 4 == main_state )
+	{
+		extern volatile uint64_t post;
+
+		mcFocSetAngle( &stFoc, post % ROTOR_ENCODER_PERIOD );
+		mcRunFoc( &stFoc );
+	}
+
 	GPIOC->BSRR |= LED1_Pin<<16;
 }
+
+void main_callback(void)
+{
+	static float sum = 0.0f, old = 0.0f;
+	static int c = 0;
+
+	if( c < 4 )
+	{
+		sum += ( angle - old );
+		c++;
+	} else {
+		delta = sum / 4.0f;
+		sum = 0;
+		c = 0;
+	}
+
+	old = angle;
+}
+
+float arr_sin[ ROTOR_ENCODER_PERIOD + 1 ], arr_cos[ ROTOR_ENCODER_PERIOD + 1 ];
+
+void createSinCosTable(void)
+{
+	for( int i = 0; i <= ROTOR_ENCODER_PERIOD; i++ ) {
+		arr_sin[i] = sinf( deg_to_rad( (float)i * ( 360.0f / (float)ROTOR_ENCODER_PERIOD ) ) );
+		arr_cos[i] = cosf( deg_to_rad( (float)i * ( 360.0f / (float)ROTOR_ENCODER_PERIOD ) ) );
+	}
+}
+
+float fSinAngle(int angle)
+{
+	return arr_sin[angle];
+}
+
+float fCosAngle(int angle)
+{
+	return arr_cos[angle];
+}
+
 /* USER CODE END 4 */
 
 /**
