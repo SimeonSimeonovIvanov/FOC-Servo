@@ -231,7 +231,7 @@ int main(void)
 
 			  s = arrADC1[6];
 			  c = arrADC1[10];
-			  at = 4095.0f - ( 4095.0f * (( 1.5232 + atan( s / c ) ) / 3.09324f) );
+			  at = 4095.0f - ( 4095.0f * (( 1.57079633f + atan( s / c ) ) / 3.14159265f) );
 
 			  //temp = ( ( tim5 % 1023 ) << 12) + ( (uint16_t)at & 0x0fff );
 			  temp = ( tim3<<12) + ( (uint16_t)at & 0x0fff );
@@ -891,9 +891,9 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 2 */
   /*
    * Polzva se Sin-Cos encoder s 512 ppr. Umnojeno po 2: 1024. Stojnostta na APP stava 1023. Obache posledniq "ipmuls"
-   * se otchita ot ATAN( SIN / COS ) - ot 0.0001 do 0.9999. Taka che APP stava: 1024 - 1 - 0.999 = 1022;
+   * se otchita ot ATAN( SIN / COS ) - ot 0.0001 do 0.9999. Taka che APP stava: 1024 - 1 - 0.999 = 1022 ( ? );
    */
-  htim3.Instance->ARR = 1022;
+  htim3.Instance->ARR = 1023; /* 1022 ili 1023 ? */
   htim3.Instance->SMCR &= ~TIM_ENCODERMODE_TI12;
   htim3.Instance->SMCR |= TIM_ENCODERMODE_TI2;
   HAL_TIM_Encoder_Start( &htim3, TIM_CHANNEL_ALL );
@@ -1289,7 +1289,12 @@ void main_callback(void)
 		sum += ( angle - old );
 		c++;
 	} else {
-		delta = sum / 4.0f;
+		sum = sum / 4.0f;
+		if( fabs(sum) < 0.0001 )
+		{
+			sum = 0.00011f;
+		}
+		delta = fabs(sum);
 		sum = 0;
 		c = 0;
 	}
