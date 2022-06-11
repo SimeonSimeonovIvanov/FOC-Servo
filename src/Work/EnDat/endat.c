@@ -85,8 +85,10 @@ uint8_t pos_len = 17;
 uint8_t mpos_len = 0;
 uint8_t endat_state = 13;
 uint8_t swap = 0;
-uint8_t skip = 10;
+uint8_t skip = 1;
 uint8_t bytes = 7;
+
+volatile uint64_t post = 0;
 
 void en_dat_inti(void)
 {
@@ -121,7 +123,6 @@ uint32_t endat_tx(endat_cmd_t cmd, uint8_t p1, uint16_t p2, uint8_t* buf, endat_
     break;
 
     case ENDAT_WRITE_ADDR:
-
       len = 2 + 6 + 8 + 16;
     break;
 
@@ -208,7 +209,8 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data)
 
       //check crc
       data->error_bit = 0;
-      if(error_bit){
+      if(error_bit)
+      {
         data->error_bit = 1;
         //return(0);
       }
@@ -329,15 +331,12 @@ uint32_t endat_rx(uint8_t* buf, uint32_t max_len, endat_data_t* data)
 
     case ENDAT_RESET:
       data->crc = (df.data8[3] >> 1) & 0b11111;
-
       //check crc
     break;
   }
 
   return(1);
 }
-
-volatile uint64_t post = 0;
 
 void endat_func( float period, endat_data_t *ctx )
 {
@@ -425,35 +424,22 @@ void endat_func( float period, endat_data_t *ctx )
 		req = PIN(req);
 	}*/
 
+	df.data = 0;
 	uint32_t bits = endat_tx( req, addr, 0, df.dataa, ctx );
 	df2.data = df.data;
 
+	GPIOD->BSRR |= ENDAT_TX_EN_OR_USART2_RTS_Pin;
 	SPI3->CR1 &= ~SPI_CR1_SPE;
-	if( swap )
-		SPI3->CR1 |= SPI_CR1_CPHA;
-	else
-		SPI3->CR1 &= ~SPI_CR1_CPHA;
-
-	GPIOD->BSRR |= ENDAT_TX_EN_OR_USART2_RTS_Pin; //tx enable
+	SPI3->CR1 &= ~SPI_CR1_CPHA;
 	HAL_SPI_Transmit( &hspi3, df.dataa, (bits + 7) / 8, 10);
-	GPIOD->BSRR |= ENDAT_TX_EN_OR_USART2_RTS_Pin<<16; //tx disable
-
-	if( swap )
-	{
-		//SPI3->CR1 = SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_CPOL | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BAUDRATEPRESCALER_32;
-	} else{
-		//SPI3->CR1 = SPI_CR1_LSBFIRST | SPI_CR1_MSTR | SPI_CR1_SSI | SPI_CR1_SSM | SPI_CR1_BIDIMODE | SPI_BAUDRATEPRESCALER_32;
-	}
-	//SPI3->CR1 |= SPI_CR1_SPE;//enable spi
-
+	GPIOD->BSRR |= ENDAT_TX_EN_OR_USART2_RTS_Pin<<16;
+	GPIOD->BSRR |= LED2_Pin;
 	SPI3->CR1 &= ~SPI_CR1_SPE;
-	if( !swap )
-		SPI3->CR1 |= SPI_CR1_CPHA;
-	else
-		SPI3->CR1 &= ~SPI_CR1_CPHA;
+	SPI3->CR1 |= SPI_CR1_CPHA;
 
 	df.data = 0;
 	HAL_SPI_Receive( &hspi3, df.dataa, MIN( sizeof(df.data), bytes ), 10);
+	GPIOD->BSRR |= LED2_Pin<<16;
 
 	df1.data = df.data >> (int)skip;
 	shift = skip;
@@ -464,20 +450,23 @@ void endat_func( float period, endat_data_t *ctx )
 		shift++;
 	}
 
-	if( df.data && ( df.dataa[0] == 193 ))
+	uint32_t ret = endat_rx( df1.dataa, MIN( sizeof(df1.data), bytes ) * 8, ctx );
+
+	//post = st_EnDat.pos;// % ENCODER_PPR;
+
+	if( df.dataa[0] == 193 )
 	{
-		volatile uint16_t p = 0;
+		volatile uint32_t p = 0;
 
 		//post = df1.data;
 		df_pos = df;
 
-		p  = df_pos.dataa[1];
+		/*p  = df_pos.dataa[1];
 		p |= df_pos.dataa[2]<<8;
-
-		post = p;
+		p |= df_pos.dataa[3]<<16;*/
+		p = bitmask[ctx->pos_bits] & (df_pos.data>>8);
+		post = p;//df_pos.dataa[6];
 	}
-
-	uint32_t ret = endat_rx( df1.dataa, MIN( sizeof(df1.data), bytes ) * 8, ctx );
 
 	switch( endat_state )
 	{
@@ -517,9 +506,8 @@ void endat_func( float period, endat_data_t *ctx )
 
 	if( ctx->pos_bits )
 	{
-		volatile int64_t pos;
-
-		pos = /*mod*/( ctx->pos * 2.0 * M_PI / (1 << ctx->pos_bits) );
+		//volatile int64_t pos;
+		//pos = /*mod*/( ctx->pos * 2.0 * M_PI / (1 << ctx->pos_bits) );
 	}
 
 	/*if( PIN(print_time) > 0.0 )
