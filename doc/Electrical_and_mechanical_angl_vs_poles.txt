@@ -1,0 +1,23 @@
+https://www.researchgate.net/post/Is_there_a_relation_between_the_electrical_and_mechanical_angle
+========================================================================================================================
+Nebi Caka
+University of Prishtina
+In a multipolar electrical machine (motor or generator), relationship between the mechanical angle and electrical angle is given by:
+Electrical angle = (P/2) x Mechanical angle
+where: P = Number of poles
+So:
+- In a two-pole motor (P = 2): Electrical Angle = Mechanical Angle
+- In a four-pole motor (P = 4): Electrical Angle = 2 times Mechanical Angle
+- In a six-pole motor (P = 6): Electrical Angle = 3 times Mechanical Angle
+etc.
+========================================================================================================================
+Aderiano da Silva
+Rockwell Automation
+For asynchronous machines, the electrical angle (thetaE) is related to the mechanical angle (thetaM) in terms of the number of poles (N) as follows:
+thetaE = (N/2) * thetaM
+========================================================================================================================
+
+Pole pairs = Poles / 2
+
+Electrical angle = (Poles / 2) x Mechanical angle
+Electrical angle = Pole pairs x Mechanical angle
