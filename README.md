@@ -34,9 +34,11 @@ http://mcu-bg.com/mcu_site/viewtopic.php?p=277382#p277382:<br>
 ![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/Pictures/IMG_20201118_202425.jpg)<br>
 ![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/Pictures/IMG_20201118_202905.jpg)<br>
 
-MIGE 80ST-M02430 and SANYO DENKI P50B04006DXS40E<br>
-https://youtu.be/u-dZzM7kjZM<br>
-https://youtu.be/c_Dg6a0bA2k; https://youtu.be/9ND_6Mmglnc<br>
+MIGE 80ST-M02430<br>
+https://youtu.be/u-dZzM7kjZM: 300 to 3000 rpm<br><br>
+SANYO DENKI P50B04006DXS40E<br>
+https://youtu.be/c_Dg6a0bA2k: IN: 230 VAC; DC Bus: 325 VDC<br>
+https://youtu.be/9ND_6Mmglnc<br>
 ![Screen Shot](https://lh3.googleusercontent.com/okfIJzOqILg2Vj1FPi2K5oUJk9owYkxtr5FeaoL3CWSu0oE8lGGliDmks5RnoqhALW29WYXMFR0nzFvj4oWKjR9dDEuZ9FIdgU9OOmerqA_8B_PouIPbHv3mtwUzUjZpZbUSutIWh9YmzeeYPLEdk_HFiIJOq9GOc4Usw812NYWofKSyBRqMkyVN_z-J87s8EabtJWR5lwjRa-cBh1tVUnRWEO9jsjj2K1f_PH0fb7r-1IhrKMD5mt5mQMLsQQ3XEQHfQMr2cBMIuz-dUbnQfps5Nz2GnchztAow77KTyyPxqd5mdj42PTM2ViCJxDiPJYyyLR3K6_ppbO3PRpn_wdOt01Bq-PtScpuafN_ghBSL42ZQjAdX2HB0avNf8NTuKXV2K2KDEkNEty0ng5hCATOcCaR4_sYTx5rRfgzS5E-67_TDmEbXEtx20I6fUW2qXE5jVsJh5uaagef236Bs2ssdnnitRStcJ5OLySjDwEt8WhWuonXRYj4Zssnljycxc0Kr6qCRuJdaS_oqwF6SjVi7_j527KhP15YrcITrhYX8e88y9OKlFIuTc17PmZ9Ysnu4XRD6lYgGd9tDdisBCfOo52TFicWKevpks9opckHmaGbfbybtolHaqSJT_40r1s_MAaIwxZIIcEhB-e_utXBml-KW7WElzk1bFA_dYzNY4fb4RSdAxStCFWRdlXUccUR_GF7sj9hS86BAyA=w1263-h947-no)<br>
 
 AM3024-0C21-0000<br>
@@ -44,6 +46,7 @@ AM3024-0C21-0000<br>
 
 XML-SE30AЕКЕ<br>
 https://youtu.be/lwz9wlfNBrg?si=XCSkZ5ty04_A1IbP<br>
+https://youtube.com/shorts/MPl2bm2EVfs: AC Servo and Grlb - before bearing replace<br>
 ![Screen Shot](https://raw.githubusercontent.com/SimeonSimeonovIvanov/FOC-Servo/master/doc/Pictures/XML-SE30A%D0%95%D0%9A%D0%95.jpg)<br>
 
 APM-SC08ADK-52<br>
